@@ -32,6 +32,10 @@ Follow existing naming:
 
 Formatting and linting are enforced with Oxc (`oxfmt`, `oxlint`).
 
+## Dependency Policy
+
+Only add dependencies whose licenses are usable in an MIT-licensed project. Do not add dependencies with copyleft licenses or reciprocal distribution requirements, including GPL, AGPL, LGPL, CC-BY-SA, or similar licenses. Prefer permissive licenses such as MIT, BSD, ISC, Apache-2.0, 0BSD, BlueOak-1.0.0, or the Unlicense.
+
 ## Testing Guidelines
 
 There is no configured test runner yet. Until one is added, treat `npm run lint` and `npm run typecheck` as required checks. After making changes, `npm run lint` must pass. If you add a test framework, document the command in `README.md` and keep test filenames clear, such as `feature-name.test.tsx`.
