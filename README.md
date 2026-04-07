@@ -1,56 +1,73 @@
-# Welcome to your Expo app 👋
+# lookr
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+`lookr` is a React Native weight-loss app scaffold built with Expo, TypeScript, Expo Router, and NativeWind.
 
-## Get started
+## Stack
 
-1. Install dependencies
+- Expo SDK 55
+- React Native 0.83
+- TypeScript
+- Expo Router
+- NativeWind with Tailwind utility classes
+- Oxc for linting and formatting (`oxlint`, `oxfmt`)
 
-   ```bash
-   npm install
-   ```
+## Getting Started
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. Install dependencies:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Start the development server:
 
-### Other setup steps
+```bash
+npm start
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+3. Run on a target platform:
 
-## Learn more
+```bash
+npm run android
+npm run ios
+npm run web
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Available Scripts
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm start
+npm run android
+npm run ios
+npm run web
+npm run lint
+npm run lint:fix
+npm run format
+npm run format:check
+npm run typecheck
+```
 
-## Join the community
+## Styling
 
-Join our community of developers creating universal apps.
+This project uses NativeWind instead of traditional CSS modules or React Native `StyleSheet`-first styling.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Tailwind entry file: [global.css](/home/tanome/dev/lookr/global.css)
+- Tailwind config: [tailwind.config.js](/home/tanome/dev/lookr/tailwind.config.js)
+- NativeWind wiring: [babel.config.js](/home/tanome/dev/lookr/babel.config.js), [metro.config.js](/home/tanome/dev/lookr/metro.config.js)
+
+## Project Structure
+
+- App routes: [src/app](/home/tanome/dev/lookr/src/app)
+- Root layout: [src/app/_layout.tsx](/home/tanome/dev/lookr/src/app/_layout.tsx)
+- Main screen: [src/app/index.tsx](/home/tanome/dev/lookr/src/app/index.tsx)
+- Expo config: [app.json](/home/tanome/dev/lookr/app.json)
+
+## Quality Checks
+
+Before committing, run:
+
+```bash
+npm run format
+npm run lint
+npm run typecheck
+```

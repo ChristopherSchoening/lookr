@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "lookr-app",
-    "slug": "lookr-app",
+    "name": "lookr",
+    "slug": "lookr",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "lookrapp",
-    "userInterfaceStyle": "automatic",
+    "scheme": "lookr",
+    "userInterfaceStyle": "light",
     "ios": {
       "icon": "./assets/expo.icon"
     },
@@ -20,6 +20,7 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
+      "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
@@ -28,7 +29,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#F6EFE6",
           "android": {
             "image": "./assets/images/splash-icon.png",
             "imageWidth": 76

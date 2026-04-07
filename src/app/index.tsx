@@ -1,98 +1,91 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+const habits = [
+  { label: 'Calorie target', value: '1,950', note: 'Balanced for steady loss' },
+  { label: 'Protein goal', value: '145g', note: 'Supports fullness and recovery' },
+  { label: 'Daily movement', value: '8k', note: 'Simple, repeatable baseline' },
+];
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+const priorities = [
+  'Log meals in under a minute.',
+  'Stay inside your weekly calorie range.',
+  'Use trend weight instead of reacting to daily swings.',
+];
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <SafeAreaView className="flex-1 bg-[#F6EFE6]">
+      <StatusBar style="dark" />
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <View className="gap-4 px-5 pb-8 pt-5 ios:pt-3">
+          <View className="gap-3.5 rounded-[28px] bg-[#18211B] p-6">
+            <View className="self-start rounded-full bg-[#F3B35B] px-3 py-1.5">
+              <Text className="text-[12px] font-extrabold tracking-[1.6px] text-[#18211B]">
+                LOOKR
+              </Text>
+            </View>
+            <Text className="text-[14px] font-bold uppercase tracking-[0.8px] text-[#F3B35B]">
+              Weight loss without crash-plan chaos
+            </Text>
+            <Text className="text-[34px] font-extrabold leading-10 text-[#FFF7EF]">
+              Build momentum with small targets you can actually keep.
+            </Text>
+            <Text className="text-[16px] leading-6 text-[#D6D0C8]">
+              Lookr is designed to help users lose weight through consistent habits, calmer data,
+              and a weekly rhythm that feels sustainable.
+            </Text>
+          </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+          <View className="gap-3.5">
+            {habits.map((habit) => (
+              <View
+                key={habit.label}
+                className="gap-1.5 rounded-3xl border border-[#E8DCCB] bg-[#FFF9F1] p-5"
+              >
+                <Text className="text-[14px] font-semibold uppercase tracking-[0.6px] text-[#6D665C]">
+                  {habit.label}
+                </Text>
+                <Text className="text-[32px] font-extrabold text-[#18211B]">{habit.value}</Text>
+                <Text className="text-[15px] leading-[21px] text-[#4C4A46]">{habit.note}</Text>
+              </View>
+            ))}
+          </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+          <View className="gap-3.5 rounded-[28px] bg-[#D9E6D5] p-[22px]">
+            <Text className="text-[13px] font-bold uppercase tracking-[0.8px] text-[#34513C]">
+              Week one focus
+            </Text>
+            <Text className="text-[26px] font-extrabold leading-8 text-[#18211B]">
+              Keep the first plan boring on purpose.
+            </Text>
+            <View className="gap-3">
+              {priorities.map((priority) => (
+                <View key={priority} className="flex-row items-start gap-2.5">
+                  <View className="mt-1.5 h-2.5 w-2.5 rounded-full bg-[#34513C]" />
+                  <Text className="flex-1 text-[16px] font-semibold leading-[23px] text-[#18211B]">
+                    {priority}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          <View className="gap-2.5 rounded-[28px] border border-[#E8DCCB] bg-[#FFF9F1] p-[22px]">
+            <Text className="text-[13px] font-bold uppercase tracking-[0.8px] text-[#8A5D2A]">
+              Core product direction
+            </Text>
+            <Text className="text-[24px] font-extrabold leading-[30px] text-[#18211B]">
+              Fast logging, weekly insight, visible progress.
+            </Text>
+            <Text className="text-[16px] leading-6 text-[#4C4A46]">
+              This starter screen gives the app a clear product voice and a visual baseline you can
+              extend into onboarding, meal logging, progress charts, and coaching flows.
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});

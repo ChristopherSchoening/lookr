@@ -1,0 +1,4 @@
+{
+  "plugins": ["typescript", "react", "import", "unicorn"],
+  "ignorePatterns": ["node_modules", ".expo", "dist", "android", "ios"]
+}
