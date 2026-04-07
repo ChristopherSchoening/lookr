@@ -15,8 +15,9 @@ This repository does not have a test suite yet. When adding tests, place them ne
 - `npm run web`: run the web build through Expo/Metro.
 - `npm run format`: format the codebase with `oxfmt`.
 - `npm run format:check`: verify formatting without changing files.
-- `npm run lint`: run `oxlint` with type-aware checks.
+- `npm run lint`: verify formatting, type checking, and `oxlint` issues.
 - `npm run lint:fix`: apply safe lint fixes.
+- `npm run oxlint`: run `oxlint` with type-aware checks.
 - `npm run typecheck`: run TypeScript without emitting output.
 
 ## Coding Style & Naming Conventions
@@ -32,7 +33,7 @@ Formatting and linting are enforced with Oxc (`oxfmt`, `oxlint`).
 
 ## Testing Guidelines
 
-There is no configured test runner yet. Until one is added, treat `npm run lint` and `npm run typecheck` as required checks. If you add a test framework, document the command in `README.md` and keep test filenames clear, such as `feature-name.test.tsx`.
+There is no configured test runner yet. Until one is added, treat `npm run lint` and `npm run typecheck` as required checks. After making changes, `npm run lint` must pass. If you add a test framework, document the command in `README.md` and keep test filenames clear, such as `feature-name.test.tsx`.
 
 ## Commit & Pull Request Guidelines
 
