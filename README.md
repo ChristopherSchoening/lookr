@@ -58,7 +58,7 @@ This project uses NativeWind instead of traditional CSS modules or React Native 
 ## Project Structure
 
 - App routes: [src/app](/home/tanome/dev/lookr/src/app)
-- Root layout: [src/app/_layout.tsx](/home/tanome/dev/lookr/src/app/_layout.tsx)
+- Root layout: [src/app/\_layout.tsx](/home/tanome/dev/lookr/src/app/_layout.tsx)
 - Main screen: [src/app/index.tsx](/home/tanome/dev/lookr/src/app/index.tsx)
 - Expo config: [app.json](/home/tanome/dev/lookr/app.json)
 

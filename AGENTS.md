@@ -25,6 +25,7 @@ This repository does not have a test suite yet. When adding tests, place them ne
 Use TypeScript for app code and keep files ASCII unless the file already requires Unicode. Prefer functional React components and Expo Router route files. Use NativeWind utility classes via `className` instead of new `StyleSheet`-heavy patterns unless native APIs require inline styles.
 
 Follow existing naming:
+
 - Route files: lowercase file-based names such as `index.tsx`.
 - Components: `PascalCase` if new reusable components are added.
 - Variables/functions: `camelCase`.
@@ -40,6 +41,7 @@ There is no configured test runner yet. Until one is added, treat `npm run lint`
 Current history uses short, imperative commit messages, for example `Initial commit`. Continue with concise imperative subjects like `Add onboarding screen` or `Refine nutrition card layout`.
 
 Pull requests should include:
+
 - A short description of the user-visible change.
 - Linked issue or task reference when available.
 - Screenshots or recordings for UI changes on at least one platform.
