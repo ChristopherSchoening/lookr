@@ -31,7 +31,14 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Verification strategy defined before implementation begins, including
+  automated checks and manual acceptance for each affected user story
+- UX consistency review defined for all touched platforms, including any
+  intentional platform-specific deviations with rationale
+- Required repository quality commands identified and scheduled in the plan
+- Story-to-task traceability preserved so each user story can be validated
+  independently
+- Complexity exceptions documented only when a simpler alternative was rejected
 
 ## Project Structure
 

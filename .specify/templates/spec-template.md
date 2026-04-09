@@ -69,7 +69,8 @@
 
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
+  Fill them out with the right edge cases, including platform or UX consistency
+  issues when the feature spans multiple devices or form factors.
 -->
 
 - What happens when [boundary condition]?
@@ -79,7 +80,9 @@
 
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
+  Fill them out with the right functional requirements. Include explicit
+  consistency requirements when users must experience the same workflow or
+  feedback across supported platforms.
 -->
 
 ### Functional Requirements
@@ -119,7 +122,9 @@
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right assumptions based on reasonable defaults
-  chosen when the feature description did not specify certain details.
+  chosen when the feature description did not specify certain details. Document
+  platform coverage assumptions and any expected testing or review constraints
+  that materially affect delivery.
 -->
 
 - [Assumption about target users, e.g., "Users have stable internet connectivity"]

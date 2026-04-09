@@ -38,7 +38,12 @@ Only add dependencies whose licenses are usable in an MIT-licensed project. Do n
 
 ## Testing Guidelines
 
-There is no configured test runner yet. Until one is added, treat `npm run lint` and `npm run typecheck` as required checks. After making changes, `npm run lint` must pass. If you add a test framework, document the command in `README.md` and keep test filenames clear, such as `feature-name.test.tsx`.
+There is no configured test runner yet. Until one is added, treat `npm run lint`
+and `npm run typecheck` as required checks. Every feature change must still
+document its verification approach, including manual acceptance for the affected
+user flow. After making changes, `npm run lint` must pass. If you add a test
+framework, document the command in `README.md` and keep test filenames clear,
+such as `feature-name.test.tsx`.
 
 ## Commit & Pull Request Guidelines
 
@@ -48,5 +53,6 @@ Pull requests should include:
 
 - A short description of the user-visible change.
 - Linked issue or task reference when available.
-- Screenshots or recordings for UI changes on at least one platform.
+- Screenshots or recordings for UI changes on each touched platform, or a brief
+  justification when one platform's evidence is sufficient.
 - Confirmation that `npm run format`, `npm run lint`, and `npm run typecheck` passed.
