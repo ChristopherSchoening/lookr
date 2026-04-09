@@ -71,3 +71,7 @@ npm run format
 npm run lint
 npm run typecheck
 ```
+
+For user-facing changes, also verify the touched flow behaves consistently on
+the platforms you changed and capture screenshots or recordings when the UI
+meaningfully changes.
