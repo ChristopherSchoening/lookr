@@ -22,11 +22,13 @@ Templates requiring updates:
 Follow-up TODOs:
 - None
 -->
+
 # lookr Constitution
 
 ## Core Principles
 
 ### I. Testable Changes First
+
 Every feature change MUST define how correctness will be verified before
 implementation begins. Plans MUST name the required automated checks and manual
 acceptance checks for the affected behavior. If the repository lacks a suitable
@@ -39,6 +41,7 @@ plan time prevents untestable work and forces the team to close quality gaps
 instead of carrying them silently.
 
 ### II. UX Consistency Across Platforms
+
 User-facing flows MUST preserve consistent information architecture, naming,
 feedback states, and completion paths across all supported platforms. Any
 intentional platform-specific variation MUST be documented in the spec or plan
@@ -50,6 +53,7 @@ Rationale: A cross-platform product becomes harder to trust when the same task
 behaves differently on different devices without a clear reason.
 
 ### III. Fast, Trustworthy Feedback Loops
+
 Every change set MUST keep local verification fast enough for routine use and
 must rely on the smallest set of checks that proves the affected behavior. At a
 minimum, modified work MUST pass the repository's required quality commands, and
@@ -61,6 +65,7 @@ Rationale: Teams skip slow or noisy checks. Tight, reliable feedback is the
 only way to make quality rules durable in daily work.
 
 ### IV. Spec-to-Delivery Traceability
+
 Each feature MUST trace user stories to implementation tasks and to the
 verification steps that prove them complete. Plans and task lists MUST make it
 clear which story is being delivered, which files are affected, and what
@@ -70,6 +75,7 @@ Rationale: Traceability keeps delivery aligned with user value and prevents work
 from drifting into disconnected technical activity.
 
 ### V. Keep Scope Coherent
+
 Feature slices MUST stay focused on the smallest user-meaningful outcome that
 can be verified independently. New dependencies, broad refactors, or extra
 surface area MUST be justified against a simpler alternative in the plan's
