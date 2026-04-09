@@ -1,224 +1,348 @@
-<!DOCTYPE html>
+<!doctype html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-error": "#ffffff",
-                        "on-surface": "#191c1d",
-                        "inverse-on-surface": "#eff1f2",
-                        "tertiary-container": "#ffa15e",
-                        "surface-tint": "#006c48",
-                        "on-secondary-fixed-variant": "#165037",
-                        "on-primary-fixed": "#002113",
-                        "surface-container": "#eceeef",
-                        "error": "#ba1a1a",
-                        "on-surface-variant": "#3c4a41",
-                        "surface-bright": "#f8fafb",
-                        "inverse-surface": "#2e3132",
-                        "on-tertiary-fixed-variant": "#723600",
-                        "primary-container": "#00d18e",
-                        "secondary": "#31694e",
-                        "on-secondary": "#ffffff",
-                        "secondary-container": "#b4f0cd",
-                        "tertiary-fixed": "#ffdcc6",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-variant": "#e1e3e4",
-                        "surface-dim": "#d8dadb",
-                        "outline-variant": "#bacabf",
-                        "background": "#f8fafb",
-                        "on-primary": "#ffffff",
-                        "primary": "#006c48",
-                        "outline": "#6b7b70",
-                        "surface-container-high": "#e6e8e9",
-                        "inverse-primary": "#2fe19c",
-                        "on-tertiary": "#ffffff",
-                        "secondary-fixed-dim": "#99d3b2",
-                        "on-tertiary-container": "#743700",
-                        "tertiary": "#934b0c",
-                        "secondary-fixed": "#b4f0cd",
-                        "tertiary-fixed-dim": "#ffb786",
-                        "surface-container-highest": "#e1e3e4",
-                        "surface-container-low": "#f2f4f5",
-                        "on-error-container": "#93000a",
-                        "on-secondary-fixed": "#002113",
-                        "on-tertiary-fixed": "#311300",
-                        "on-secondary-container": "#386f54",
-                        "on-primary-container": "#005336",
-                        "on-primary-fixed-variant": "#005235",
-                        "error-container": "#ffdad6",
-                        "surface": "#f8fafb",
-                        "primary-fixed-dim": "#2fe19c",
-                        "on-background": "#191c1d",
-                        "primary-fixed": "#58feb7"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "fontFamily": {
-                        "headline": ["Manrope"],
-                        "body": ["Manrope"],
-                        "label": ["Manrope"]
-                    }
-                },
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'on-error': '#ffffff',
+              'on-surface': '#191c1d',
+              'inverse-on-surface': '#eff1f2',
+              'tertiary-container': '#ffa15e',
+              'surface-tint': '#006c48',
+              'on-secondary-fixed-variant': '#165037',
+              'on-primary-fixed': '#002113',
+              'surface-container': '#eceeef',
+              error: '#ba1a1a',
+              'on-surface-variant': '#3c4a41',
+              'surface-bright': '#f8fafb',
+              'inverse-surface': '#2e3132',
+              'on-tertiary-fixed-variant': '#723600',
+              'primary-container': '#00d18e',
+              secondary: '#31694e',
+              'on-secondary': '#ffffff',
+              'secondary-container': '#b4f0cd',
+              'tertiary-fixed': '#ffdcc6',
+              'surface-container-lowest': '#ffffff',
+              'surface-variant': '#e1e3e4',
+              'surface-dim': '#d8dadb',
+              'outline-variant': '#bacabf',
+              background: '#f8fafb',
+              'on-primary': '#ffffff',
+              primary: '#006c48',
+              outline: '#6b7b70',
+              'surface-container-high': '#e6e8e9',
+              'inverse-primary': '#2fe19c',
+              'on-tertiary': '#ffffff',
+              'secondary-fixed-dim': '#99d3b2',
+              'on-tertiary-container': '#743700',
+              tertiary: '#934b0c',
+              'secondary-fixed': '#b4f0cd',
+              'tertiary-fixed-dim': '#ffb786',
+              'surface-container-highest': '#e1e3e4',
+              'surface-container-low': '#f2f4f5',
+              'on-error-container': '#93000a',
+              'on-secondary-fixed': '#002113',
+              'on-tertiary-fixed': '#311300',
+              'on-secondary-container': '#386f54',
+              'on-primary-container': '#005336',
+              'on-primary-fixed-variant': '#005235',
+              'error-container': '#ffdad6',
+              surface: '#f8fafb',
+              'primary-fixed-dim': '#2fe19c',
+              'on-background': '#191c1d',
+              'primary-fixed': '#58feb7',
             },
-        }
+            borderRadius: {
+              DEFAULT: '0.125rem',
+              lg: '0.25rem',
+              xl: '0.5rem',
+              full: '0.75rem',
+            },
+            fontFamily: {
+              headline: ['Manrope'],
+              body: ['Manrope'],
+              label: ['Manrope'],
+            },
+          },
+        },
+      };
     </script>
-<style>
-        body { font-family: 'Manrope', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .clinical-shadow {
-            box-shadow: 0px 12px 32px rgba(25, 28, 29, 0.04);
-        }
-        .progress-ring {
-            transition: stroke-dashoffset 0.35s;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
+    <style>
+      body {
+        font-family: 'Manrope', sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+      }
+      .clinical-shadow {
+        box-shadow: 0px 12px 32px rgba(25, 28, 29, 0.04);
+      }
+      .progress-ring {
+        transition: stroke-dashoffset 0.35s;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+      }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
   </head>
-<body class="bg-background text-on-surface min-h-screen pb-24">
-<!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-[#F8FAFB]/80 backdrop-blur-md flex items-center justify-between px-6 py-4 w-full">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[#00D18E]" data-icon="signal_cellular_alt">signal_cellular_alt</span>
-</div>
-<div class="flex items-center gap-1">
-<span class="font-headline font-extrabold text-2xl text-[#006C48] tracking-tighter">lookr</span>
-<div class="w-1.5 h-1.5 rounded-full bg-primary-container mt-1"></div>
-</div>
-<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high flex items-center justify-center">
-<img alt="Profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional man with a friendly expression in a brightly lit modern studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCT3cxTzaWl0btij0JYNpQo1-pM3qVWBCvN5ZqtNQhDcrJVtNu0dhJNOdufWw2aVG4jqFTQ5Rcg5lbt6VjA5BUVc-vf9vDqG8o34TcvUq67YwMzby3o1wUn5I66IPvEfkVt_6AF1WBlWTMgxZv66dF3kLf43mujEFSJnuwfuy0Z80iuiOV7VE6OGPLGb1N55YUQYHYDl_CQkWfzBv1a1NWY-D-UGbud6X5UM05G9NXWwcpC3HyxUsI1aYWKn6lvESB7qEwEysCg1M"/>
-</div>
-</header>
-<main class="pt-24 px-6 max-w-lg mx-auto">
-<!-- Hero Section: Progress Ring -->
-<section class="mb-10 text-center">
-<div class="relative inline-flex items-center justify-center">
-<svg class="w-64 h-64">
-<circle class="text-surface-container stroke-current" cx="128" cy="128" fill="transparent" r="110" stroke-width="8"></circle>
-<circle class="text-primary-container stroke-current progress-ring" cx="128" cy="128" fill="transparent" r="110" stroke-linecap="round" stroke-width="8" style="stroke-dasharray: 691; stroke-dashoffset: 184;"></circle>
-</svg>
-<div class="absolute inset-0 flex flex-col items-center justify-center">
-<span class="text-6xl font-headline font-bold text-primary tracking-tighter">8</span>
-<span class="text-label text-xs font-semibold tracking-[0.1em] text-on-surface-variant uppercase">Points Left</span>
-</div>
-</div>
-<p class="mt-4 text-on-surface-variant font-medium">of 30 Daily Goal</p>
-</section>
-<!-- Actions -->
-<section class="flex flex-col gap-3 mb-10">
-<button class="w-full py-4 bg-primary-container text-on-primary-container font-headline font-bold rounded-full clinical-shadow hover:opacity-90 transition-opacity active:scale-[0.98] duration-150">
-                Log Points
-            </button>
-<button class="w-full py-3 border border-outline-variant text-primary font-headline font-semibold rounded-full hover:bg-surface-container-low transition-colors active:scale-[0.98] duration-150">
-                Add Sport
-            </button>
-</section>
-<!-- Bento Grid: Macros & Hydration -->
-<section class="grid grid-cols-2 gap-4 mb-10">
-<!-- Protein Card -->
-<div class="bg-surface-container-low p-5 rounded-xl border-none">
-<span class="text-label text-[10px] font-bold tracking-widest text-on-surface-variant uppercase block mb-1">Protein</span>
-<span class="text-2xl font-headline font-bold text-on-surface">84g</span>
-</div>
-<!-- Carbs Card -->
-<div class="bg-surface-container-low p-5 rounded-xl border-none">
-<span class="text-label text-[10px] font-bold tracking-widest text-on-surface-variant uppercase block mb-1">Carbs</span>
-<span class="text-2xl font-headline font-bold text-on-surface">112g</span>
-</div>
-<!-- Hydration Card -->
-<div class="col-span-2 bg-surface-container-lowest p-5 rounded-xl clinical-shadow">
-<div class="flex justify-between items-center mb-4">
-<span class="text-label text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Hydration</span>
-<span class="text-xs font-bold text-primary">1.2L / 2.0L</span>
-</div>
-<div class="flex justify-between px-2">
-<span class="material-symbols-outlined text-primary" data-icon="water_drop" style="font-variation-settings: 'FILL' 1;">water_drop</span>
-<span class="material-symbols-outlined text-primary" data-icon="water_drop" style="font-variation-settings: 'FILL' 1;">water_drop</span>
-<span class="material-symbols-outlined text-primary" data-icon="water_drop" style="font-variation-settings: 'FILL' 1;">water_drop</span>
-<span class="material-symbols-outlined text-primary" data-icon="water_drop" style="font-variation-settings: 'FILL' 1;">water_drop</span>
-<span class="material-symbols-outlined text-outline-variant" data-icon="water_drop">water_drop</span>
-<span class="material-symbols-outlined text-outline-variant" data-icon="water_drop">water_drop</span>
-</div>
-</div>
-</section>
-<!-- Today's Logs -->
-<section class="mb-12">
-<h2 class="text-label text-[10px] font-extrabold tracking-[0.2em] text-on-surface-variant uppercase mb-6 pl-1">Today's Logs</h2>
-<div class="space-y-4">
-<!-- Log Item 1 -->
-<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
-<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-high">
-<img alt="Greek Yogurt Bowl" class="w-full h-full object-cover" data-alt="Top-down view of a ceramic bowl filled with white Greek yogurt topped with fresh blueberries and honey drizzle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc2PBUgJhhdC3wzf-4O_CC0SyWbLxqfiQipav9kr9yP3kK18eBOxH9oHK1eND1AuY1_jdyOIymUzbsgIuBGd4fv4Ki-hOry2jR5w7DIDDiHbbuSk9G00JRohm8pwl7qK-Pk_jjiR3YDhHS0XGpSsAKscnITTj3QJpAW4rr6LyO-k_uIxy-3Fu7ycBNszmbyzQzQx6a0_yoeXidmwauWM3yTEP0ZYvD_Uy8DNIgwwjt0Ci6_kHGz7mQxr4mhk3tUNZh8Xd5iIVjkBc"/>
-</div>
-<div class="flex-1">
-<h3 class="font-headline font-bold text-on-surface">Greek Yogurt Bowl</h3>
-<p class="text-xs text-on-surface-variant">08:15 AM • Breakfast</p>
-</div>
-<span class="font-headline font-bold text-primary">6 pts</span>
-</div>
-<!-- Log Item 2 -->
-<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
-<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-high">
-<img alt="Mediterranean Salad" class="w-full h-full object-cover" data-alt="Colorful salad with olives, feta cheese, and cherry tomatoes in a minimalist white bowl on a light table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3DQVAKDQjOu0hMm1ozhcpacl8HVbNZDuK1pJJ2L5N_5viSBBQwEfDtBYddeZzEn8VjToa4Bmu_gFJyk5vdkJYjtxsflKwZOOicXcPKXK6FMUHBn0hcRrMOa-eebHWSoAZ42dOyFM57i1iT_R8GQyfCxoottI9grP5qjRXWI-TvngOc687lW-crvyaKFQ3xuKKSh1DFKEOhsy578-RX5BPn5uVKcrII0lC-diZeuWXHd7v4DE2CLLYCghZdDEy3xj5IJDGQoj2MWc"/>
-</div>
-<div class="flex-1">
-<h3 class="font-headline font-bold text-on-surface">Mediterranean Salad</h3>
-<p class="text-xs text-on-surface-variant">01:30 PM • Lunch</p>
-</div>
-<span class="font-headline font-bold text-primary">12 pts</span>
-</div>
-<!-- Log Item 3 -->
-<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
-<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-high">
-<img alt="Handful of Almonds" class="w-full h-full object-cover" data-alt="A small wooden bowl filled with raw brown almonds on a clean white surface with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt48TRUR7iVorh2NCWj5Fwp1N1336-JgQ8PrH_ifvvDmNyhxGHjbzhAYSWoZ6jUIB_s17NnVi0qswhffgnQ8BNUGUeC8rBaWi-513Z54kxu6jio63dk1Y49akfzTmWsy3hVeWGxGLPUT9jy1G4RR53KiVSENvUHDDNs2a03vG_vEs2_Ok08orhuQ35oGM1f0y-5AxL2kPup6L98VKlSs1nvbJUkUisBbZ3la9jB85sUOCljvJIIjpSOg65B4-7HE7ZJ-abQ_QEZVY"/>
-</div>
-<div class="flex-1">
-<h3 class="font-headline font-bold text-on-surface">Handful of Almonds</h3>
-<p class="text-xs text-on-surface-variant">04:00 PM • Snack</p>
-</div>
-<span class="font-headline font-bold text-primary">4 pts</span>
-</div>
-</div>
-</section>
-</main>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-[#F8FAFB]/80 backdrop-blur-md shadow-[0px_-12px_32px_rgba(25,28,29,0.04)]">
-<a class="flex flex-col items-center justify-center text-[#006C48] font-bold transition-colors" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="calendar_today" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
-<span class="font-headline font-medium text-[10px] uppercase tracking-widest">Today</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 hover:text-[#00D18E] transition-colors active:scale-90 duration-200" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
-<span class="font-headline font-medium text-[10px] uppercase tracking-widest">Log</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 hover:text-[#00D18E] transition-colors active:scale-90 duration-200" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="history">history</span>
-<span class="font-headline font-medium text-[10px] uppercase tracking-widest">History</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 hover:text-[#00D18E] transition-colors active:scale-90 duration-200" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
-<span class="font-headline font-medium text-[10px] uppercase tracking-widest">Profile</span>
-</a>
-</nav>
-</body></html>
+  <body class="bg-background text-on-surface min-h-screen pb-24">
+    <!-- TopAppBar -->
+    <header
+      class="fixed top-0 w-full z-50 bg-[#F8FAFB]/80 backdrop-blur-md flex items-center justify-between px-6 py-4 w-full"
+    >
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[#00D18E]" data-icon="signal_cellular_alt"
+          >signal_cellular_alt</span
+        >
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="font-headline font-extrabold text-2xl text-[#006C48] tracking-tighter"
+          >lookr</span
+        >
+        <div class="w-1.5 h-1.5 rounded-full bg-primary-container mt-1"></div>
+      </div>
+      <div
+        class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high flex items-center justify-center"
+      >
+        <img
+          alt="Profile"
+          class="w-full h-full object-cover"
+          data-alt="Close-up portrait of a professional man with a friendly expression in a brightly lit modern studio setting"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCT3cxTzaWl0btij0JYNpQo1-pM3qVWBCvN5ZqtNQhDcrJVtNu0dhJNOdufWw2aVG4jqFTQ5Rcg5lbt6VjA5BUVc-vf9vDqG8o34TcvUq67YwMzby3o1wUn5I66IPvEfkVt_6AF1WBlWTMgxZv66dF3kLf43mujEFSJnuwfuy0Z80iuiOV7VE6OGPLGb1N55YUQYHYDl_CQkWfzBv1a1NWY-D-UGbud6X5UM05G9NXWwcpC3HyxUsI1aYWKn6lvESB7qEwEysCg1M"
+        />
+      </div>
+    </header>
+    <main class="pt-24 px-6 max-w-lg mx-auto">
+      <!-- Hero Section: Progress Ring -->
+      <section class="mb-10 text-center">
+        <div class="relative inline-flex items-center justify-center">
+          <svg class="w-64 h-64">
+            <circle
+              class="text-surface-container stroke-current"
+              cx="128"
+              cy="128"
+              fill="transparent"
+              r="110"
+              stroke-width="8"
+            ></circle>
+            <circle
+              class="text-primary-container stroke-current progress-ring"
+              cx="128"
+              cy="128"
+              fill="transparent"
+              r="110"
+              stroke-linecap="round"
+              stroke-width="8"
+              style="stroke-dasharray: 691; stroke-dashoffset: 184"
+            ></circle>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="text-6xl font-headline font-bold text-primary tracking-tighter">8</span>
+            <span
+              class="text-label text-xs font-semibold tracking-[0.1em] text-on-surface-variant uppercase"
+              >Points Left</span
+            >
+          </div>
+        </div>
+        <p class="mt-4 text-on-surface-variant font-medium">of 30 Daily Goal</p>
+      </section>
+      <!-- Actions -->
+      <section class="flex flex-col gap-3 mb-10">
+        <button
+          class="w-full py-4 bg-primary-container text-on-primary-container font-headline font-bold rounded-full clinical-shadow hover:opacity-90 transition-opacity active:scale-[0.98] duration-150"
+        >
+          Log Points
+        </button>
+        <button
+          class="w-full py-3 border border-outline-variant text-primary font-headline font-semibold rounded-full hover:bg-surface-container-low transition-colors active:scale-[0.98] duration-150"
+        >
+          Add Sport
+        </button>
+      </section>
+      <!-- Bento Grid: Macros & Hydration -->
+      <section class="grid grid-cols-2 gap-4 mb-10">
+        <!-- Protein Card -->
+        <div class="bg-surface-container-low p-5 rounded-xl border-none">
+          <span
+            class="text-label text-[10px] font-bold tracking-widest text-on-surface-variant uppercase block mb-1"
+            >Protein</span
+          >
+          <span class="text-2xl font-headline font-bold text-on-surface">84g</span>
+        </div>
+        <!-- Carbs Card -->
+        <div class="bg-surface-container-low p-5 rounded-xl border-none">
+          <span
+            class="text-label text-[10px] font-bold tracking-widest text-on-surface-variant uppercase block mb-1"
+            >Carbs</span
+          >
+          <span class="text-2xl font-headline font-bold text-on-surface">112g</span>
+        </div>
+        <!-- Hydration Card -->
+        <div class="col-span-2 bg-surface-container-lowest p-5 rounded-xl clinical-shadow">
+          <div class="flex justify-between items-center mb-4">
+            <span
+              class="text-label text-[10px] font-bold tracking-widest text-on-surface-variant uppercase"
+              >Hydration</span
+            >
+            <span class="text-xs font-bold text-primary">1.2L / 2.0L</span>
+          </div>
+          <div class="flex justify-between px-2">
+            <span
+              class="material-symbols-outlined text-primary"
+              data-icon="water_drop"
+              style="font-variation-settings: 'FILL' 1"
+              >water_drop</span
+            >
+            <span
+              class="material-symbols-outlined text-primary"
+              data-icon="water_drop"
+              style="font-variation-settings: 'FILL' 1"
+              >water_drop</span
+            >
+            <span
+              class="material-symbols-outlined text-primary"
+              data-icon="water_drop"
+              style="font-variation-settings: 'FILL' 1"
+              >water_drop</span
+            >
+            <span
+              class="material-symbols-outlined text-primary"
+              data-icon="water_drop"
+              style="font-variation-settings: 'FILL' 1"
+              >water_drop</span
+            >
+            <span class="material-symbols-outlined text-outline-variant" data-icon="water_drop"
+              >water_drop</span
+            >
+            <span class="material-symbols-outlined text-outline-variant" data-icon="water_drop"
+              >water_drop</span
+            >
+          </div>
+        </div>
+      </section>
+      <!-- Today's Logs -->
+      <section class="mb-12">
+        <h2
+          class="text-label text-[10px] font-extrabold tracking-[0.2em] text-on-surface-variant uppercase mb-6 pl-1"
+        >
+          Today's Logs
+        </h2>
+        <div class="space-y-4">
+          <!-- Log Item 1 -->
+          <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
+            <div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-high">
+              <img
+                alt="Greek Yogurt Bowl"
+                class="w-full h-full object-cover"
+                data-alt="Top-down view of a ceramic bowl filled with white Greek yogurt topped with fresh blueberries and honey drizzle"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc2PBUgJhhdC3wzf-4O_CC0SyWbLxqfiQipav9kr9yP3kK18eBOxH9oHK1eND1AuY1_jdyOIymUzbsgIuBGd4fv4Ki-hOry2jR5w7DIDDiHbbuSk9G00JRohm8pwl7qK-Pk_jjiR3YDhHS0XGpSsAKscnITTj3QJpAW4rr6LyO-k_uIxy-3Fu7ycBNszmbyzQzQx6a0_yoeXidmwauWM3yTEP0ZYvD_Uy8DNIgwwjt0Ci6_kHGz7mQxr4mhk3tUNZh8Xd5iIVjkBc"
+              />
+            </div>
+            <div class="flex-1">
+              <h3 class="font-headline font-bold text-on-surface">Greek Yogurt Bowl</h3>
+              <p class="text-xs text-on-surface-variant">08:15 AM • Breakfast</p>
+            </div>
+            <span class="font-headline font-bold text-primary">6 pts</span>
+          </div>
+          <!-- Log Item 2 -->
+          <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
+            <div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-high">
+              <img
+                alt="Mediterranean Salad"
+                class="w-full h-full object-cover"
+                data-alt="Colorful salad with olives, feta cheese, and cherry tomatoes in a minimalist white bowl on a light table"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3DQVAKDQjOu0hMm1ozhcpacl8HVbNZDuK1pJJ2L5N_5viSBBQwEfDtBYddeZzEn8VjToa4Bmu_gFJyk5vdkJYjtxsflKwZOOicXcPKXK6FMUHBn0hcRrMOa-eebHWSoAZ42dOyFM57i1iT_R8GQyfCxoottI9grP5qjRXWI-TvngOc687lW-crvyaKFQ3xuKKSh1DFKEOhsy578-RX5BPn5uVKcrII0lC-diZeuWXHd7v4DE2CLLYCghZdDEy3xj5IJDGQoj2MWc"
+              />
+            </div>
+            <div class="flex-1">
+              <h3 class="font-headline font-bold text-on-surface">Mediterranean Salad</h3>
+              <p class="text-xs text-on-surface-variant">01:30 PM • Lunch</p>
+            </div>
+            <span class="font-headline font-bold text-primary">12 pts</span>
+          </div>
+          <!-- Log Item 3 -->
+          <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
+            <div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-high">
+              <img
+                alt="Handful of Almonds"
+                class="w-full h-full object-cover"
+                data-alt="A small wooden bowl filled with raw brown almonds on a clean white surface with soft shadows"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt48TRUR7iVorh2NCWj5Fwp1N1336-JgQ8PrH_ifvvDmNyhxGHjbzhAYSWoZ6jUIB_s17NnVi0qswhffgnQ8BNUGUeC8rBaWi-513Z54kxu6jio63dk1Y49akfzTmWsy3hVeWGxGLPUT9jy1G4RR53KiVSENvUHDDNs2a03vG_vEs2_Ok08orhuQ35oGM1f0y-5AxL2kPup6L98VKlSs1nvbJUkUisBbZ3la9jB85sUOCljvJIIjpSOg65B4-7HE7ZJ-abQ_QEZVY"
+              />
+            </div>
+            <div class="flex-1">
+              <h3 class="font-headline font-bold text-on-surface">Handful of Almonds</h3>
+              <p class="text-xs text-on-surface-variant">04:00 PM • Snack</p>
+            </div>
+            <span class="font-headline font-bold text-primary">4 pts</span>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- BottomNavBar -->
+    <nav
+      class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-[#F8FAFB]/80 backdrop-blur-md shadow-[0px_-12px_32px_rgba(25,28,29,0.04)]"
+    >
+      <a
+        class="flex flex-col items-center justify-center text-[#006C48] font-bold transition-colors"
+        href="#"
+      >
+        <span
+          class="material-symbols-outlined mb-1"
+          data-icon="calendar_today"
+          style="font-variation-settings: 'FILL' 1"
+          >calendar_today</span
+        >
+        <span class="font-headline font-medium text-[10px] uppercase tracking-widest">Today</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-slate-400 hover:text-[#00D18E] transition-colors active:scale-90 duration-200"
+        href="#"
+      >
+        <span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
+        <span class="font-headline font-medium text-[10px] uppercase tracking-widest">Log</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-slate-400 hover:text-[#00D18E] transition-colors active:scale-90 duration-200"
+        href="#"
+      >
+        <span class="material-symbols-outlined mb-1" data-icon="history">history</span>
+        <span class="font-headline font-medium text-[10px] uppercase tracking-widest">History</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-slate-400 hover:text-[#00D18E] transition-colors active:scale-90 duration-200"
+        href="#"
+      >
+        <span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+        <span class="font-headline font-medium text-[10px] uppercase tracking-widest">Profile</span>
+      </a>
+    </nav>
+  </body>
+</html>

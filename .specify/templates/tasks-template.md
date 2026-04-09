@@ -1,6 +1,5 @@
 ---
-
-description: "Task list template for feature implementation"
+description: 'Task list template for feature implementation'
 ---
 
 # Tasks: [FEATURE NAME]
@@ -28,21 +27,21 @@ all affected stories.
 - **Mobile**: `api/src/`, `ios/src/` or `android/src/`
 - Paths shown below assume single project - adjust based on plan.md structure
 
-<!-- 
+<!--
   ============================================================================
   IMPORTANT: The tasks below are SAMPLE TASKS for illustration purposes only.
-  
+
   The /speckit.tasks command MUST replace these with actual tasks based on:
   - User stories from spec.md (with their priorities P1, P2, P3...)
   - Feature requirements from plan.md
   - Entities from data-model.md
   - Endpoints from contracts/
-  
+
   Tasks MUST be organized by user story so each story can be:
   - Implemented independently
   - Tested independently
   - Delivered as an MVP increment
-  
+
   DO NOT keep these sample tasks in the generated tasks.md file.
   ============================================================================
 -->
@@ -86,8 +85,8 @@ Examples of foundational tasks (adjust based on your project):
 
 > **NOTE: Define these checks before implementation and run them before story sign-off**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test\_[name].py
+- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test\_[name].py
 - [ ] T012 [US1] Document manual acceptance steps and UX consistency checks for touched platforms
 
 ### Implementation for User Story 1
@@ -111,8 +110,8 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Verification for User Story 2 ⚠️
 
-- [ ] T019 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T020 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T019 [P] [US2] Contract test for [endpoint] in tests/contract/test\_[name].py
+- [ ] T020 [P] [US2] Integration test for [user journey] in tests/integration/test\_[name].py
 - [ ] T021 [US2] Document manual acceptance steps and UX consistency checks for touched platforms
 
 ### Implementation for User Story 2
@@ -134,8 +133,8 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Verification for User Story 3 ⚠️
 
-- [ ] T026 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T027 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T026 [P] [US3] Contract test for [endpoint] in tests/contract/test\_[name].py
+- [ ] T027 [P] [US3] Integration test for [user journey] in tests/integration/test\_[name].py
 - [ ] T028 [US3] Document manual acceptance steps and UX consistency checks for touched platforms
 
 ### Implementation for User Story 3

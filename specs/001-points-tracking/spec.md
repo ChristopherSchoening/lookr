@@ -15,7 +15,7 @@
 - Q: What date range should meal logging and editing support? → A: Users can add, edit, and remove meals for today and past days.
 - Q: Which platforms are in scope for v1? → A: iOS, Android, and web, with Android as the mid-term focus.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Set Daily Point Budget and Log Meals (Priority: P1)
 
@@ -73,7 +73,7 @@ A user records body weight over time and compares it with adherence to their dai
 - How does the system handle a meal entered with zero or negative points? The app must reject invalid point values and explain the correction needed.
 - How does the system handle a day with no logged meals? The app must show the day as untracked or empty rather than assuming zero intake.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -96,14 +96,14 @@ A user records body weight over time and compares it with adherence to their dai
 - **FR-016**: The first release MUST not require a built-in nutrition-based points calculator to create meal entries.
 - **FR-017**: The system MUST allow a user to add meal entries for the current day and past days, but not future dates.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **User Profile**: Represents the individual using the app, including their daily point limit and weight-loss tracking preferences.
 - **Meal Entry**: Represents a single logged meal or snack, including its name, point value, date, and time of consumption.
 - **Daily Summary**: Represents the aggregate tracking state for one date, including daily point budget, points consumed, points remaining, and whether the limit was exceeded.
 - **Weight Entry**: Represents a recorded body-weight measurement for a specific date.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

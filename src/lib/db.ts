@@ -1,0 +1,235 @@
+import { openDatabaseAsync, type SQLiteDatabase, type SQLiteRunResult } from 'expo-sqlite';
+
+import { currentTimeLabel, isFutureDate, nowIso } from '@/lib/date';
+import type { MealEntry, UserProfile, WeightEntry } from '@/lib/types';
+
+let databasePromise: Promise<SQLiteDatabase> | null = null;
+
+type ProfileRow = {
+  daily_points_limit: number;
+  updated_at: string;
+};
+
+type MealRow = {
+  id: number;
+  meal_name: string;
+  points: number;
+  entry_date: string;
+  entry_time: string;
+  created_at: string;
+  updated_at: string;
+};
+
+type WeightRow = {
+  id: number;
+  entry_date: string;
+  weight: number;
+  created_at: string;
+  updated_at: string;
+};
+
+async function getDb() {
+  if (!databasePromise) {
+    databasePromise = openDatabaseAsync('lookr.db');
+  }
+
+  const db = await databasePromise;
+
+  await db.execAsync(`
+    PRAGMA journal_mode = WAL;
+    CREATE TABLE IF NOT EXISTS user_profile (
+      id INTEGER PRIMARY KEY NOT NULL CHECK (id = 1),
+      daily_points_limit INTEGER NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS meal_entries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      meal_name TEXT NOT NULL,
+      points INTEGER NOT NULL,
+      entry_date TEXT NOT NULL,
+      entry_time TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS weight_entries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      entry_date TEXT NOT NULL UNIQUE,
+      weight REAL NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+
+  return db;
+}
+
+export async function loadProfile(): Promise<UserProfile | null> {
+  const db = await getDb();
+  const row = await db.getFirstAsync<ProfileRow>(
+    'SELECT daily_points_limit, updated_at FROM user_profile WHERE id = 1',
+  );
+
+  if (!row) return null;
+
+  return {
+    dailyPointsLimit: row.daily_points_limit,
+    updatedAt: row.updated_at,
+  };
+}
+
+export async function saveProfile(dailyPointsLimit: number) {
+  const db = await getDb();
+  const updatedAt = nowIso();
+  await db.runAsync(
+    `
+      INSERT INTO user_profile (id, daily_points_limit, updated_at)
+      VALUES (1, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        daily_points_limit = excluded.daily_points_limit,
+        updated_at = excluded.updated_at
+    `,
+    dailyPointsLimit,
+    updatedAt,
+  );
+}
+
+export async function listMeals(): Promise<MealEntry[]> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<MealRow>(
+    `
+      SELECT id, meal_name, points, entry_date, entry_time, created_at, updated_at
+      FROM meal_entries
+      ORDER BY entry_date DESC, entry_time DESC, id DESC
+    `,
+  );
+
+  return rows.map((row) => ({
+    id: row.id,
+    mealName: row.meal_name,
+    points: row.points,
+    entryDate: row.entry_date,
+    entryTime: row.entry_time,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  }));
+}
+
+export async function addMeal(input: {
+  mealName: string;
+  points: number;
+  entryDate: string;
+  entryTime?: string;
+}) {
+  if (isFutureDate(input.entryDate)) {
+    throw new Error('Meals can only be logged for today or past days.');
+  }
+
+  const db = await getDb();
+  const createdAt = nowIso();
+  await db.runAsync(
+    `
+      INSERT INTO meal_entries (
+        meal_name,
+        points,
+        entry_date,
+        entry_time,
+        created_at,
+        updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `,
+    input.mealName.trim(),
+    input.points,
+    input.entryDate,
+    input.entryTime ?? currentTimeLabel(),
+    createdAt,
+    createdAt,
+  );
+}
+
+export async function updateMeal(
+  id: number,
+  input: {
+    mealName: string;
+    points: number;
+    entryDate: string;
+  },
+) {
+  if (isFutureDate(input.entryDate)) {
+    throw new Error('Meals can only be logged for today or past days.');
+  }
+
+  const db = await getDb();
+  await db.runAsync(
+    `
+      UPDATE meal_entries
+      SET meal_name = ?, points = ?, entry_date = ?, updated_at = ?
+      WHERE id = ?
+    `,
+    input.mealName.trim(),
+    input.points,
+    input.entryDate,
+    nowIso(),
+    id,
+  );
+}
+
+export async function deleteMeal(id: number) {
+  const db = await getDb();
+  await db.runAsync('DELETE FROM meal_entries WHERE id = ?', id);
+}
+
+export async function listWeights(): Promise<WeightEntry[]> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<WeightRow>(
+    `
+      SELECT id, entry_date, weight, created_at, updated_at
+      FROM weight_entries
+      ORDER BY entry_date DESC, id DESC
+    `,
+  );
+
+  return rows.map((row) => ({
+    id: row.id,
+    entryDate: row.entry_date,
+    weight: row.weight,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  }));
+}
+
+export async function saveWeight(input: { entryDate: string; weight: number }) {
+  const db = await getDb();
+  const existing = await db.getFirstAsync<WeightRow>(
+    'SELECT id, entry_date, weight, created_at, updated_at FROM weight_entries WHERE entry_date = ?',
+    input.entryDate,
+  );
+  const updatedAt = nowIso();
+
+  if (existing) {
+    await db.runAsync(
+      'UPDATE weight_entries SET weight = ?, updated_at = ? WHERE entry_date = ?',
+      input.weight,
+      updatedAt,
+      input.entryDate,
+    );
+    return;
+  }
+
+  await db.runAsync(
+    `
+      INSERT INTO weight_entries (entry_date, weight, created_at, updated_at)
+      VALUES (?, ?, ?, ?)
+    `,
+    input.entryDate,
+    input.weight,
+    updatedAt,
+    updatedAt,
+  );
+}
+
+export async function deleteWeight(id: number) {
+  const db = await getDb();
+  await db.runAsync('DELETE FROM weight_entries WHERE id = ?', id);
+}
+
+export type InsertResult = SQLiteRunResult;
