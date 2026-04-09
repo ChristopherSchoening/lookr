@@ -5,11 +5,21 @@
 **Status**: Draft  
 **Input**: User description: "build a cross-platform weight loss app. the main idea is to track points instead of calories. each meal has points associated. the user has a daily limit of points."
 
+## Clarifications
+
+### Session 2026-04-09
+
+- Q: Should v1 use local-only tracking or account-based sync? → A: Local-only profile and history on one device in v1.
+- Q: Should v1 use one fixed daily point limit or support day-specific overrides? → A: Same point limit every day.
+- Q: How should users assign meal points in v1? → A: Enter meal name and points manually, with a nutrition-based points calculator deferred to a later release.
+- Q: What date range should meal logging and editing support? → A: Users can add, edit, and remove meals for today and past days.
+- Q: Which platforms are in scope for v1? → A: iOS, Android, and web, with Android as the mid-term focus.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Set Daily Point Budget and Log Meals (Priority: P1)
 
-A user sets or confirms their daily point limit, logs each meal or snack with an associated point value, and sees how many points remain for the day after each entry.
+A user sets or confirms their daily point limit, manually logs each meal or snack with an associated point value, and sees how many points remain for the day after each entry.
 
 **Why this priority**: This is the core value of the app. Without a daily budget and meal logging, the points-based weight loss workflow does not exist.
 
@@ -18,8 +28,9 @@ A user sets or confirms their daily point limit, logs each meal or snack with an
 **Acceptance Scenarios**:
 
 1. **Given** a user has not yet set a daily point limit, **When** they start using the app, **Then** the app prompts them to set a daily limit before tracking the day.
-2. **Given** a user has a daily point limit, **When** they log a meal with a point value, **Then** the app records the meal and reduces the remaining points for that day by the logged amount.
+2. **Given** a user has a daily point limit, **When** they manually log a meal with a point value, **Then** the app records the meal and reduces the remaining points for that day by the logged amount.
 3. **Given** a user has logged multiple meals in a day, **When** they open the current day summary, **Then** the app shows total points consumed and points remaining for that day.
+4. **Given** a user forgot to log a meal on a prior date, **When** they add that meal to a past day, **Then** the app saves it to that day and recalculates that day's totals.
 
 ---
 
@@ -66,21 +77,24 @@ A user records body weight over time and compares it with adherence to their dai
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST allow a user to create and maintain a personal profile for weight-loss tracking.
-- **FR-002**: The system MUST allow a user to set a daily point limit used as the default budget for each new day.
+- **FR-001**: The system MUST allow a user to create and maintain a local personal profile for weight-loss tracking on a single device in the first release.
+- **FR-002**: The system MUST allow a user to set one daily point limit that applies equally to every day in the first release.
 - **FR-003**: The system MUST allow a user to update their daily point limit, and the updated limit MUST apply to future days unless the user changes it again.
-- **FR-004**: The system MUST allow a user to log meals and snacks with, at minimum, a name, a point value, and a date of consumption.
+- **FR-004**: The system MUST allow a user to manually log meals and snacks with, at minimum, a name, a point value, and a date of consumption.
 - **FR-005**: The system MUST calculate and display, for each tracked day, the total points consumed and the points remaining relative to the user's daily limit.
 - **FR-006**: The system MUST preserve meal entries even when a logged day exceeds the daily point limit.
 - **FR-007**: The system MUST clearly indicate when a user has exceeded their daily point limit.
 - **FR-008**: The system MUST allow a user to edit or delete a previously logged meal entry.
+- **FR-008**: The system MUST allow a user to edit or delete a previously logged meal entry for today or any past tracked day.
 - **FR-009**: The system MUST immediately recalculate daily totals after a meal entry is added, edited, or deleted.
 - **FR-010**: The system MUST provide a day-level history view showing tracked days, total points consumed, remaining or exceeded points, and whether the daily limit was met.
 - **FR-011**: The system MUST allow a user to record body weight entries by date.
 - **FR-012**: The system MUST present weight progress over time in a way that allows a user to compare their progress across recorded dates.
-- **FR-013**: The system MUST retain a user's tracking history so they can review prior meal logs, point totals, and weight entries over time.
+- **FR-013**: The system MUST retain a user's tracking history on the device so they can review prior meal logs, point totals, and weight entries over time.
 - **FR-014**: The system MUST validate that meal point values are positive numeric amounts before saving an entry.
-- **FR-015**: The system MUST provide the same core tracking capabilities on each supported platform.
+- **FR-015**: The system MUST provide the same core tracking capabilities on iOS, Android, and web in the first release.
+- **FR-016**: The first release MUST not require a built-in nutrition-based points calculator to create meal entries.
+- **FR-017**: The system MUST allow a user to add meal entries for the current day and past days, but not future dates.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -98,11 +112,14 @@ A user records body weight over time and compares it with adherence to their dai
 - **SC-003**: 90% of users can correctly identify from the daily summary whether they are within or over their point limit on the first attempt.
 - **SC-004**: At least 70% of active users log meals on 5 or more days within their first 14 days of use.
 - **SC-005**: At least 75% of users who record weight entries can review a clear change-over-time view without assistance.
+- **SC-006**: The primary meal logging and daily summary flow can be completed on Android by 90% of test users without platform-specific assistance.
 
 ## Assumptions
 
 - The app is intended for individual consumers managing personal weight-loss goals rather than for clinicians, coaches, or group programs in the first release.
-- Users will manually assign or confirm point values for meals rather than relying on an automatic food database in the first release.
-- A single daily point limit is sufficient for the first release; separate limits for meals, weekdays, or custom programs are out of scope.
+- The first release stores user profile and tracking history locally on one device and does not require account creation or cross-device sync.
+- Users will manually assign point values for meals in the first release; a nutrition-based points calculator may be added in a later release.
+- A single fixed daily point limit is sufficient for the first release; separate limits for meals, weekdays, specific dates, or custom programs are out of scope.
 - The first release focuses on meal points, daily budget tracking, and weight progress rather than recipes, exercise tracking, or social/community features.
-- Supported platforms are defined by the product team, but users should experience the same essential tracking workflow on each one.
+- Meal entries can be created, edited, or deleted for today and past dates only; future-date planning is out of scope.
+- The first release targets iOS, Android, and web, with Android as the mid-term priority platform for product validation and refinement.
