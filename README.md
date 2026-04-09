@@ -39,6 +39,24 @@ npm run ios
 npm run web
 ```
 
+5. Build and install a standalone app locally:
+
+**Prerequisites for Android local builds:**
+- Install JDK 17 (required for React Native 0.83).
+- Set the `JAVA_HOME` environment variable to point to your JDK 17 installation.
+- Android Studio / Android SDK must be installed.
+- Ensure the Android SDK location is configured. You can do this by setting the `ANDROID_HOME` environment variable, or by creating `android/local.properties` with the path to your SDK (e.g., `sdk.dir=/home/tanome/Android/Sdk`).
+
+```bash
+npx expo run:android --variant release
+```
+
+To install an already built release APK to a USB-connected phone with Developer Mode and USB Debugging enabled:
+
+```bash
+adb install -r android/app/build/outputs/apk/release/app-release.apk
+```
+
 ## Available Scripts
 
 ```bash
