@@ -1,17 +1,36 @@
+import { Platform } from 'react-native';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 import {
   addMeal as addMealRecord,
   deleteMeal as deleteMealRecord,
   deleteWeight as deleteWeightRecord,
+  getE2ESnapshot,
   listMeals,
   listWeights,
   loadProfile,
+  resetE2EState,
   saveProfile as saveProfileRecord,
   saveWeight as saveWeightRecord,
+  seedE2EState,
+  type E2ESeedState,
   updateMeal as updateMealRecord,
 } from '@/lib/db';
 import type { DailySummary, MealEntry, UserProfile, WeightEntry } from '@/lib/types';
+
+type E2EWindowControls = {
+  enabled: boolean;
+  reset: () => Promise<void>;
+  seed: (seed: E2ESeedState) => Promise<void>;
+  snapshot: typeof getE2ESnapshot;
+  refresh: () => Promise<void>;
+};
+
+declare global {
+  interface Window {
+    __LOOKR_E2E__?: E2EWindowControls;
+  }
+}
 
 type AppDataContextValue = {
   isReady: boolean;
@@ -62,6 +81,14 @@ function buildSummaries(meals: MealEntry[], profile: UserProfile | null): DailyS
     });
 }
 
+function isE2EEnabled() {
+  if (Platform.OS !== 'web' || typeof window === 'undefined') {
+    return false;
+  }
+
+  return new URLSearchParams(window.location.search).get('e2e') === '1';
+}
+
 export function AppDataProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -84,6 +111,37 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     void refresh();
   }, []);
+
+  useEffect(() => {
+    if (!isE2EEnabled()) {
+      if (typeof window !== 'undefined') {
+        delete window.__LOOKR_E2E__;
+      }
+      return;
+    }
+
+    const controls: E2EWindowControls = {
+      enabled: true,
+      reset: async () => {
+        await resetE2EState();
+        await refresh();
+      },
+      seed: async (seed) => {
+        await seedE2EState(seed);
+        await refresh();
+      },
+      snapshot: getE2ESnapshot,
+      refresh,
+    };
+
+    window.__LOOKR_E2E__ = controls;
+
+    return () => {
+      if (window.__LOOKR_E2E__ === controls) {
+        delete window.__LOOKR_E2E__;
+      }
+    };
+  }, [profile, meals, weights]);
 
   const summaries = buildSummaries(meals, profile);
 

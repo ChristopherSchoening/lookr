@@ -25,6 +25,8 @@ ios/
 
 # build outputs
 coverage/
+playwright-report/
+test-results/
 *.tsbuildinfo
 
 # local environment

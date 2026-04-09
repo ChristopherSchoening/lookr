@@ -56,3 +56,12 @@ Pull requests should include:
 - Screenshots or recordings for UI changes on each touched platform, or a brief
   justification when one platform's evidence is sufficient.
 - Confirmation that `npm run format`, `npm run lint`, and `npm run typecheck` passed.
+
+## Active Technologies
+
+- TypeScript, React 19, Expo SDK 55 + Expo Router, React Native Web, `expo-sqlite`, Playwright Test (`@playwright/test`) (002-playwright-e2e-tests)
+- Local SQLite database for app state; filesystem artifacts for Playwright reports, traces, screenshots, and a coverage manifest (002-playwright-e2e-tests)
+
+## Recent Changes
+
+- 002-playwright-e2e-tests: Added TypeScript, React 19, Expo SDK 55 + Expo Router, React Native Web, `expo-sqlite`, Playwright Test (`@playwright/test`)

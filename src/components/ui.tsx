@@ -105,18 +105,25 @@ export function PrimaryButton({
   label,
   onPress,
   disabled = false,
+  testID,
+  accessibilityLabel,
 }: {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  testID?: string;
+  accessibilityLabel?: string;
 }) {
   return (
     <Pressable
       className={`items-center rounded-full px-5 py-4 ${
         disabled ? 'bg-[#B9D3C9]' : 'bg-[#00D18E]'
       }`}
+      accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityRole="button"
       disabled={disabled}
       onPress={onPress}
+      testID={testID}
     >
       <Text className="text-[14px] font-bold uppercase tracking-[1.2px] text-[#063423]">
         {label}
@@ -130,17 +137,24 @@ export function SubtleButton({
   onPress,
   active = false,
   disabled = false,
+  testID,
+  accessibilityLabel,
 }: {
   label: string;
   onPress: () => void;
   active?: boolean;
   disabled?: boolean;
+  testID?: string;
+  accessibilityLabel?: string;
 }) {
   return (
     <Pressable
+      accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityRole="button"
       className={`rounded-full px-4 py-3 ${active ? 'bg-[#B4F0CD]' : 'bg-[#E9EEEC]'} ${disabled ? 'opacity-45' : 'opacity-100'}`}
       disabled={disabled}
       onPress={onPress}
+      testID={testID}
     >
       <Text className="text-[13px] font-bold uppercase tracking-[1px] text-[#10201B]">{label}</Text>
     </Pressable>
@@ -173,14 +187,19 @@ export function Metric({
   value,
   note,
   accent = false,
+  testID,
 }: {
   label: string;
   value: string;
   note: string;
   accent?: boolean;
+  testID?: string;
 }) {
   return (
-    <View className={`flex-1 rounded-[26px] px-4 py-4 ${accent ? 'bg-[#FFFFFF]' : 'bg-[#E9EEEC]'}`}>
+    <View
+      className={`flex-1 rounded-[26px] px-4 py-4 ${accent ? 'bg-[#FFFFFF]' : 'bg-[#E9EEEC]'}`}
+      testID={testID}
+    >
       <Text className={`${typography.label} text-[#51605A]`}>{label}</Text>
       <Text className="mt-2 text-[30px] font-extrabold text-[#10201B]">{value}</Text>
       <Text className="mt-1 text-[13px] leading-[18px] text-[#51605A]">{note}</Text>
