@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "inverse-on-surface": "#eff1f2",
+                        "tertiary-container": "#ffa15e",
+                        "surface-tint": "#006c48",
+                        "on-secondary-fixed-variant": "#165037",
+                        "on-primary-fixed": "#002113",
+                        "surface-container": "#eceeef",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#3c4a41",
+                        "surface-bright": "#f8fafb",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "primary-container": "#00d18e",
+                        "secondary": "#31694e",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#b4f0cd",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e1e3e4",
+                        "surface-dim": "#d8dadb",
+                        "outline-variant": "#bacabf",
+                        "background": "#f8fafb",
+                        "on-primary": "#ffffff",
+                        "primary": "#006c48",
+                        "outline": "#6b7b70",
+                        "surface-container-high": "#e6e8e9",
+                        "inverse-primary": "#2fe19c",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#99d3b2",
+                        "on-tertiary-container": "#743700",
+                        "tertiary": "#934b0c",
+                        "secondary-fixed": "#b4f0cd",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container-low": "#f2f4f5",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#002113",
+                        "on-tertiary-fixed": "#311300",
+                        "on-secondary-container": "#386f54",
+                        "on-primary-container": "#005336",
+                        "on-primary-fixed-variant": "#005235",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8fafb",
+                        "primary-fixed-dim": "#2fe19c",
+                        "on-background": "#191c1d",
+                        "primary-fixed": "#58feb7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#F8FAFB]/80 backdrop-blur-md">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#00D18E]" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+<span class="font-headline font-extrabold text-2xl text-[#006C48] tracking-tighter">lookr <span class="font-medium text-slate-400 ml-1 text-lg">History</span></span>
+</div>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-full font-label text-[10px] font-bold uppercase tracking-widest hover:opacity-80 transition-opacity active:scale-95 duration-150 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                Add to Past
+            </button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+<!-- Editorial Filter Section -->
+<div class="mb-10">
+<h2 class="font-headline text-3xl font-bold tracking-tight mb-6">Archive</h2>
+<div class="flex gap-2">
+<button class="bg-secondary-fixed text-on-secondary-fixed-variant px-5 py-2 rounded-full text-xs font-bold font-label tracking-wide">Last 7 Days</button>
+<button class="bg-surface-container-high text-on-surface-variant px-5 py-2 rounded-full text-xs font-bold font-label tracking-wide hover:bg-surface-container-highest transition-colors">Last 30 Days</button>
+<button class="bg-surface-container-high text-on-surface-variant px-5 py-2 rounded-full text-xs font-bold font-label tracking-wide hover:bg-surface-container-highest transition-colors">Monthly</button>
+</div>
+</div>
+<!-- History Feed: Grouped by Date -->
+<div class="space-y-12">
+<!-- Yesterday -->
+<section>
+<div class="flex items-baseline justify-between mb-4">
+<h3 class="font-label text-xs uppercase tracking-[0.2em] text-slate-400 font-bold">Yesterday</h3>
+<span class="text-[10px] font-medium text-slate-400">OCT 23, 2023</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between min-h-[160px] hover:bg-surface-container transition-colors">
+<div>
+<span class="font-label text-[10px] text-primary uppercase tracking-widest block mb-2">Breakfast</span>
+<h4 class="font-headline text-xl font-bold leading-tight">Avocado Toast</h4>
+<p class="text-on-surface-variant text-sm mt-1">Sourdough, chili flakes, poached egg</p>
+</div>
+<div class="flex items-center gap-1 mt-4">
+<div class="h-1 w-8 bg-primary rounded-full"></div>
+<span class="text-xs font-bold">420 kcal</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between min-h-[160px] hover:bg-surface-container transition-colors">
+<div>
+<span class="font-label text-[10px] text-primary uppercase tracking-widest block mb-2">Lunch</span>
+<h4 class="font-headline text-xl font-bold leading-tight">Grilled Chicken Bowl</h4>
+<p class="text-on-surface-variant text-sm mt-1">Quinoa, kale, lemon tahini dressing</p>
+</div>
+<div class="flex items-center gap-1 mt-4">
+<div class="h-1 w-12 bg-primary rounded-full"></div>
+<span class="text-xs font-bold">680 kcal</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Tuesday -->
+<section>
+<div class="flex items-baseline justify-between mb-4">
+<h3 class="font-label text-xs uppercase tracking-[0.2em] text-slate-400 font-bold">Tuesday</h3>
+<span class="text-[10px] font-medium text-slate-400">OCT 22, 2023</span>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/15 p-8 rounded-xl flex flex-col md:flex-row items-center gap-8">
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364.4" stroke-dashoffset="100" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-extrabold tracking-tighter">72%</span>
+<span class="font-label text-[8px] uppercase tracking-widest">Efficiency</span>
+</div>
+</div>
+<div class="flex-1">
+<span class="font-label text-[10px] text-primary uppercase tracking-widest block mb-1">Daily Summary</span>
+<h4 class="font-headline text-2xl font-bold mb-3 tracking-tight">Optimal Performance</h4>
+<div class="flex flex-wrap gap-6">
+<div>
+<span class="block text-slate-400 text-[10px] uppercase font-bold tracking-widest">Points Used</span>
+<span class="text-xl font-bold">24 <span class="text-sm font-medium text-slate-400">/ 32</span></span>
+</div>
+<div>
+<span class="block text-slate-400 text-[10px] uppercase font-bold tracking-widest">Steps</span>
+<span class="text-xl font-bold">12,482</span>
+</div>
+<div>
+<span class="block text-slate-400 text-[10px] uppercase font-bold tracking-widest">Sleep</span>
+<span class="text-xl font-bold">7h 20m</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Monday (Alert State) -->
+<section>
+<div class="flex items-baseline justify-between mb-4">
+<h3 class="font-label text-xs uppercase tracking-[0.2em] text-slate-400 font-bold">Monday</h3>
+<span class="text-[10px] font-medium text-slate-400">OCT 21, 2023</span>
+</div>
+<div class="bg-error-container/30 p-6 rounded-xl flex items-start gap-4">
+<div class="bg-error text-on-error p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div>
+<h4 class="font-headline text-lg font-bold text-on-error-container tracking-tight">Caloric Limit Exceeded</h4>
+<p class="text-on-surface-variant text-sm mt-1 mb-4 leading-relaxed">
+                            Intake was 12% over your recommended daily target. Suggesting a 45-minute active recovery walk today.
+                        </p>
+<div class="flex gap-4">
+<div class="text-xs"><span class="font-bold">Target:</span> 2100</div>
+<div class="text-xs font-bold text-error"><span class="font-bold text-on-surface-variant">Actual:</span> 2352</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Load More -->
+<div class="mt-16 flex justify-center">
+<button class="flex flex-col items-center gap-2 group">
+<span class="font-label text-[10px] font-extrabold uppercase tracking-[0.3em] text-slate-400 group-hover:text-primary transition-colors">Load Older Entries</span>
+<span class="material-symbols-outlined text-slate-300 animate-bounce" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-[#F8FAFB]/80 backdrop-blur-md shadow-[0px_-12px_32px_rgba(25,28,29,0.04)] flex justify-around items-center px-4 py-3 pb-safe">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 hover:text-[#00D18E] transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="calendar_today">calendar_today</span>
+<span class="font-manrope font-medium text-[10px] uppercase tracking-widest">Today</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 hover:text-[#00D18E] transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
+<span class="font-manrope font-medium text-[10px] uppercase tracking-widest">Log</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#006C48] dark:text-[#00D18E] font-bold active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="history" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-manrope font-bold text-[10px] uppercase tracking-widest">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 hover:text-[#00D18E] transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-manrope font-medium text-[10px] uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+</body></html>
