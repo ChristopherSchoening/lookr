@@ -45,7 +45,7 @@ export default function DashboardScreen() {
 
   return (
     <Screen>
-      <View className="gap-5">
+      <View className="gap-5" testID="dashboard-screen">
         <AppHeader
           eyebrow="The clinical curator"
           title="Track points with less friction and more signal."
@@ -53,7 +53,7 @@ export default function DashboardScreen() {
         />
 
         {!appData.profile ? (
-          <Card tone="emerald" className="gap-4">
+          <Card tone="emerald" className="gap-4" testID="profile-setup-card">
             <SectionTitle
               eyebrow="Setup"
               title="Set your fixed daily point budget."
@@ -65,18 +65,26 @@ export default function DashboardScreen() {
               onChangeText={setDailyLimitInput}
               placeholder="24"
               keyboardType="numeric"
+              testID="daily-limit-input"
             />
             {profileError ? <InlineMessage message={profileError} tone="danger" /> : null}
-            <PrimaryButton label="Start tracking" onPress={() => void createProfile()} />
+            <PrimaryButton
+              label="Start tracking"
+              onPress={() => void createProfile()}
+              testID="start-tracking-button"
+            />
           </Card>
         ) : (
           <>
-            <Card tone="emerald" className="gap-4">
+            <Card tone="emerald" className="gap-4" testID="daily-summary-card">
               <View className="gap-1">
-                <Text className="text-[13px] font-bold uppercase tracking-[1.6px] text-[#9BE8C9]">
+                <Text
+                  className="text-[13px] font-bold uppercase tracking-[1.6px] text-[#9BE8C9]"
+                  testID="selected-date-label"
+                >
                   {formatDateLabel(selectedDate)}
                 </Text>
-                <Text className="text-[16px] leading-[22px] text-[#D7EEE5]">
+                <Text className="text-[16px] leading-[22px] text-[#D7EEE5]" testID="summary-status">
                   {summary.status === 'over'
                     ? `You are ${overBy} points over today.`
                     : summary.status === 'empty'
@@ -85,7 +93,10 @@ export default function DashboardScreen() {
                 </Text>
               </View>
 
-              <Text className="text-[56px] font-extrabold leading-[58px] text-white">
+              <Text
+                className="text-[56px] font-extrabold leading-[58px] text-white"
+                testID="remaining-points-value"
+              >
                 {summary.remainingPoints}
               </Text>
 
@@ -94,17 +105,19 @@ export default function DashboardScreen() {
                   label="Consumed"
                   value={`${summary.consumedPoints}`}
                   note={`${summary.mealCount} logged meals`}
+                  testID="consumed-points-metric"
                 />
                 <Metric
                   label="Daily limit"
                   value={`${summary.dailyLimit}`}
                   note="Fixed across all days"
                   accent
+                  testID="daily-limit-metric"
                 />
               </View>
             </Card>
 
-            <Card tone="low" className="gap-4">
+            <Card tone="low" className="gap-4" testID="date-focus-card">
               <SectionTitle
                 eyebrow="Date focus"
                 title="Review today or correct a prior day."
@@ -124,7 +137,7 @@ export default function DashboardScreen() {
         )}
 
         {appData.profile ? (
-          <Card tone="lowest" className="gap-3">
+          <Card tone="lowest" className="gap-3" testID="product-edge-card">
             <SectionTitle
               eyebrow="Product edge"
               title="Manual in now, calculator later."

@@ -27,7 +27,7 @@ export default function HistoryScreen() {
 
   return (
     <Screen>
-      <View className="gap-5">
+      <View className="gap-5" testID="history-screen">
         <AppHeader
           eyebrow="History"
           title="Revisit tracked days without losing the signal."
@@ -48,10 +48,15 @@ export default function HistoryScreen() {
                 body="Choose a day to inspect the meal list and make corrections."
               />
               {appData.summaries.map((summary) => (
-                <Pressable key={summary.date} onPress={() => setSelectedDate(summary.date)}>
+                <Pressable
+                  key={summary.date}
+                  onPress={() => setSelectedDate(summary.date)}
+                  testID={`history-summary-trigger-${summary.date}`}
+                >
                   <Card
                     tone={selectedDate === summary.date ? 'emerald' : 'lowest'}
                     className="gap-3"
+                    testID={`history-summary-card-${summary.date}`}
                   >
                     <View className="flex-row items-start justify-between gap-3">
                       <View className="gap-1">
@@ -59,6 +64,7 @@ export default function HistoryScreen() {
                           className={`text-[13px] font-bold uppercase tracking-[1.6px] ${
                             selectedDate === summary.date ? 'text-[#9BE8C9]' : 'text-[#51605A]'
                           }`}
+                          testID={`history-summary-label-${summary.date}`}
                         >
                           {formatDateLabel(summary.date)}
                         </Text>
@@ -66,12 +72,16 @@ export default function HistoryScreen() {
                           className={`text-[23px] font-bold leading-[28px] ${
                             selectedDate === summary.date ? 'text-white' : 'text-[#10201B]'
                           }`}
+                          testID={`history-summary-title-${summary.date}`}
                         >
                           {formatLongDate(summary.date)}
                         </Text>
                       </View>
                       <View className="rounded-full bg-white/90 px-4 py-3">
-                        <Text className="text-[16px] font-extrabold text-[#006C48]">
+                        <Text
+                          className="text-[16px] font-extrabold text-[#006C48]"
+                          testID={`history-summary-points-${summary.date}`}
+                        >
                           {summary.consumedPoints}/{summary.dailyLimit}
                         </Text>
                       </View>
@@ -80,6 +90,7 @@ export default function HistoryScreen() {
                       className={`text-[14px] leading-[20px] ${
                         selectedDate === summary.date ? 'text-[#D7EEE5]' : 'text-[#51605A]'
                       }`}
+                      testID={`history-summary-status-${summary.date}`}
                     >
                       {summary.status === 'over'
                         ? `${Math.abs(summary.remainingPoints)} points over limit`

@@ -19,13 +19,19 @@
 npm install
 ```
 
-2. Start the development server:
+2. Install the Playwright browser used by the web regression suite:
+
+```bash
+npx playwright install chromium
+```
+
+3. Start the development server:
 
 ```bash
 npm start
 ```
 
-3. Run on a target platform:
+4. Run on a target platform:
 
 ```bash
 npm run android
@@ -40,6 +46,11 @@ npm start
 npm run android
 npm run ios
 npm run web
+npm run e2e
+npm run e2e:headed
+npm run e2e:us1
+npm run e2e:us2
+npm run e2e:coverage
 npm run lint
 npm run lint:fix
 npm run format
@@ -70,8 +81,31 @@ Before committing, run:
 npm run format
 npm run lint
 npm run typecheck
+npm run e2e:coverage
 ```
 
 For user-facing changes, also verify the touched flow behaves consistently on
 the platforms you changed and capture screenshots or recordings when the UI
 meaningfully changes.
+
+For web regression coverage changes, also run the relevant Playwright slice:
+
+```bash
+npm run e2e
+# or a focused story slice
+npm run e2e:us1
+npm run e2e:us2
+```
+
+## E2E Coverage Rule
+
+The web Playwright harness is the release gate for the active requirements in
+[`specs/001-points-tracking/spec.md`](/home/tanome/dev/lookr/specs/001-points-tracking/spec.md).
+
+- New or materially changed in-scope acceptance scenarios must update
+  [`playwright/coverage.manifest.json`](/home/tanome/dev/lookr/playwright/coverage.manifest.json)
+  in the same change set.
+- Covered scenarios should land with Playwright automation. If a scenario is not
+  automated yet, it must be marked as `deferred` with a reason in the manifest.
+- `npm run e2e:coverage` validates that every active acceptance scenario has a
+  traceable manifest entry before work is treated as complete.

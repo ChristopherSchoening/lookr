@@ -62,14 +62,14 @@ export default function ProgressScreen() {
 
   return (
     <Screen>
-      <View className="gap-5">
+      <View className="gap-5" testID="progress-screen">
         <AppHeader
           eyebrow="Progress"
           title="Weight context, not daily panic."
           body="Record body weight over time and compare it with how often you stay inside the point budget."
         />
 
-        <Card tone="low" className="gap-4">
+        <Card tone="low" className="gap-4" testID="progress-overview-card">
           <SectionTitle
             eyebrow="Overview"
             title="Weight and adherence at a glance"
@@ -81,18 +81,20 @@ export default function ProgressScreen() {
               value={latestWeight ? `${latestWeight.weight}` : '—'}
               note={latestWeight ? formatDateLabel(latestWeight.entryDate) : 'No entries yet'}
               accent
+              testID="latest-weight-metric"
             />
             <Metric
               label="Adherence"
               value={trackedDays > 0 ? `${withinDays}/${trackedDays}` : '—'}
               note="Days within point limit"
+              testID="adherence-metric"
             />
           </View>
           <View className="rounded-[24px] bg-[#FFFFFF] px-4 py-4">
             <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
               Weight change
             </Text>
-            <Text className="mt-2 text-[28px] font-extrabold text-[#10201B]">
+            <Text className="mt-2 text-[28px] font-extrabold text-[#10201B]" testID="weight-delta">
               {latestWeight && oldestWeight
                 ? `${weightDelta > 0 ? '+' : ''}${weightDelta.toFixed(1)}`
                 : 'Add entries'}
@@ -105,7 +107,7 @@ export default function ProgressScreen() {
           </View>
         </Card>
 
-        <Card tone="lowest" className="gap-4">
+        <Card tone="lowest" className="gap-4" testID="record-weight-card">
           <SectionTitle
             eyebrow="Record weight"
             title="One entry per day"
@@ -119,10 +121,15 @@ export default function ProgressScreen() {
             placeholder="82.4"
             keyboardType="decimal-pad"
             hint="Use your preferred unit consistently for this MVP."
+            testID="weight-input"
           />
           {error ? <InlineMessage message={error} tone="danger" /> : null}
           {message ? <InlineMessage message={message} /> : null}
-          <PrimaryButton label="Save weight" onPress={() => void submitWeight()} />
+          <PrimaryButton
+            label="Save weight"
+            onPress={() => void submitWeight()}
+            testID="save-weight-button"
+          />
         </Card>
 
         {sortedWeights.length === 0 ? (
@@ -132,7 +139,7 @@ export default function ProgressScreen() {
           />
         ) : (
           <>
-            <Card tone="low" className="gap-4">
+            <Card tone="low" className="gap-4" testID="weight-trend-card">
               <SectionTitle
                 eyebrow="Trend"
                 title="Recent weight curve"
@@ -147,6 +154,7 @@ export default function ProgressScreen() {
                       <View
                         className="rounded-t-[20px] bg-[#00D18E]"
                         style={{ height: chartHeight(entry.weight) }}
+                        testID={`weight-bar-${entry.entryDate}`}
                       />
                       <Text className="text-center text-[12px] font-bold uppercase tracking-[1px] text-[#51605A]">
                         {formatDateLabel(entry.entryDate)}
@@ -163,7 +171,12 @@ export default function ProgressScreen() {
                 body="Use the newest entries to check whether the points rhythm is moving in the right direction."
               />
               {sortedWeights.map((entry) => (
-                <Card key={entry.id} tone="lowest" className="gap-3">
+                <Card
+                  key={entry.id}
+                  tone="lowest"
+                  className="gap-3"
+                  testID={`weight-entry-${entry.entryDate}`}
+                >
                   <View className="flex-row items-start justify-between gap-3">
                     <View className="gap-1">
                       <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
@@ -174,7 +187,10 @@ export default function ProgressScreen() {
                       </Text>
                     </View>
                     <View className="rounded-full bg-[#F2F4F5] px-4 py-3">
-                      <Text className="text-[18px] font-extrabold text-[#006C48]">
+                      <Text
+                        className="text-[18px] font-extrabold text-[#006C48]"
+                        testID={`weight-value-${entry.entryDate}`}
+                      >
                         {entry.weight}
                       </Text>
                     </View>
@@ -182,6 +198,7 @@ export default function ProgressScreen() {
                   <Pressable
                     className="self-start rounded-full bg-[#F2F4F5] px-4 py-3"
                     onPress={() => void appData.deleteWeight(entry.id)}
+                    testID={`delete-weight-${entry.entryDate}`}
                   >
                     <Text className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B]">
                       Delete entry

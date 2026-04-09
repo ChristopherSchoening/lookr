@@ -1,0 +1,75 @@
+{
+  "specs": [
+    {
+      "featureId": "001-points-tracking",
+      "featureTitle": "Points Tracking Weight Loss",
+      "surface": "web",
+      "lastReviewedAt": "2026-04-09",
+      "scenarios": [
+        {
+          "storyId": "US1",
+          "acceptanceScenarioRef": "US1-AS1",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "dashboard-initial-setup",
+          "notes": "Clean-state onboarding is exercised from a blank local profile."
+        },
+        {
+          "storyId": "US1",
+          "acceptanceScenarioRef": "US1-AS2",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "dashboard-initial-setup",
+          "notes": "Meal logging and over-limit behavior are both asserted on the dashboard flow."
+        },
+        {
+          "storyId": "US1",
+          "acceptanceScenarioRef": "US1-AS3",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "dashboard-initial-setup",
+          "notes": "Consumed and remaining totals are verified after each saved meal."
+        },
+        {
+          "storyId": "US1",
+          "acceptanceScenarioRef": "US1-AS4",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "dashboard-backfill-past-day",
+          "notes": "Past-day backfilling is checked independently of the current-day summary."
+        },
+        {
+          "storyId": "US2",
+          "acceptanceScenarioRef": "US2-AS1",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "history-edit-delete-recalculates",
+          "notes": "History coverage asserts meal name, time, and point value for the selected day."
+        },
+        {
+          "storyId": "US2",
+          "acceptanceScenarioRef": "US2-AS2",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "history-edit-delete-recalculates",
+          "notes": "Editing and deletion both verify same-day recalculation while other days remain unchanged."
+        },
+        {
+          "storyId": "US2",
+          "acceptanceScenarioRef": "US2-AS3",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "history-recent-day-summaries",
+          "notes": "Recent history summaries verify consumed totals, remaining budget, and within-limit status."
+        },
+        {
+          "storyId": "US3",
+          "acceptanceScenarioRef": "US3-AS1",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "progress-weight-trend",
+          "notes": "Progress coverage verifies saved weight entries and the rendered trend surface."
+        },
+        {
+          "storyId": "US3",
+          "acceptanceScenarioRef": "US3-AS2",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "progress-weight-trend",
+          "notes": "Adherence context is asserted alongside the weight trend on the progress screen."
+        }
+      ]
+    }
+  ]
+}

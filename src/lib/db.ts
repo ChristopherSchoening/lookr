@@ -1,4 +1,5 @@
 import { openDatabaseAsync, type SQLiteDatabase, type SQLiteRunResult } from 'expo-sqlite';
+import { Platform } from 'react-native';
 
 import { currentTimeLabel, isFutureDate, nowIso } from '@/lib/date';
 import type { MealEntry, UserProfile, WeightEntry } from '@/lib/types';
@@ -26,6 +27,28 @@ type WeightRow = {
   weight: number;
   created_at: string;
   updated_at: string;
+};
+
+export type E2ESeedMeal = {
+  mealName: string;
+  points: number;
+  entryDate: string;
+  entryTime: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type E2ESeedWeight = {
+  entryDate: string;
+  weight: number;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type E2ESeedState = {
+  profile?: { dailyPointsLimit: number } | null;
+  meals?: E2ESeedMeal[];
+  weights?: E2ESeedWeight[];
 };
 
 async function getDb() {
@@ -61,6 +84,50 @@ async function getDb() {
   `);
 
   return db;
+}
+
+function assertWebE2EAccess() {
+  if (Platform.OS !== 'web' || typeof window === 'undefined') {
+    throw new Error('E2E state controls are only available on web.');
+  }
+}
+
+async function insertMealSeed(db: SQLiteDatabase, meal: E2ESeedMeal) {
+  const createdAt = meal.createdAt ?? nowIso();
+  const updatedAt = meal.updatedAt ?? createdAt;
+  await db.runAsync(
+    `
+      INSERT INTO meal_entries (
+        meal_name,
+        points,
+        entry_date,
+        entry_time,
+        created_at,
+        updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `,
+    meal.mealName.trim(),
+    meal.points,
+    meal.entryDate,
+    meal.entryTime,
+    createdAt,
+    updatedAt,
+  );
+}
+
+async function insertWeightSeed(db: SQLiteDatabase, weight: E2ESeedWeight) {
+  const createdAt = weight.createdAt ?? nowIso();
+  const updatedAt = weight.updatedAt ?? createdAt;
+  await db.runAsync(
+    `
+      INSERT INTO weight_entries (entry_date, weight, created_at, updated_at)
+      VALUES (?, ?, ?, ?)
+    `,
+    weight.entryDate,
+    weight.weight,
+    createdAt,
+    updatedAt,
+  );
 }
 
 export async function loadProfile(): Promise<UserProfile | null> {
@@ -233,3 +300,45 @@ export async function deleteWeight(id: number) {
 }
 
 export type InsertResult = SQLiteRunResult;
+
+export async function resetE2EState() {
+  assertWebE2EAccess();
+  const db = await getDb();
+  await db.execAsync(`
+    DELETE FROM meal_entries;
+    DELETE FROM weight_entries;
+    DELETE FROM user_profile;
+    DELETE FROM sqlite_sequence WHERE name IN ('meal_entries', 'weight_entries');
+  `);
+}
+
+export async function seedE2EState(seed: E2ESeedState) {
+  assertWebE2EAccess();
+  await resetE2EState();
+
+  if (seed.profile) {
+    await saveProfile(seed.profile.dailyPointsLimit);
+  }
+
+  const db = await getDb();
+
+  for (const meal of seed.meals ?? []) {
+    await insertMealSeed(db, meal);
+  }
+
+  for (const weight of seed.weights ?? []) {
+    await insertWeightSeed(db, weight);
+  }
+}
+
+export async function getE2ESnapshot() {
+  assertWebE2EAccess();
+
+  const [profile, meals, weights] = await Promise.all([loadProfile(), listMeals(), listWeights()]);
+
+  return {
+    profile,
+    meals,
+    weights,
+  };
+}

@@ -96,19 +96,20 @@ export function MealEditor({
   }
 
   return (
-    <View className="gap-4">
+    <View className="gap-4" testID={`meal-editor-${date}`}>
       <SectionTitle
         eyebrow="Meal logging"
         title={`Manual points for ${formatDateLabel(date).toLowerCase()}`}
         body="Meals stay editable for today and prior days. Future planning is intentionally excluded."
       />
 
-      <Card tone="lowest" className="gap-4">
+      <Card tone="lowest" className="gap-4" testID="meal-editor-form">
         <Field
           label={editing ? 'Edit meal name' : 'Meal name'}
           value={mealName}
           onChangeText={setMealName}
           placeholder="Greek yogurt bowl"
+          testID="meal-name-input"
         />
         <Field
           label="Points"
@@ -117,6 +118,7 @@ export function MealEditor({
           placeholder="7"
           keyboardType="numeric"
           hint="Manual points only in v1."
+          testID="meal-points-input"
         />
         {error ? <InlineMessage message={error} tone="danger" /> : null}
         {message ? <InlineMessage message={message} /> : null}
@@ -125,6 +127,7 @@ export function MealEditor({
             <PrimaryButton
               label={editing ? 'Save changes' : 'Add meal'}
               onPress={() => void submit()}
+              testID="save-meal-button"
             />
           </View>
           {editing ? (
@@ -136,6 +139,7 @@ export function MealEditor({
                 setPoints('');
                 setError('');
               }}
+              testID="cancel-meal-edit-button"
             />
           ) : null}
         </View>
@@ -149,18 +153,27 @@ export function MealEditor({
       ) : (
         <View className="gap-3">
           {meals.map((meal) => (
-            <Card key={meal.id} tone="low" className="gap-3">
+            <Card key={meal.id} tone="low" className="gap-3" testID={`meal-entry-${meal.id}`}>
               <View className="flex-row items-start justify-between gap-3">
                 <View className="flex-1 gap-1">
-                  <Text className="text-[13px] font-bold uppercase tracking-[1.3px] text-[#51605A]">
+                  <Text
+                    className="text-[13px] font-bold uppercase tracking-[1.3px] text-[#51605A]"
+                    testID={`meal-time-${meal.id}`}
+                  >
                     {meal.entryTime}
                   </Text>
-                  <Text className="text-[22px] font-bold leading-[26px] text-[#10201B]">
+                  <Text
+                    className="text-[22px] font-bold leading-[26px] text-[#10201B]"
+                    testID={`meal-name-${meal.id}`}
+                  >
                     {meal.mealName}
                   </Text>
                 </View>
                 <View className="rounded-full bg-[#FFFFFF] px-4 py-3">
-                  <Text className="text-[18px] font-extrabold text-[#006C48]">
+                  <Text
+                    className="text-[18px] font-extrabold text-[#006C48]"
+                    testID={`meal-points-${meal.id}`}
+                  >
                     {meal.points} pt
                   </Text>
                 </View>
@@ -177,10 +190,12 @@ export function MealEditor({
                     setError('');
                     setMessage('');
                   }}
+                  testID={`edit-meal-${meal.id}`}
                 />
                 <Pressable
                   className="rounded-full bg-[#FFFFFF] px-4 py-3"
                   onPress={() => void remove(meal.id)}
+                  testID={`delete-meal-${meal.id}`}
                 >
                   <Text className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B]">
                     Delete
