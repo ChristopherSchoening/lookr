@@ -7,6 +7,11 @@
     "icon": "./assets/images/icon.png",
     "scheme": "lookr",
     "userInterfaceStyle": "light",
+    "androidNavigationBar": {
+      "backgroundColor": "#F8FAFB",
+      "barStyle": "dark-content",
+      "enforceContrast": false
+    },
     "ios": {
       "icon": "./assets/expo.icon"
     },
