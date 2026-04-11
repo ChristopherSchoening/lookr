@@ -127,7 +127,6 @@ export function MealEditor({
           onChangeText={setPoints}
           placeholder="7"
           keyboardType="numeric"
-          hint="Manual points only in v1."
           testID="meal-points-input"
         />
         {error ? <InlineMessage message={error} tone="danger" /> : null}
