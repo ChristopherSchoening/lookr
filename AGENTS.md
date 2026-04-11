@@ -4,7 +4,10 @@
 
 Core app code lives in `src/app`, using Expo Router file-based routes. The current entry screen is `src/app/index.tsx`, and the root router layout is `src/app/_layout.tsx`. Shared static assets live in `assets/`, Expo app configuration is in `app.json`, and styling/tooling setup is at the repo root: `global.css`, `tailwind.config.js`, `babel.config.js`, and `metro.config.js`.
 
-This repository does not have a test suite yet. When adding tests, place them near the feature they cover or in a local `__tests__` directory under `src/`.
+Playwright end-to-end coverage is active in this repository. Prefer extending
+existing Playwright coverage for small behavior changes. When adding non-E2E
+tests, place them near the feature they cover or in a local `__tests__`
+directory under `src/`.
 
 ## Build, Test, and Development Commands
 
@@ -47,12 +50,16 @@ Only add dependencies whose licenses are usable in an MIT-licensed project. Do n
 
 ## Testing Guidelines
 
-There is no configured test runner yet. Until one is added, treat `npm run lint`
-and `npm run typecheck` as required checks. Every feature change must still
-document its verification approach, including manual acceptance for the affected
-user flow. After making changes, `npm run lint` must pass. If you add a test
-framework, document the command in `README.md` and keep test filenames clear,
-such as `feature-name.test.tsx`.
+Playwright is the active user-flow harness. Treat `npm run lint`,
+`npm run typecheck`, and `npm run e2e:coverage` as required checks for behavior
+changes. Every feature or fix must document its verification approach and add
+or update at least one test for the changed behavior. Acceptance criteria for
+user-facing flows should be covered by Playwright unless an approved gap is
+documented in the coverage manifest. For small changes, prefer extending
+existing tests before adding new suites or helpers. After making changes,
+`npm run lint` must pass. If you add another test framework, document the
+command in `README.md` and keep test filenames clear, such as
+`feature-name.test.tsx`.
 
 ## Commit & Pull Request Guidelines
 

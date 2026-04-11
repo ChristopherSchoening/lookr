@@ -7,15 +7,18 @@ description: 'Task list template for feature implementation'
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: Verification tasks are REQUIRED for every user story that changes
-user-visible behavior, business rules, or shared workflows. Include automated
-checks when the project supports them and explicit manual acceptance steps for
-all affected stories.
+**Tests**: Verification tasks are REQUIRED for every user story or fix that
+changes user-visible behavior, business rules, or shared workflows. Include
+automated checks when the project supports them and explicit manual acceptance
+steps for all affected stories. Acceptance criteria for user-facing flows MUST
+have traceable end-to-end coverage or an approved documented gap.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 Implementation tasks SHOULD favor extending existing files or modules when that
 keeps the design readable; introduce new files only when they improve clarity
 or reuse enough to justify the added surface area.
+Small changes SHOULD extend existing tests before adding new test files,
+helpers, or suites.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -189,6 +192,11 @@ Examples of foundational tasks (adjust based on your project):
 
 - Verification tasks MUST be defined before implementation begins
 - Automated tests MUST be written first when a suitable harness exists
+- Each feature or fix MUST add or update at least one test tied to the changed
+  behavior
+- Acceptance criteria for user-facing work MUST map to end-to-end coverage or a
+  documented approved gap
+- Small changes SHOULD extend existing tests before creating parallel coverage
 - Prefer extending existing code before adding parallel modules or abstractions
 - Models before services
 - Services before endpoints

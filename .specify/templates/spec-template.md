@@ -33,6 +33,9 @@
 1. **Given** [initial state], **When** [action], **Then** [expected outcome]
 2. **Given** [initial state], **When** [action], **Then** [expected outcome]
 
+**Automated Proof**: [Name the end-to-end test, manifest entry, or existing
+test that will be extended to cover these acceptance scenarios]
+
 ---
 
 ### User Story 2 - [Brief Title] (Priority: P2)
@@ -47,6 +50,9 @@
 
 1. **Given** [initial state], **When** [action], **Then** [expected outcome]
 
+**Automated Proof**: [Name the end-to-end test, manifest entry, or existing
+test that will be extended to cover these acceptance scenarios]
+
 ---
 
 ### User Story 3 - [Brief Title] (Priority: P3)
@@ -60,6 +66,9 @@
 **Acceptance Scenarios**:
 
 1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+
+**Automated Proof**: [Name the end-to-end test, manifest entry, or existing
+test that will be extended to cover these acceptance scenarios]
 
 ---
 
@@ -83,7 +92,8 @@
   Fill them out with the right functional requirements. Include explicit
   consistency requirements when users must experience the same workflow or
   feedback across supported platforms. Note when the feature should extend
-  existing flows or modules instead of introducing new surface area.
+  existing flows or modules instead of introducing new surface area. Include
+  when existing tests should be extended instead of adding parallel coverage.
 -->
 
 ### Functional Requirements

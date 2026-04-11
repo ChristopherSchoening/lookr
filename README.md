@@ -114,6 +114,10 @@ For user-facing changes, also verify the touched flow behaves consistently on
 the platforms you changed and capture screenshots or recordings when the UI
 meaningfully changes.
 
+Each feature or fix must add or update at least one test tied to the changed
+behavior. For small behavior changes, extend the closest existing test before
+adding a new test file or helper.
+
 For web regression coverage changes, also run the relevant Playwright slice:
 
 ```bash
@@ -128,6 +132,8 @@ npm run e2e:us2
 The web Playwright harness is the release gate for the active requirements in
 [`specs/001-points-tracking/spec.md`](/home/tanome/dev/lookr/specs/001-points-tracking/spec.md).
 
+- User-facing acceptance criteria must have a traceable Playwright proof or a
+  documented deferred reason in the coverage manifest.
 - New or materially changed in-scope acceptance scenarios must update
   [`playwright/coverage.manifest.json`](/home/tanome/dev/lookr/playwright/coverage.manifest.json)
   in the same change set.

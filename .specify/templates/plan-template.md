@@ -33,6 +33,10 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Verification strategy defined before implementation begins, including
   automated checks and manual acceptance for each affected user story
+- Acceptance criteria mapped to concrete automated proof, with end-to-end
+  coverage called out for user-facing flows
+- Every feature or fix updates or adds at least one test; small changes prefer
+  extending existing tests before adding new suites
 - UX consistency review defined for all touched platforms, including any
   intentional platform-specific deviations with rationale
 - Required repository quality commands identified and scheduled in the plan
