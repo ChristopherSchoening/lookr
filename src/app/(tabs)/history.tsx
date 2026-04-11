@@ -95,7 +95,7 @@ export default function HistoryScreen() {
             </View>
 
             <MealEditor
-              body="Open the shared modal to edit or add meals for this day."
+              body="Edit, add, or remove meals for this day."
               date={selectedDate}
               emptyBody="Pick another day or add the first meal here."
               emptyTitle="No meals on this day"

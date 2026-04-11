@@ -17,10 +17,22 @@ test.describe('User Story 1: core dashboard coverage', () => {
     const dashboard = new DashboardPage(appPage);
     await dashboard.goto();
     await dashboard.expectHomeTabChrome();
-
     await expect(appPage.getByTestId('profile-setup-card')).toBeVisible();
+    await expect(appPage.getByText('Add, edit, or remove meals for this day.')).toHaveCount(0);
+    await expect(
+      appPage.getByText('Add in modal, then edit or remove meals for this day.'),
+    ).toHaveCount(0);
+    await expect(appPage.getByText('Keep each day accurate with quick meal changes.')).toHaveCount(
+      0,
+    );
+    await expect(appPage.getByText('Use one shared modal for add and edit.')).toHaveCount(0);
+
     await dashboard.setDailyLimit(24);
     await dashboard.expectRemovedCopy();
+    await expect(appPage.getByText('Add, edit, or remove meals for this day.')).toBeVisible();
+    await expect(
+      appPage.getByText('Keep each day accurate with quick meal changes.'),
+    ).toBeVisible();
 
     await dashboard.expectRemainingPoints(24);
     await dashboard.openMealModal();

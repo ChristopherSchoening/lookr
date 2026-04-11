@@ -157,7 +157,7 @@ export function MealEditor({
           <View className="flex-1 gap-1">
             <Text className="text-[20px] font-bold text-[#10201B]">Track meals</Text>
             <Text className="text-[14px] leading-[20px] text-[#51605A]">
-              Use one shared modal for add and edit.
+              Keep each day accurate with quick meal changes.
             </Text>
           </View>
           <View className="min-w-[120px]">

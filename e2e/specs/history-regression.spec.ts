@@ -27,6 +27,14 @@ test.describe('User Story 2: history and editing coverage', () => {
 
     await history.goto();
     await history.expectFocusedLayout();
+    await expect(appPage.getByText('Edit, add, or remove meals for this day.')).toBeVisible();
+    await expect(
+      appPage.getByText('Open the shared modal to edit or add meals for this day.'),
+    ).toHaveCount(0);
+    await expect(
+      appPage.getByText('Keep each day accurate with quick meal changes.'),
+    ).toBeVisible();
+    await expect(appPage.getByText('Use one shared modal for add and edit.')).toHaveCount(0);
     await history.selectSummary(yesterday);
 
     await expect(history.mealCardByName('Lunch wrap')).toContainText('12 pt');
