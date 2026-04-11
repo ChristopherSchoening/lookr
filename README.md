@@ -134,3 +134,14 @@ The web Playwright harness is the release gate for the active requirements in
   automated yet, it must be marked as `deferred` with a reason in the manifest.
 - `npm run e2e:coverage` validates that every active acceptance scenario has a
   traceable manifest entry before work is treated as complete.
+
+## TODO
+
+- [ ] reduce ui
+- [ ] bottom bar should respect save space
+- [ ] meal types
+- [ ] changing daily points
+- [ ] reenter existing meals
+- [ ] calculator for points
+- [ ] dark mode
+- [ ] app logo
