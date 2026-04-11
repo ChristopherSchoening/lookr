@@ -145,7 +145,6 @@ The web Playwright harness is the release gate for the active requirements in
 ## TODO
 
 - [ ] history date picker
-- [ ] meal types
 - [ ] changing daily points
 - [ ] calculator for points
 - [ ] reminder notification for weight tracking
