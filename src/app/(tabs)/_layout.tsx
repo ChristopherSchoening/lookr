@@ -1,6 +1,18 @@
+import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const floatingTabBarHeight = 84;
+const floatingTabBarBottomOffset = 12;
+const floatingTabBarHorizontalOffset = 12;
+const floatingTabBarPaddingTop = 10;
+const floatingTabBarPaddingBottom = 12;
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+  const bottomInset = Platform.OS === 'android' ? insets.bottom : 0;
+  const resolvedBottomOffset = Math.max(bottomInset, floatingTabBarBottomOffset);
+
   return (
     <Tabs
       screenOptions={{
@@ -11,11 +23,12 @@ export default function TabsLayout() {
           backgroundColor: 'rgba(248, 250, 251, 0.9)',
           borderTopWidth: 0,
           position: 'absolute',
-          height: 84,
-          paddingTop: 10,
-          paddingBottom: 12,
-          marginHorizontal: 12,
-          marginBottom: 12,
+          height: floatingTabBarHeight,
+          paddingTop: floatingTabBarPaddingTop,
+          paddingBottom: floatingTabBarPaddingBottom,
+          left: floatingTabBarHorizontalOffset,
+          right: floatingTabBarHorizontalOffset,
+          bottom: resolvedBottomOffset,
           borderRadius: 28,
         },
         tabBarLabelStyle: {
