@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -9,9 +10,12 @@ import {
   type TextInputProps,
   type ViewProps,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, shadowCard, typography } from '@/design/tokens';
+
+const floatingTabBarBottomOffset = 12;
+const floatingTabBarContentClearance = 100;
 
 export function Screen({
   children,
@@ -19,11 +23,18 @@ export function Screen({
 }: ScrollViewProps & {
   children: React.ReactNode;
 }) {
+  const insets = useSafeAreaInsets();
+  const bottomInset = Platform.OS === 'android' ? insets.bottom : 0;
+  const resolvedBottomOffset = Math.max(bottomInset, floatingTabBarBottomOffset);
+
   return (
     <SafeAreaView className="flex-1 bg-[#F8FAFB]">
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 pb-28 pt-4"
+        contentContainerClassName="px-4 pt-4"
+        contentContainerStyle={{
+          paddingBottom: floatingTabBarContentClearance + resolvedBottomOffset,
+        }}
         showsVerticalScrollIndicator={false}
         {...props}
       >

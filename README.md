@@ -42,6 +42,7 @@ npm run web
 5. Build and install a standalone app locally:
 
 **Prerequisites for Android local builds:**
+
 - Install JDK 17 (required for React Native 0.83).
 - Set the `JAVA_HOME` environment variable to point to your JDK 17 installation.
 - Android Studio / Android SDK must be installed.

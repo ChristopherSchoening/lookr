@@ -68,6 +68,9 @@ Pull requests should include:
 
 ## Active Technologies
 
+- TypeScript, React 19, Expo SDK 55 + Expo Router, `@react-navigation/bottom-tabs`, `react-native-safe-area-context`, NativeWind (003-fix-tab-safe-area)
+- Existing local SQLite app state remains unchanged; no new feature-specific storage (003-fix-tab-safe-area)
+
 - TypeScript, React 19, Expo SDK 55 + Expo Router, React Native Web, `expo-sqlite`, Playwright Test (`@playwright/test`) (002-playwright-e2e-tests)
 - Local SQLite database for app state; filesystem artifacts for Playwright reports, traces, screenshots, and a coverage manifest (002-playwright-e2e-tests)
 
