@@ -21,10 +21,11 @@ test.describe('User Story 2: progress coverage', () => {
     const progress = new ProgressPage(appPage);
 
     await progress.goto();
+    await progress.expectCoreLayout();
 
     await expect(appPage.getByTestId('latest-weight-metric')).toContainText('81.9');
     await expect(appPage.getByTestId('adherence-metric')).toContainText('3/4');
-    await expect(appPage.getByTestId('weight-delta')).toHaveText('-0.7');
+    await expect(appPage.getByTestId('weight-delta')).toHaveText('-0.3');
 
     await progress.saveWeight(81.4);
     await expect(appPage.getByText('Weight saved for today.')).toBeVisible();

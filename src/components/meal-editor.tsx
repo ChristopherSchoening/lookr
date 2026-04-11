@@ -19,6 +19,11 @@ export function MealEditor({
   onAdd,
   onUpdate,
   onDelete,
+  eyebrow = 'Meals',
+  title,
+  body,
+  emptyTitle = 'No meals yet',
+  emptyBody = 'Add one meal to update points for this day.',
 }: {
   date: string;
   meals: MealEntry[];
@@ -28,6 +33,11 @@ export function MealEditor({
     input: { mealName: string; points: number; entryDate: string },
   ) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
+  eyebrow?: string;
+  title?: string;
+  body?: string;
+  emptyTitle?: string;
+  emptyBody?: string;
 }) {
   const [mealName, setMealName] = useState('');
   const [points, setPoints] = useState('');
@@ -98,9 +108,9 @@ export function MealEditor({
   return (
     <View className="gap-4" testID={`meal-editor-${date}`}>
       <SectionTitle
-        eyebrow="Meal logging"
-        title={`Manual points for ${formatDateLabel(date).toLowerCase()}`}
-        body="Meals stay editable for today and prior days. Future planning is intentionally excluded."
+        eyebrow={eyebrow}
+        title={title ?? `Meals for ${formatDateLabel(date).toLowerCase()}`}
+        body={body}
       />
 
       <Card tone="lowest" className="gap-4" testID="meal-editor-form">
@@ -146,10 +156,7 @@ export function MealEditor({
       </Card>
 
       {meals.length === 0 ? (
-        <EmptyState
-          title="No meals recorded"
-          body="Start with a quick manual entry so the remaining-points metric can react immediately."
-        />
+        <EmptyState title={emptyTitle} body={emptyBody} />
       ) : (
         <View className="gap-3">
           {meals.map((meal) => (

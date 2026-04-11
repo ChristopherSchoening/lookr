@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { MealEditor } from '@/components/meal-editor';
-import { AppHeader, Card, EmptyState, LoadingScreen, Screen, SectionTitle } from '@/components/ui';
+import { Card, EmptyState, LoadingScreen, Screen, SectionTitle } from '@/components/ui';
 import { useAppData } from '@/context/app-data';
 import { formatDateLabel, formatLongDate, todayKey } from '@/lib/date';
 
@@ -27,25 +27,16 @@ export default function HistoryScreen() {
 
   return (
     <Screen>
-      <View className="gap-5" testID="history-screen">
-        <AppHeader
-          eyebrow="History"
-          title="Revisit tracked days without losing the signal."
-          body="A day-level archive for spotting patterns, validating adherence, and correcting missed or mistyped meals."
-        />
-
+      <View className="gap-4" testID="history-screen">
         {appData.summaries.length === 0 ? (
-          <EmptyState
-            title="No tracked history yet"
-            body="Once meals are logged, each day appears here with a concise summary and correction path."
-          />
+          <EmptyState title="No history yet" body="Logged days show up here." />
         ) : (
           <>
             <View className="gap-3">
               <SectionTitle
-                eyebrow="Tracked days"
-                title="Recent summaries"
-                body="Choose a day to inspect the meal list and make corrections."
+                eyebrow="History"
+                title="Recent days"
+                body="Pick a day, then edit or delete meals below."
               />
               {appData.summaries.map((summary) => (
                 <Pressable
@@ -104,11 +95,16 @@ export default function HistoryScreen() {
             </View>
 
             <MealEditor
+              body="Edit or delete any meal from this day."
               date={selectedDate}
+              emptyBody="Pick another day or add the first meal here."
+              emptyTitle="No meals on this day"
+              eyebrow="Corrections"
               meals={meals}
               onAdd={appData.addMeal}
               onUpdate={appData.updateMeal}
               onDelete={appData.deleteMeal}
+              title={`Meals for ${formatDateLabel(selectedDate).toLowerCase()}`}
             />
           </>
         )}

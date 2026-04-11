@@ -10,6 +10,12 @@ export class ProgressPage {
     await expect(this.page.getByTestId('progress-screen')).toBeVisible();
   }
 
+  async expectCoreLayout() {
+    await expect(this.page.getByText('Core progress')).toBeVisible();
+    await expect(this.page.getByText('Change since last track')).toBeVisible();
+    await expect(this.page.getByText('Weight context, not daily panic.')).toHaveCount(0);
+  }
+
   async saveWeight(weight: number) {
     await this.page.getByTestId('weight-input').fill(String(weight));
     await this.page.getByTestId('save-weight-button').click();

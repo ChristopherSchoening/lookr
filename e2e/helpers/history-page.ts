@@ -10,6 +10,14 @@ export class HistoryPage {
     await expect(this.page.getByTestId('history-screen')).toBeVisible();
   }
 
+  async expectFocusedLayout() {
+    await expect(this.page.getByText('Recent days')).toBeVisible();
+    await expect(this.page.getByText('Pick a day, then edit or delete meals below.')).toBeVisible();
+    await expect(
+      this.page.getByText('Revisit tracked days without losing the signal.'),
+    ).toHaveCount(0);
+  }
+
   async selectSummary(dateKey: string) {
     await this.page.getByTestId(`history-summary-trigger-${dateKey}`).click();
   }

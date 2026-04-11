@@ -54,8 +54,8 @@ export function AppHeader({
   body: string;
 }) {
   return (
-    <View className="gap-3 rounded-[32px] bg-white/85 px-5 py-5" style={shadowCard}>
-      <View className="self-start rounded-full bg-[#F2F4F5] px-3 py-2">
+    <View className="gap-3 rounded-[32px] bg-[#F2F4F5] px-5 py-5" style={shadowCard}>
+      <View className="self-start rounded-full bg-[#E9EEEC] px-3 py-2">
         <Text className={`${typography.label} text-[#006C48]`}>{eyebrow}</Text>
       </View>
       <Text className={`${typography.headline} max-w-[280px] text-[#10201B]`}>{title}</Text>
@@ -220,7 +220,7 @@ export function Metric({
 
 export function EmptyState({ title, body }: { title: string; body: string }) {
   return (
-    <Card tone="lowest" className="gap-2">
+    <Card tone="low" className="gap-2">
       <Text className={`${typography.title} text-[#10201B]`}>{title}</Text>
       <Text className={`${typography.body} text-[#51605A]`}>{body}</Text>
     </Card>

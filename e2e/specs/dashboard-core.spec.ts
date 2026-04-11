@@ -1,6 +1,7 @@
 import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../helpers/app-helpers';
-import { DashboardPage } from '../helpers/dashboard-page';
 import { createOverLimitSeedState } from '../fixtures/seed-states';
+import { getRelativeDateKey } from '../fixtures/seed-states';
+import { DashboardPage } from '../helpers/dashboard-page';
 import { expect, test } from '../fixtures/app-fixtures';
 
 test.afterEach(async ({ appPage }, testInfo) => {
@@ -15,9 +16,11 @@ test.describe('User Story 1: core dashboard coverage', () => {
 
     const dashboard = new DashboardPage(appPage);
     await dashboard.goto();
+    await dashboard.expectHomeTabChrome();
 
     await expect(appPage.getByTestId('profile-setup-card')).toBeVisible();
     await dashboard.setDailyLimit(24);
+    await dashboard.expectRemovedCopy();
 
     await dashboard.expectRemainingPoints(24);
     await dashboard.addMeal('Greek yogurt bowl', 7);
@@ -27,12 +30,13 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await dashboard.addMeal('Salmon rice bowl', 10);
     await dashboard.expectRemainingPoints(7);
     await dashboard.expectConsumedPoints(17);
-    await dashboard.expectStatus('A precise view of what remains for the day.');
+    await dashboard.expectStatus('7 points left today.');
   });
 
   test('dashboard-backfill-past-day covers US1-AS4', async ({ appPage }, testInfo) => {
     annotateScenario(testInfo, 'dashboard-backfill-past-day', ['US1-AS4']);
 
+    const today = getRelativeDateKey(0);
     const dashboard = new DashboardPage(appPage);
     await dashboard.goto();
     await dashboard.setDailyLimit(24);
@@ -40,10 +44,13 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await dashboard.goToYesterday();
     await dashboard.addMeal('Late dinner fix', 5);
     await dashboard.expectRemainingPoints(19);
+    await dashboard.expectStatus('19 points left today.');
 
     await dashboard.returnToToday();
     await dashboard.expectRemainingPoints(24);
-    await expect(appPage.getByText('No meals recorded')).toBeVisible();
+    await expect(
+      appPage.getByTestId(`meal-editor-${today}`).getByText('No meals yet'),
+    ).toBeVisible();
   });
 
   test('dashboard-over-limit-warning preserves the meal and failure context', async ({

@@ -75,6 +75,9 @@ Pull requests should include:
 
 ## Active Technologies
 
+- TypeScript, React 19, Expo SDK 55 + Expo Router, `@react-navigation/bottom-tabs`, NativeWind, `expo-sqlite`, `@expo/vector-icons` with `MaterialCommunityIcons` (004-ui-simplification)
+- Existing local SQLite app state remains unchanged; meal and weight records continue to live in current app storage (004-ui-simplification)
+
 - TypeScript, React 19, Expo SDK 55 + Expo Router, `@react-navigation/bottom-tabs`, `react-native-safe-area-context`, NativeWind (003-fix-tab-safe-area)
 - Existing local SQLite app state remains unchanged; no new feature-specific storage (003-fix-tab-safe-area)
 
