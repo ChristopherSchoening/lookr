@@ -43,6 +43,47 @@ export class DashboardPage {
     await expect(this.page.getByTestId('meal-modal')).toHaveCount(0);
   }
 
+  async fillMealName(value: string) {
+    await this.page.getByTestId('meal-name-input').fill(value);
+  }
+
+  async expectNoMealSuggestions() {
+    await expect(this.page.getByTestId('meal-suggestion-list')).toHaveCount(0);
+  }
+
+  async expectMealSuggestionNames(names: string[]) {
+    await expect(this.page.getByTestId('meal-suggestion-list')).toBeVisible();
+    await expect(this.page.locator('[data-testid^="meal-suggestion-row-"]')).toHaveCount(
+      names.length,
+    );
+    for (const [index, name] of names.entries()) {
+      await expect(this.page.getByTestId(`meal-suggestion-name-${index}`)).toHaveText(name);
+    }
+  }
+
+  async expectMealSuggestionEmpty() {
+    await expect(this.page.getByTestId('meal-suggestion-empty')).toBeVisible();
+    await expect(this.page.getByTestId('meal-suggestion-list')).toHaveCount(0);
+  }
+
+  async selectMealSuggestion(name: string) {
+    await this.page
+      .locator('[data-testid^="meal-suggestion-row-"]')
+      .filter({ hasText: name })
+      .first()
+      .click();
+  }
+
+  async expectMealFormValues(name: string, points: number) {
+    await expect(this.page.getByTestId('meal-name-input')).toHaveValue(name);
+    await expect(this.page.getByTestId('meal-points-input')).toHaveValue(String(points));
+  }
+
+  async saveMealModal() {
+    await this.page.getByTestId('save-meal-button').click();
+    await expect(this.page.getByTestId('meal-modal')).toHaveCount(0);
+  }
+
   async expectMealType(name: string, label: string) {
     await expect(this.mealCardByName(name).locator('[data-testid^="meal-type-"]')).toHaveText(
       label,

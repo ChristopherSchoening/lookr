@@ -16,6 +16,14 @@ export type MealEntry = {
   updatedAt: string;
 };
 
+export type MealSuggestion = {
+  displayName: string;
+  normalizedName: string;
+  sourceMealId: number;
+  sourcePoints: number;
+  sourceMealType?: MealType | null;
+};
+
 export type WeightEntry = {
   id: number;
   entryDate: string;

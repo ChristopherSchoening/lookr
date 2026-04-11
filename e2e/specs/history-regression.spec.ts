@@ -2,6 +2,7 @@ import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../help
 import {
   createHistorySeedState,
   createLegacyMealSeedState,
+  createMealSuggestionSeedState,
   getRelativeDateKey,
 } from '../fixtures/seed-states';
 import { HistoryPage } from '../helpers/history-page';
@@ -70,6 +71,50 @@ test.describe('User Story 2: history and editing coverage', () => {
     await history.expectSummaryStatus(yesterday, '6 points remaining');
     await history.expectSummaryPoints(twoDaysAgo, '15/24');
     await history.expectSummaryStatus(twoDaysAgo, '9 points remaining');
+  });
+
+  test('history-edit-suggestions stay quiet until name changes and remain editable', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'history-edit-suggestions', [
+      'US2-AS1',
+      'US2-AS2',
+      'US2-AS3',
+      'US2-AS4',
+      'US2-AS5',
+      'US3-AS1',
+      'US3-AS2',
+      'US3-AS3',
+    ]);
+
+    await seedAppState(appPage, createMealSuggestionSeedState());
+
+    const today = getRelativeDateKey(0);
+    const history = new HistoryPage(appPage);
+
+    await history.goto();
+    await history.selectSummary(today);
+    await history.startEditingMeal('Chipotle bowl');
+    await history.expectNoMealSuggestions();
+
+    await history.fillMealName('Chi');
+    await history.expectMealSuggestionNames([
+      'Chicken rice',
+      'Chipotle bowl',
+      'Chili leftovers',
+      'Chia pudding',
+      'Chicken salad',
+    ]);
+
+    await history.selectMealSuggestion('Chicken rice');
+    await history.expectMealFormValues('Chicken rice', 18);
+    await history.saveMeal('Chicken rice remix', 17, 'snack');
+    await expect(history.mealCardByName('Chicken rice remix')).toBeVisible();
+    await history.expectMealType('Chicken rice remix', 'Snack');
+
+    await history.startEditingMeal('Chicken rice remix');
+    await history.fillMealName('zzz');
+    await history.expectMealSuggestionEmpty();
   });
 
   test('history-legacy-edit-clears-type covers US3-AS1, US3-AS2, and US3-AS3', async ({

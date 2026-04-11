@@ -128,6 +128,7 @@ export default function DashboardScreen() {
               onAdd={appData.addMeal}
               onUpdate={appData.updateMeal}
               onDelete={appData.deleteMeal}
+              suggestionMeals={appData.meals}
             />
           </>
         )}

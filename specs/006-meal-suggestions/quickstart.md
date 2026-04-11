@@ -87,12 +87,15 @@ npm run e2e:us2
 
 ## Verification Log
 
-- `npm run lint`: PASS
-- `npm run typecheck`: PASS
-- `npm run e2e:us1`: PASS
-- `npm run e2e:us2`: PASS
-- `npm run e2e:coverage`: PASS
+- `npm run lint`: PASS on 2026-04-12
+- `npm run typecheck`: PASS on 2026-04-12
+- `npm run e2e:us1`: PASS on 2026-04-12
+- `npm run e2e:us2`: PASS on 2026-04-12
+- `npm run e2e:coverage`: PASS on 2026-04-12 (`Coverage manifest valid for 001-points-tracking: 9 acceptance scenarios mapped.`)
 - Touched-platform evidence: Web Playwright coverage exercises the shared Expo
   Router modal used by Home and History. One web evidence path is sufficient
   here because suggestion behavior lives in the shared `MealEditor` component
   and is platform-consistent by design.
+- Final manual acceptance notes: Suggestion rows stay secondary below the meal
+  name field, hide before the three-character threshold, and clear to an empty
+  inline state instead of leaving stale rows visible.
