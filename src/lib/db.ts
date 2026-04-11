@@ -5,6 +5,9 @@ import { currentTimeLabel, isFutureDate, nowIso } from '@/lib/date';
 import type { MealEntry, MealType, UserProfile, WeightEntry } from '@/lib/types';
 
 let databasePromise: Promise<SQLiteDatabase> | null = null;
+let databaseInitializationPromise: Promise<SQLiteDatabase> | null = null;
+
+const DATABASE_SCHEMA_VERSION = 2;
 
 type ProfileRow = {
   daily_points_limit: number;
@@ -68,40 +71,59 @@ async function getDb() {
     databasePromise = openDatabaseAsync('lookr.db');
   }
 
-  const db = await databasePromise;
+  if (!databaseInitializationPromise) {
+    databaseInitializationPromise = (async () => {
+      const db = await databasePromise;
 
-  await db.execAsync(`
-    PRAGMA journal_mode = WAL;
-    CREATE TABLE IF NOT EXISTS user_profile (
-      id INTEGER PRIMARY KEY NOT NULL CHECK (id = 1),
-      daily_points_limit INTEGER NOT NULL,
-      updated_at TEXT NOT NULL
-    );
-    CREATE TABLE IF NOT EXISTS meal_entries (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      meal_name TEXT NOT NULL,
-      points INTEGER NOT NULL,
-      entry_date TEXT NOT NULL,
-      entry_time TEXT NOT NULL,
-      meal_type TEXT,
-      created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
-    );
-    CREATE TABLE IF NOT EXISTS weight_entries (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      entry_date TEXT NOT NULL UNIQUE,
-      weight REAL NOT NULL,
-      created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
-    );
-  `);
+      await db.execAsync('PRAGMA journal_mode = WAL;');
 
-  const mealColumns = await db.getAllAsync<{ name: string }>('PRAGMA table_info(meal_entries)');
-  if (!mealColumns.some((column) => column.name === 'meal_type')) {
-    await db.execAsync('ALTER TABLE meal_entries ADD COLUMN meal_type TEXT;');
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS user_profile (
+          id INTEGER PRIMARY KEY NOT NULL CHECK (id = 1),
+          daily_points_limit INTEGER NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS meal_entries (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          meal_name TEXT NOT NULL,
+          points INTEGER NOT NULL,
+          entry_date TEXT NOT NULL,
+          entry_time TEXT NOT NULL,
+          meal_type TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS weight_entries (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          entry_date TEXT NOT NULL UNIQUE,
+          weight REAL NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+      `);
+
+      const versionRow = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
+      const currentVersion = versionRow?.user_version ?? 0;
+
+      if (currentVersion < 2) {
+        const mealColumns = await db.getAllAsync<{ name: string }>(
+          'PRAGMA table_info(meal_entries)',
+        );
+        if (!mealColumns.some((column) => column.name === 'meal_type')) {
+          await db.execAsync('ALTER TABLE meal_entries ADD COLUMN meal_type TEXT;');
+        }
+      }
+
+      await db.execAsync(`PRAGMA user_version = ${DATABASE_SCHEMA_VERSION};`);
+
+      return db;
+    })().catch((error) => {
+      databaseInitializationPromise = null;
+      throw error;
+    });
   }
 
-  return db;
+  return databaseInitializationPromise;
 }
 
 function assertWebE2EAccess() {
@@ -355,6 +377,45 @@ export async function seedE2EState(seed: E2ESeedState) {
   for (const weight of seed.weights ?? []) {
     await insertWeightSeed(db, weight);
   }
+}
+
+export async function prepareLegacyMealTypeMigrationE2E() {
+  assertWebE2EAccess();
+
+  const db = await getDb();
+
+  await db.execAsync(`
+    CREATE TABLE meal_entries_legacy (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      meal_name TEXT NOT NULL,
+      points INTEGER NOT NULL,
+      entry_date TEXT NOT NULL,
+      entry_time TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    INSERT INTO meal_entries_legacy (
+      id,
+      meal_name,
+      points,
+      entry_date,
+      entry_time,
+      created_at,
+      updated_at
+    )
+    SELECT
+      id,
+      meal_name,
+      points,
+      entry_date,
+      entry_time,
+      created_at,
+      updated_at
+    FROM meal_entries;
+    DROP TABLE meal_entries;
+    ALTER TABLE meal_entries_legacy RENAME TO meal_entries;
+    PRAGMA user_version = 1;
+  `);
 }
 
 export async function getE2ESnapshot() {

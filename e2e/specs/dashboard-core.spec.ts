@@ -1,4 +1,9 @@
-import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../helpers/app-helpers';
+import {
+  attachSnapshotOnFailure,
+  annotateScenario,
+  prepareLegacyMealTypeMigration,
+  seedAppState,
+} from '../helpers/app-helpers';
 import { createLegacyMealSeedState, createOverLimitSeedState } from '../fixtures/seed-states';
 import { getRelativeDateKey } from '../fixtures/seed-states';
 import { DashboardPage } from '../helpers/dashboard-page';
@@ -115,5 +120,25 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await expect(appPage.getByTestId('meal-modal')).toHaveCount(0);
     await expect(dashboard.mealCardByName('Legacy soup fix')).toBeVisible();
     await dashboard.expectNoMealType('Legacy soup fix');
+  });
+
+  test('dashboard-migrates-legacy-schema-on-boot', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'dashboard-migrates-legacy-schema-on-boot', [
+      'US3-AS1',
+      'US3-AS2',
+      'US3-AS3',
+    ]);
+
+    await seedAppState(appPage, createLegacyMealSeedState());
+    await prepareLegacyMealTypeMigration(appPage);
+
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+    await dashboard.goToYesterday();
+
+    await expect(dashboard.mealCardByName('Legacy soup')).toBeVisible();
+    await dashboard.expectNoMealType('Legacy soup');
+    await expect(dashboard.mealCardByName('Typed lunch')).toBeVisible();
+    await dashboard.expectRemainingPoints(5);
   });
 });
