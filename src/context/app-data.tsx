@@ -9,6 +9,7 @@ import {
   listMeals,
   listWeights,
   loadProfile,
+  prepareLegacyMealTypeMigrationE2E,
   resetE2EState,
   saveProfile as saveProfileRecord,
   saveWeight as saveWeightRecord,
@@ -22,6 +23,7 @@ type E2EWindowControls = {
   enabled: boolean;
   reset: () => Promise<void>;
   seed: (seed: E2ESeedState) => Promise<void>;
+  prepareLegacyMealTypeMigration: () => Promise<void>;
   snapshot: typeof getE2ESnapshot;
   refresh: () => Promise<void>;
 };
@@ -134,6 +136,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       seed: async (seed) => {
         await seedE2EState(seed);
         await refresh();
+      },
+      prepareLegacyMealTypeMigration: async () => {
+        await prepareLegacyMealTypeMigrationE2E();
       },
       snapshot: getE2ESnapshot,
       refresh,

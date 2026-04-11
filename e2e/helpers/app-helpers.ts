@@ -38,6 +38,13 @@ export async function seedAppState(page: Page, seed: E2ESeedState) {
   }, seed);
 }
 
+export async function prepareLegacyMealTypeMigration(page: Page) {
+  await waitForE2EBridge(page);
+  await page.evaluate(async () => {
+    await window.__LOOKR_E2E__?.prepareLegacyMealTypeMigration();
+  });
+}
+
 export async function readAppSnapshot(page: Page): Promise<AppSnapshot> {
   await waitForE2EBridge(page);
 
