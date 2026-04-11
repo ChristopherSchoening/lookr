@@ -37,7 +37,7 @@ auto_commit:
     enabled: true # Override per-command
     message: '[Spec Kit] Add specification'
   after_plan:
-    enabled: false
+    enabled: true
     message: '[Spec Kit] Add implementation plan'
 ```
 
