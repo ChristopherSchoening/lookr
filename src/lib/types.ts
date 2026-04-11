@@ -3,12 +3,15 @@ export type UserProfile = {
   updatedAt: string;
 };
 
+export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
+
 export type MealEntry = {
   id: number;
   mealName: string;
   points: number;
   entryDate: string;
   entryTime: string;
+  mealType?: MealType | null;
   createdAt: string;
   updatedAt: string;
 };

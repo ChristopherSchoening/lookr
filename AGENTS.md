@@ -75,6 +75,9 @@ Pull requests should include:
 
 ## Active Technologies
 
+- TypeScript, React 19, Expo SDK 55 + Expo Router, React Native, NativeWind, `expo-sqlite`, `react-native-safe-area-context`, `@playwright/test` (005-meal-type-modal)
+- Local SQLite via `expo-sqlite`, with an additive `meal_entries` schema migration for optional `meal_type` (005-meal-type-modal)
+
 - TypeScript, React 19, Expo SDK 55 + Expo Router, `@react-navigation/bottom-tabs`, NativeWind, `expo-sqlite`, `@expo/vector-icons` with `MaterialCommunityIcons` (004-ui-simplification)
 - Existing local SQLite app state remains unchanged; meal and weight records continue to live in current app storage (004-ui-simplification)
 

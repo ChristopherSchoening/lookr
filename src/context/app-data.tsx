@@ -16,7 +16,7 @@ import {
   type E2ESeedState,
   updateMeal as updateMealRecord,
 } from '@/lib/db';
-import type { DailySummary, MealEntry, UserProfile, WeightEntry } from '@/lib/types';
+import type { DailySummary, MealEntry, MealType, UserProfile, WeightEntry } from '@/lib/types';
 
 type E2EWindowControls = {
   enabled: boolean;
@@ -40,10 +40,15 @@ type AppDataContextValue = {
   summaries: DailySummary[];
   refresh: () => Promise<void>;
   saveProfile: (dailyPointsLimit: number) => Promise<void>;
-  addMeal: (input: { mealName: string; points: number; entryDate: string }) => Promise<void>;
+  addMeal: (input: {
+    mealName: string;
+    points: number;
+    entryDate: string;
+    mealType?: MealType | null;
+  }) => Promise<void>;
   updateMeal: (
     id: number,
-    input: { mealName: string; points: number; entryDate: string },
+    input: { mealName: string; points: number; entryDate: string; mealType?: MealType | null },
   ) => Promise<void>;
   deleteMeal: (id: number) => Promise<void>;
   saveWeight: (input: { entryDate: string; weight: number }) => Promise<void>;

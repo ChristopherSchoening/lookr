@@ -1,5 +1,9 @@
 import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../helpers/app-helpers';
-import { createHistorySeedState, getRelativeDateKey } from '../fixtures/seed-states';
+import {
+  createHistorySeedState,
+  createLegacyMealSeedState,
+  getRelativeDateKey,
+} from '../fixtures/seed-states';
 import { HistoryPage } from '../helpers/history-page';
 import { expect, test } from '../fixtures/app-fixtures';
 
@@ -27,12 +31,14 @@ test.describe('User Story 2: history and editing coverage', () => {
 
     await expect(history.mealCardByName('Lunch wrap')).toContainText('12 pt');
     await expect(history.mealCardByName('Lunch wrap')).toContainText('12:30 PM');
+    await history.expectMealType('Lunch wrap', 'Lunch');
 
     await history.startEditingMeal('Lunch wrap');
-    await history.saveMeal('Lunch wrap', 9);
+    await history.saveMeal('Lunch wrap', 9, 'dinner');
     await history.expectSummaryPoints(yesterday, '15/24');
     await history.expectSummaryStatus(yesterday, '9 points remaining');
     await history.expectSummaryPoints(today, '7/24');
+    await history.expectMealType('Lunch wrap', 'Dinner');
 
     await history.deleteMeal('Soup dinner');
     await history.expectSummaryPoints(yesterday, '9/24');
@@ -56,5 +62,32 @@ test.describe('User Story 2: history and editing coverage', () => {
     await history.expectSummaryStatus(yesterday, '6 points remaining');
     await history.expectSummaryPoints(twoDaysAgo, '15/24');
     await history.expectSummaryStatus(twoDaysAgo, '9 points remaining');
+  });
+
+  test('history-legacy-edit-clears-type covers US3-AS1, US3-AS2, and US3-AS3', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'history-legacy-edit-clears-type', [
+      'US3-AS1',
+      'US3-AS2',
+      'US3-AS3',
+    ]);
+
+    await seedAppState(appPage, createLegacyMealSeedState());
+
+    const yesterday = getRelativeDateKey(-1);
+    const history = new HistoryPage(appPage);
+
+    await history.goto();
+    await history.selectSummary(yesterday);
+    await history.expectNoMealType('Legacy soup');
+
+    await history.startEditingMeal('Legacy soup');
+    await history.saveMeal('Legacy soup', 8, null);
+    await history.expectNoMealType('Legacy soup');
+
+    await history.startEditingMeal('Typed lunch');
+    await history.saveMeal('Typed lunch', 11, null);
+    await history.expectNoMealType('Typed lunch');
   });
 });
