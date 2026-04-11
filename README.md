@@ -145,7 +145,6 @@ The web Playwright harness is the release gate for the active requirements in
 ## TODO
 
 - [ ] reduce ui
-- [ ] bottom bar should respect save space
 - [ ] meal types
 - [ ] changing daily points
 - [ ] reenter existing meals
