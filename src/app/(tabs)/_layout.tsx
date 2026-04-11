@@ -3,11 +3,9 @@ import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const floatingTabBarHeight = 84;
-const floatingTabBarBottomOffset = 12;
-const floatingTabBarHorizontalOffset = 12;
-const floatingTabBarPaddingTop = 10;
-const floatingTabBarPaddingBottom = 12;
+const tabBarBaseHeight = 68;
+const tabBarPaddingTop = 6;
+const tabBarPaddingBottom = 12;
 
 const tabIcons = {
   index: 'home-variant-outline',
@@ -18,7 +16,7 @@ const tabIcons = {
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const bottomInset = Platform.OS === 'android' ? insets.bottom : 0;
-  const resolvedBottomOffset = Math.max(bottomInset, floatingTabBarBottomOffset);
+  const resolvedPaddingBottom = Math.max(bottomInset, tabBarPaddingBottom);
 
   return (
     <Tabs
@@ -27,16 +25,15 @@ export default function TabsLayout() {
         tabBarActiveTintColor: '#006C48',
         tabBarInactiveTintColor: '#6D7A74',
         tabBarStyle: {
-          backgroundColor: 'rgba(248, 250, 251, 0.9)',
-          borderTopWidth: 0,
-          position: 'absolute',
-          height: floatingTabBarHeight,
-          paddingTop: floatingTabBarPaddingTop,
-          paddingBottom: floatingTabBarPaddingBottom,
-          left: floatingTabBarHorizontalOffset,
-          right: floatingTabBarHorizontalOffset,
-          bottom: resolvedBottomOffset,
-          borderRadius: 16,
+          backgroundColor: '#F8FAFB',
+          borderTopWidth: 1,
+          borderTopColor: '#D9E1DD',
+          height: tabBarBaseHeight + resolvedPaddingBottom,
+          paddingTop: tabBarPaddingTop,
+          paddingBottom: resolvedPaddingBottom,
+        },
+        tabBarItemStyle: {
+          paddingVertical: 2,
         },
         tabBarLabelStyle: {
           fontSize: 12,
