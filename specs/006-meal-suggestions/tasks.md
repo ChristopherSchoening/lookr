@@ -33,8 +33,8 @@ helpers, or suites.
 
 **Purpose**: Align existing meal modal, helpers, and design artifacts before implementation starts
 
-- [X] T001 Review and align feature docs in `specs/006-meal-suggestions/spec.md`, `specs/006-meal-suggestions/plan.md`, `specs/006-meal-suggestions/research.md`, and `specs/006-meal-suggestions/quickstart.md`
-- [X] T002 Inspect current suggestion touchpoints in `src/components/meal-editor.tsx`, `e2e/helpers/dashboard-page.ts`, `e2e/helpers/history-page.ts`, `e2e/specs/dashboard-core.spec.ts`, and `e2e/specs/history-regression.spec.ts`
+- [x] T001 Review and align feature docs in `specs/006-meal-suggestions/spec.md`, `specs/006-meal-suggestions/plan.md`, `specs/006-meal-suggestions/research.md`, and `specs/006-meal-suggestions/quickstart.md`
+- [x] T002 Inspect current suggestion touchpoints in `src/components/meal-editor.tsx`, `e2e/helpers/dashboard-page.ts`, `e2e/helpers/history-page.ts`, `e2e/specs/dashboard-core.spec.ts`, and `e2e/specs/history-regression.spec.ts`
 
 ---
 
@@ -44,10 +44,10 @@ helpers, or suites.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Add reusable suggestion types or helper contracts in `src/lib/types.ts`
-- [X] T004 Build shared meal-name normalization, dedupe, ordering, and debounce-ready suggestion state in `src/components/meal-editor.tsx`
-- [X] T005 [P] Extend repeated-meal E2E seed builders in `e2e/fixtures/seed-states.ts`
-- [X] T006 [P] Extend shared Playwright suggestion helpers in `e2e/helpers/dashboard-page.ts` and `e2e/helpers/history-page.ts`
+- [x] T003 Add reusable suggestion types or helper contracts in `src/lib/types.ts`
+- [x] T004 Build shared meal-name normalization, dedupe, ordering, and debounce-ready suggestion state in `src/components/meal-editor.tsx`
+- [x] T005 [P] Extend repeated-meal E2E seed builders in `e2e/fixtures/seed-states.ts`
+- [x] T006 [P] Extend shared Playwright suggestion helpers in `e2e/helpers/dashboard-page.ts` and `e2e/helpers/history-page.ts`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -61,14 +61,14 @@ helpers, or suites.
 
 ### Verification for User Story 1 ⚠️
 
-- [X] T007 [P] [US1] Extend add-flow acceptance coverage for threshold, debounce-safe appearance, ordering, and max-five behavior in `e2e/specs/dashboard-core.spec.ts`
-- [X] T008 [US1] Document manual Home suggestion-list review steps in `specs/006-meal-suggestions/quickstart.md`
+- [x] T007 [P] [US1] Extend add-flow acceptance coverage for threshold, debounce-safe appearance, ordering, and max-five behavior in `e2e/specs/dashboard-core.spec.ts`
+- [x] T008 [US1] Document manual Home suggestion-list review steps in `specs/006-meal-suggestions/quickstart.md`
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Render the suggestion list and quiet/empty states in `src/components/meal-editor.tsx`
-- [X] T010 [US1] Apply prefix-only matching, normalized duplicate collapse, and max-five slicing in `src/components/meal-editor.tsx`
-- [X] T011 [US1] Wire Home add-mode suggestion interactions through the existing modal in `src/components/meal-editor.tsx` and `src/app/(tabs)/index.tsx`
+- [x] T009 [US1] Render the suggestion list and quiet/empty states in `src/components/meal-editor.tsx`
+- [x] T010 [US1] Apply prefix-only matching, normalized duplicate collapse, and max-five slicing in `src/components/meal-editor.tsx`
+- [x] T011 [US1] Wire Home add-mode suggestion interactions through the existing modal in `src/components/meal-editor.tsx` and `src/app/(tabs)/index.tsx`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -82,14 +82,14 @@ helpers, or suites.
 
 ### Verification for User Story 2 ⚠️
 
-- [X] T012 [P] [US2] Extend suggestion-selection acceptance coverage in `e2e/specs/dashboard-core.spec.ts` and `e2e/specs/history-regression.spec.ts`
-- [X] T013 [US2] Document manual populated-form and override review steps in `specs/006-meal-suggestions/quickstart.md`
+- [x] T012 [P] [US2] Extend suggestion-selection acceptance coverage in `e2e/specs/dashboard-core.spec.ts` and `e2e/specs/history-regression.spec.ts`
+- [x] T013 [US2] Document manual populated-form and override review steps in `specs/006-meal-suggestions/quickstart.md`
 
 ### Implementation for User Story 2
 
-- [X] T014 [US2] Populate meal name, points, and meal type from the selected source meal in `src/components/meal-editor.tsx`
-- [X] T015 [US2] Preserve manual override behavior after suggestion selection in `src/components/meal-editor.tsx`
-- [X] T016 [US2] Extend suggestion helper methods for selecting and asserting populated values in `e2e/helpers/dashboard-page.ts` and `e2e/helpers/history-page.ts`
+- [x] T014 [US2] Populate meal name, points, and meal type from the selected source meal in `src/components/meal-editor.tsx`
+- [x] T015 [US2] Preserve manual override behavior after suggestion selection in `src/components/meal-editor.tsx`
+- [x] T016 [US2] Extend suggestion helper methods for selecting and asserting populated values in `e2e/helpers/dashboard-page.ts` and `e2e/helpers/history-page.ts`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -103,14 +103,14 @@ helpers, or suites.
 
 ### Verification for User Story 3 ⚠️
 
-- [X] T017 [P] [US3] Extend quiet-edit-mode and no-results acceptance coverage in `e2e/specs/history-regression.spec.ts` and `e2e/specs/dashboard-core.spec.ts`
-- [X] T018 [US3] Document manual edit-mode suppression and no-results review steps in `specs/006-meal-suggestions/quickstart.md`
+- [x] T017 [P] [US3] Extend quiet-edit-mode and no-results acceptance coverage in `e2e/specs/history-regression.spec.ts` and `e2e/specs/dashboard-core.spec.ts`
+- [x] T018 [US3] Document manual edit-mode suppression and no-results review steps in `specs/006-meal-suggestions/quickstart.md`
 
 ### Implementation for User Story 3
 
-- [X] T019 [US3] Add edit-mode name-change gating and stale-result clearing in `src/components/meal-editor.tsx`
-- [X] T020 [US3] Seed duplicate-name and unmatched-prefix scenarios in `e2e/fixtures/seed-states.ts`
-- [X] T021 [US3] Keep suggestion UI secondary and aligned with the shared modal contract in `src/components/meal-editor.tsx` and `specs/006-meal-suggestions/contracts/meal-suggestions-contract.md`
+- [x] T019 [US3] Add edit-mode name-change gating and stale-result clearing in `src/components/meal-editor.tsx`
+- [x] T020 [US3] Seed duplicate-name and unmatched-prefix scenarios in `e2e/fixtures/seed-states.ts`
+- [x] T021 [US3] Keep suggestion UI secondary and aligned with the shared modal contract in `src/components/meal-editor.tsx` and `specs/006-meal-suggestions/contracts/meal-suggestions-contract.md`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -120,8 +120,8 @@ helpers, or suites.
 
 **Purpose**: Final verification and cross-story cleanup
 
-- [X] T022 [P] Capture touched-platform suggestion-flow evidence and final manual acceptance notes in `specs/006-meal-suggestions/quickstart.md`
-- [X] T023 Run full verification commands and record outcomes in `specs/006-meal-suggestions/quickstart.md`
+- [x] T022 [P] Capture touched-platform suggestion-flow evidence and final manual acceptance notes in `specs/006-meal-suggestions/quickstart.md`
+- [x] T023 Run full verification commands and record outcomes in `specs/006-meal-suggestions/quickstart.md`
 
 ---
 
