@@ -76,7 +76,7 @@ A user still edits, adds, or removes meals for the chosen day after switching to
 - What happens when today has no meal entries but earlier dates do? The initial History selection should still land on today while making tracked dates easy to spot in the picker.
 - What happens when only one date has meal entries? The date picker should still clearly show that one tracked date and let the user stay on it.
 - What happens when meal entries are added or removed for the selected date while History is open? The picker state and visible History details should refresh so the selected date remains accurate.
-- What happens when a previously selected date stops having any meal entries after deletions? History should move to another available tracked date or the empty state without leaving a stale selected date behind.
+- What happens when a previously selected date stops having any meal entries after deletions? History should keep that selected date visible, switch it to the empty-day state, and avoid showing stale tracked summaries.
 
 ## Requirements _(mandatory)_
 
@@ -94,7 +94,7 @@ A user still edits, adds, or removes meals for the chosen day after switching to
 - **FR-010**: Meal edit, add, and delete actions from the selected History date MUST continue to work after this date selection change.
 - **FR-010a**: When the selected date has no meal entries, the system MUST show an empty-day state for that date while keeping add-meal controls available in the same History flow.
 - **FR-011**: After a meal change affects the selected date, the system MUST refresh the selected date's summary and meal list without losing the user's current History context.
-- **FR-012**: If the selected date no longer has meal entries after a deletion, the system MUST move the user to another available tracked date or to the empty state when no tracked dates remain.
+- **FR-012**: If the selected date no longer has meal entries after a deletion, the system MUST keep that selected date visible and transition it to the empty-day state without showing stale tracked details.
 - **FR-013**: The feature MUST extend the existing History flow and automated coverage rather than creating a separate History selection experience or parallel test suite.
 
 ### Key Entities _(include if feature involves data)_
