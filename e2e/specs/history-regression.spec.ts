@@ -22,6 +22,7 @@ test.describe('User Story 2: history and editing coverage', () => {
     const history = new HistoryPage(appPage);
 
     await history.goto();
+    await history.expectFocusedLayout();
     await history.selectSummary(yesterday);
 
     await expect(history.mealCardByName('Lunch wrap')).toContainText('12 pt');
@@ -47,6 +48,7 @@ test.describe('User Story 2: history and editing coverage', () => {
     const history = new HistoryPage(appPage);
 
     await history.goto();
+    await history.expectFocusedLayout();
 
     await history.expectSummaryPoints(today, '7/24');
     await history.expectSummaryStatus(today, '17 points remaining');

@@ -10,6 +10,14 @@ export class DashboardPage {
     await expect(this.page.getByTestId('dashboard-screen')).toBeVisible();
   }
 
+  async expectHomeTabChrome() {
+    await expect(this.page.getByTestId('tab-button-home')).toContainText('Home');
+    await expect(this.page.getByTestId('tab-icon-home').first()).toBeVisible();
+    await expect(this.page.getByTestId('tab-icon-history').first()).toBeVisible();
+    await expect(this.page.getByTestId('tab-icon-progress').first()).toBeVisible();
+    await expect(this.page.getByText('Dashboard')).toHaveCount(0);
+  }
+
   async setDailyLimit(points: number) {
     await this.page.getByTestId('daily-limit-input').fill(String(points));
     await this.page.getByTestId('start-tracking-button').click();
@@ -39,6 +47,11 @@ export class DashboardPage {
 
   async expectStatus(text: string) {
     await expect(this.page.getByTestId('summary-status')).toContainText(text);
+  }
+
+  async expectRemovedCopy() {
+    await expect(this.page.getByText('The clinical curator')).toHaveCount(0);
+    await expect(this.page.getByText('Manual in now, calculator later.')).toHaveCount(0);
   }
 
   mealCardByName(name: string): Locator {

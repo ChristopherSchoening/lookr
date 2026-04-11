@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 import { DateNavigator } from '@/components/date-navigator';
 import { MealEditor } from '@/components/meal-editor';
 import {
-  AppHeader,
   Card,
   Field,
   InlineMessage,
@@ -45,19 +44,13 @@ export default function DashboardScreen() {
 
   return (
     <Screen>
-      <View className="gap-5" testID="dashboard-screen">
-        <AppHeader
-          eyebrow="The clinical curator"
-          title="Track points with less friction and more signal."
-          body="A calm editorial dashboard for your daily point budget, meal corrections, and steady progress."
-        />
-
+      <View className="gap-4" testID="dashboard-screen">
         {!appData.profile ? (
           <Card tone="emerald" className="gap-4" testID="profile-setup-card">
             <SectionTitle
-              eyebrow="Setup"
-              title="Set your fixed daily point budget."
-              body="This single number becomes the baseline for every day in the first release."
+              eyebrow="Home"
+              title="Set your daily points."
+              body="This limit stays fixed until you change it."
             />
             <Field
               label="Daily point limit"
@@ -86,10 +79,10 @@ export default function DashboardScreen() {
                 </Text>
                 <Text className="text-[16px] leading-[22px] text-[#D7EEE5]" testID="summary-status">
                   {summary.status === 'over'
-                    ? `You are ${overBy} points over today.`
+                    ? `${overBy} points over today.`
                     : summary.status === 'empty'
-                      ? 'No meals logged yet for this day.'
-                      : 'A precise view of what remains for the day.'}
+                      ? 'No meals yet today.'
+                      : `${summary.remainingPoints} points left today.`}
                 </Text>
               </View>
 
@@ -110,7 +103,7 @@ export default function DashboardScreen() {
                 <Metric
                   label="Daily limit"
                   value={`${summary.dailyLimit}`}
-                  note="Fixed across all days"
+                  note="Daily target"
                   accent
                   testID="daily-limit-metric"
                 />
@@ -119,15 +112,18 @@ export default function DashboardScreen() {
 
             <Card tone="low" className="gap-4" testID="date-focus-card">
               <SectionTitle
-                eyebrow="Date focus"
-                title="Review today or correct a prior day."
-                body="The dashboard supports manual backfilling and edits for past days without touching future dates."
+                eyebrow="Day"
+                title="Pick a day"
+                body="Use past days for backfill or corrections."
               />
               <DateNavigator date={selectedDate} onChange={setSelectedDate} />
             </Card>
 
             <MealEditor
+              body="Add, edit, or remove meals for this day."
               date={selectedDate}
+              emptyBody="Add one meal to start the day total."
+              emptyTitle="No meals yet"
               meals={meals}
               onAdd={appData.addMeal}
               onUpdate={appData.updateMeal}
@@ -135,16 +131,6 @@ export default function DashboardScreen() {
             />
           </>
         )}
-
-        {appData.profile ? (
-          <Card tone="lowest" className="gap-3" testID="product-edge-card">
-            <SectionTitle
-              eyebrow="Product edge"
-              title="Manual in now, calculator later."
-              body="The MVP optimizes for fast manual entry. Nutrition-based point calculation stays out of the critical path for this version."
-            />
-          </Card>
-        ) : null}
       </View>
     </Screen>
   );

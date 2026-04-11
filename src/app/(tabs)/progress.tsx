@@ -3,7 +3,6 @@ import { Pressable, Text, View } from 'react-native';
 
 import { DateNavigator } from '@/components/date-navigator';
 import {
-  AppHeader,
   Card,
   EmptyState,
   Field,
@@ -30,11 +29,9 @@ export default function ProgressScreen() {
 
   const sortedWeights = appData.weights;
   const latestWeight = sortedWeights[0];
-  const oldestWeight = sortedWeights[sortedWeights.length - 1];
+  const previousWeight = sortedWeights[1];
   const weightDelta =
-    latestWeight && oldestWeight && latestWeight.id !== oldestWeight.id
-      ? latestWeight.weight - oldestWeight.weight
-      : 0;
+    latestWeight && previousWeight ? latestWeight.weight - previousWeight.weight : 0;
   const trackedDays = appData.summaries.filter((summary) => summary.mealCount > 0).length;
   const withinDays = appData.summaries.filter((summary) => summary.status === 'within').length;
 
@@ -62,18 +59,12 @@ export default function ProgressScreen() {
 
   return (
     <Screen>
-      <View className="gap-5" testID="progress-screen">
-        <AppHeader
-          eyebrow="Progress"
-          title="Weight context, not daily panic."
-          body="Record body weight over time and compare it with how often you stay inside the point budget."
-        />
-
+      <View className="gap-4" testID="progress-screen">
         <Card tone="low" className="gap-4" testID="progress-overview-card">
           <SectionTitle
-            eyebrow="Overview"
-            title="Weight and adherence at a glance"
-            body="The first release stays lightweight: a clean history, a simple trend view, and adherence context from tracked days."
+            eyebrow="Progress"
+            title="Core progress"
+            body="Weight, adherence, and change since the last track."
           />
           <View className="flex-row gap-3">
             <Metric
@@ -92,26 +83,26 @@ export default function ProgressScreen() {
           </View>
           <View className="rounded-[24px] bg-[#FFFFFF] px-4 py-4">
             <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
-              Weight change
+              Change since last track
             </Text>
             <Text className="mt-2 text-[28px] font-extrabold text-[#10201B]" testID="weight-delta">
-              {latestWeight && oldestWeight
+              {latestWeight && previousWeight
                 ? `${weightDelta > 0 ? '+' : ''}${weightDelta.toFixed(1)}`
                 : 'Add entries'}
             </Text>
             <Text className="mt-1 text-[14px] leading-[20px] text-[#51605A]">
-              {latestWeight && oldestWeight
-                ? `From ${formatDateLabel(oldestWeight.entryDate).toLowerCase()} to ${formatDateLabel(latestWeight.entryDate).toLowerCase()}.`
-                : 'Once you log multiple weights, this view highlights the directional trend.'}
+              {latestWeight && previousWeight
+                ? `From ${formatDateLabel(previousWeight.entryDate).toLowerCase()} to ${formatDateLabel(latestWeight.entryDate).toLowerCase()}.`
+                : 'Add two weights to compare the latest change.'}
             </Text>
           </View>
         </Card>
 
         <Card tone="lowest" className="gap-4" testID="record-weight-card">
           <SectionTitle
-            eyebrow="Record weight"
+            eyebrow="Log weight"
             title="One entry per day"
-            body="Saving again for the same date updates the recorded value instead of duplicating it."
+            body="Saving again for the same date updates that day."
           />
           <DateNavigator date={entryDate} onChange={setEntryDate} />
           <Field
@@ -135,16 +126,12 @@ export default function ProgressScreen() {
         {sortedWeights.length === 0 ? (
           <EmptyState
             title="No weight trend yet"
-            body="Start with a first entry to unlock the progress history and simple trend visualization."
+            body="Add a first weight to unlock history and trend."
           />
         ) : (
           <>
             <Card tone="low" className="gap-4" testID="weight-trend-card">
-              <SectionTitle
-                eyebrow="Trend"
-                title="Recent weight curve"
-                body="A restrained bar view keeps the screen editorial and easy to scan."
-              />
+              <SectionTitle eyebrow="Trend" title="Recent weight trend" />
               <View className="flex-row items-end gap-3">
                 {sortedWeights
                   .slice(0, 6)
@@ -168,7 +155,7 @@ export default function ProgressScreen() {
               <SectionTitle
                 eyebrow="Logbook"
                 title="Recorded weights"
-                body="Use the newest entries to check whether the points rhythm is moving in the right direction."
+                body="Newest entries stay at the top."
               />
               {sortedWeights.map((entry) => (
                 <Card
