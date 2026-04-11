@@ -2,7 +2,7 @@ import { openDatabaseAsync, type SQLiteDatabase, type SQLiteRunResult } from 'ex
 import { Platform } from 'react-native';
 
 import { currentTimeLabel, isFutureDate, nowIso } from '@/lib/date';
-import type { MealEntry, UserProfile, WeightEntry } from '@/lib/types';
+import type { MealEntry, MealType, UserProfile, WeightEntry } from '@/lib/types';
 
 let databasePromise: Promise<SQLiteDatabase> | null = null;
 
@@ -17,6 +17,7 @@ type MealRow = {
   points: number;
   entry_date: string;
   entry_time: string;
+  meal_type: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -34,6 +35,7 @@ export type E2ESeedMeal = {
   points: number;
   entryDate: string;
   entryTime: string;
+  mealType?: MealType | null;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -50,6 +52,16 @@ export type E2ESeedState = {
   meals?: E2ESeedMeal[];
   weights?: E2ESeedWeight[];
 };
+
+const mealTypeValues = ['breakfast', 'lunch', 'dinner', 'snack'] satisfies MealType[];
+
+function normalizeMealType(mealType?: string | null): MealType | null {
+  if (!mealType) {
+    return null;
+  }
+
+  return mealTypeValues.includes(mealType as MealType) ? (mealType as MealType) : null;
+}
 
 async function getDb() {
   if (!databasePromise) {
@@ -71,6 +83,7 @@ async function getDb() {
       points INTEGER NOT NULL,
       entry_date TEXT NOT NULL,
       entry_time TEXT NOT NULL,
+      meal_type TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
@@ -82,6 +95,11 @@ async function getDb() {
       updated_at TEXT NOT NULL
     );
   `);
+
+  const mealColumns = await db.getAllAsync<{ name: string }>('PRAGMA table_info(meal_entries)');
+  if (!mealColumns.some((column) => column.name === 'meal_type')) {
+    await db.execAsync('ALTER TABLE meal_entries ADD COLUMN meal_type TEXT;');
+  }
 
   return db;
 }
@@ -102,14 +120,16 @@ async function insertMealSeed(db: SQLiteDatabase, meal: E2ESeedMeal) {
         points,
         entry_date,
         entry_time,
+        meal_type,
         created_at,
         updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
     meal.mealName.trim(),
     meal.points,
     meal.entryDate,
     meal.entryTime,
+    normalizeMealType(meal.mealType),
     createdAt,
     updatedAt,
   );
@@ -164,7 +184,7 @@ export async function listMeals(): Promise<MealEntry[]> {
   const db = await getDb();
   const rows = await db.getAllAsync<MealRow>(
     `
-      SELECT id, meal_name, points, entry_date, entry_time, created_at, updated_at
+      SELECT id, meal_name, points, entry_date, entry_time, meal_type, created_at, updated_at
       FROM meal_entries
       ORDER BY entry_date DESC, entry_time DESC, id DESC
     `,
@@ -176,6 +196,7 @@ export async function listMeals(): Promise<MealEntry[]> {
     points: row.points,
     entryDate: row.entry_date,
     entryTime: row.entry_time,
+    mealType: normalizeMealType(row.meal_type),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }));
@@ -186,6 +207,7 @@ export async function addMeal(input: {
   points: number;
   entryDate: string;
   entryTime?: string;
+  mealType?: MealType | null;
 }) {
   if (isFutureDate(input.entryDate)) {
     throw new Error('Meals can only be logged for today or past days.');
@@ -200,14 +222,16 @@ export async function addMeal(input: {
         points,
         entry_date,
         entry_time,
+        meal_type,
         created_at,
         updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
     input.mealName.trim(),
     input.points,
     input.entryDate,
     input.entryTime ?? currentTimeLabel(),
+    normalizeMealType(input.mealType),
     createdAt,
     createdAt,
   );
@@ -219,6 +243,7 @@ export async function updateMeal(
     mealName: string;
     points: number;
     entryDate: string;
+    mealType?: MealType | null;
   },
 ) {
   if (isFutureDate(input.entryDate)) {
@@ -229,12 +254,13 @@ export async function updateMeal(
   await db.runAsync(
     `
       UPDATE meal_entries
-      SET meal_name = ?, points = ?, entry_date = ?, updated_at = ?
+      SET meal_name = ?, points = ?, entry_date = ?, meal_type = ?, updated_at = ?
       WHERE id = ?
     `,
     input.mealName.trim(),
     input.points,
     input.entryDate,
+    normalizeMealType(input.mealType),
     nowIso(),
     id,
   );

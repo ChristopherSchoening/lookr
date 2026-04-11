@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { Modal, Pressable, Text, View } from 'react-native';
 
 import {
   Card,
@@ -11,7 +11,20 @@ import {
   SubtleButton,
 } from '@/components/ui';
 import { formatDateLabel } from '@/lib/date';
-import type { MealEntry } from '@/lib/types';
+import type { MealEntry, MealType } from '@/lib/types';
+
+const mealTypeOptions: MealType[] = ['breakfast', 'lunch', 'dinner', 'snack'];
+
+function formatMealTypeLabel(mealType: MealType) {
+  return mealType[0].toUpperCase() + mealType.slice(1);
+}
+
+type MealEditorInput = {
+  mealName: string;
+  points: number;
+  entryDate: string;
+  mealType?: MealType | null;
+};
 
 export function MealEditor({
   date,
@@ -27,11 +40,8 @@ export function MealEditor({
 }: {
   date: string;
   meals: MealEntry[];
-  onAdd: (input: { mealName: string; points: number; entryDate: string }) => Promise<void>;
-  onUpdate: (
-    id: number,
-    input: { mealName: string; points: number; entryDate: string },
-  ) => Promise<void>;
+  onAdd: (input: MealEditorInput) => Promise<void>;
+  onUpdate: (id: number, input: MealEditorInput) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   eyebrow?: string;
   title?: string;
@@ -41,15 +51,49 @@ export function MealEditor({
 }) {
   const [mealName, setMealName] = useState('');
   const [points, setPoints] = useState('');
-  const [editing, setEditing] = useState<MealEntry | null>(null);
+  const [mealType, setMealType] = useState<MealType | null>(null);
+  const [sessionMode, setSessionMode] = useState<'add' | 'edit' | null>(null);
+  const [editingMealId, setEditingMealId] = useState<number | null>(null);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
+  const editingMeal = useMemo(
+    () => meals.find((meal) => meal.id === editingMealId) ?? null,
+    [editingMealId, meals],
+  );
+  const isModalOpen = sessionMode !== null;
+
+  function resetDraft() {
     setMealName('');
     setPoints('');
-    setEditing(null);
+    setMealType(null);
+    setSessionMode(null);
+    setEditingMealId(null);
     setError('');
+  }
+
+  function openAddModal() {
+    setMealName('');
+    setPoints('');
+    setMealType(null);
+    setSessionMode('add');
+    setEditingMealId(null);
+    setError('');
+    setMessage('');
+  }
+
+  function openEditModal(meal: MealEntry) {
+    setMealName(meal.mealName);
+    setPoints(String(meal.points));
+    setMealType(meal.mealType ?? null);
+    setSessionMode('edit');
+    setEditingMealId(meal.id);
+    setError('');
+    setMessage('');
+  }
+
+  useEffect(() => {
+    resetDraft();
     setMessage('');
   }, [date]);
 
@@ -69,25 +113,22 @@ export function MealEditor({
     setError('');
 
     try {
-      if (editing) {
-        await onUpdate(editing.id, {
-          mealName,
-          points: parsedPoints,
-          entryDate: date,
-        });
+      const payload = {
+        mealName,
+        points: parsedPoints,
+        entryDate: date,
+        mealType,
+      } satisfies MealEditorInput;
+
+      if (sessionMode === 'edit' && editingMeal) {
+        await onUpdate(editingMeal.id, payload);
         setMessage('Meal updated.');
       } else {
-        await onAdd({
-          mealName,
-          points: parsedPoints,
-          entryDate: date,
-        });
+        await onAdd(payload);
         setMessage('Meal added.');
       }
 
-      setMealName('');
-      setPoints('');
-      setEditing(null);
+      resetDraft();
     } catch (nextError) {
       setError(nextError instanceof Error ? nextError.message : 'Unable to save meal.');
     }
@@ -97,10 +138,8 @@ export function MealEditor({
     setError('');
     setMessage('');
     await onDelete(id);
-    if (editing?.id === id) {
-      setEditing(null);
-      setMealName('');
-      setPoints('');
+    if (editingMealId === id) {
+      resetDraft();
     }
     setMessage('Meal removed.');
   }
@@ -113,45 +152,19 @@ export function MealEditor({
         body={body}
       />
 
-      <Card tone="lowest" className="gap-4" testID="meal-editor-form">
-        <Field
-          label={editing ? 'Edit meal name' : 'Meal name'}
-          value={mealName}
-          onChangeText={setMealName}
-          placeholder="Greek yogurt bowl"
-          testID="meal-name-input"
-        />
-        <Field
-          label="Points"
-          value={points}
-          onChangeText={setPoints}
-          placeholder="7"
-          keyboardType="numeric"
-          testID="meal-points-input"
-        />
-        {error ? <InlineMessage message={error} tone="danger" /> : null}
-        {message ? <InlineMessage message={message} /> : null}
-        <View className="flex-row gap-3">
-          <View className="flex-1">
-            <PrimaryButton
-              label={editing ? 'Save changes' : 'Add meal'}
-              onPress={() => void submit()}
-              testID="save-meal-button"
-            />
+      <Card tone="lowest" className="gap-4">
+        <View className="flex-row items-center justify-between gap-3">
+          <View className="flex-1 gap-1">
+            <Text className="text-[20px] font-bold text-[#10201B]">Track meals</Text>
+            <Text className="text-[14px] leading-[20px] text-[#51605A]">
+              Use one shared modal for add and edit.
+            </Text>
           </View>
-          {editing ? (
-            <SubtleButton
-              label="Cancel"
-              onPress={() => {
-                setEditing(null);
-                setMealName('');
-                setPoints('');
-                setError('');
-              }}
-              testID="cancel-meal-edit-button"
-            />
-          ) : null}
+          <View className="min-w-[120px]">
+            <PrimaryButton label="Add meal" onPress={openAddModal} testID="open-add-meal-button" />
+          </View>
         </View>
+        {message ? <InlineMessage message={message} /> : null}
       </Card>
 
       {meals.length === 0 ? (
@@ -161,7 +174,7 @@ export function MealEditor({
           {meals.map((meal) => (
             <Card key={meal.id} tone="low" className="gap-3" testID={`meal-entry-${meal.id}`}>
               <View className="flex-row items-start justify-between gap-3">
-                <View className="flex-1 gap-1">
+                <View className="flex-1 gap-2">
                   <Text
                     className="text-[13px] font-bold uppercase tracking-[1.3px] text-[#51605A]"
                     testID={`meal-time-${meal.id}`}
@@ -174,6 +187,16 @@ export function MealEditor({
                   >
                     {meal.mealName}
                   </Text>
+                  {meal.mealType ? (
+                    <View
+                      className="self-start rounded-full bg-[#DDF6EA] px-3 py-2"
+                      testID={`meal-type-${meal.id}`}
+                    >
+                      <Text className="text-[11px] font-bold uppercase tracking-[1.1px] text-[#006C48]">
+                        {formatMealTypeLabel(meal.mealType)}
+                      </Text>
+                    </View>
+                  ) : null}
                 </View>
                 <View className="rounded-full bg-[#FFFFFF] px-4 py-3">
                   <Text
@@ -188,14 +211,8 @@ export function MealEditor({
               <View className="flex-row gap-3">
                 <SubtleButton
                   label="Edit"
-                  active={editing?.id === meal.id}
-                  onPress={() => {
-                    setEditing(meal);
-                    setMealName(meal.mealName);
-                    setPoints(String(meal.points));
-                    setError('');
-                    setMessage('');
-                  }}
+                  active={editingMealId === meal.id && isModalOpen}
+                  onPress={() => openEditModal(meal)}
                   testID={`edit-meal-${meal.id}`}
                 />
                 <Pressable
@@ -212,6 +229,90 @@ export function MealEditor({
           ))}
         </View>
       )}
+
+      <Modal
+        animationType="fade"
+        onRequestClose={resetDraft}
+        presentationStyle="overFullScreen"
+        transparent
+        visible={isModalOpen}
+      >
+        <View
+          className="flex-1 justify-end bg-[#10201B]/50 px-4 pb-6 pt-10"
+          testID="meal-modal-overlay"
+        >
+          <Pressable
+            className="absolute inset-0"
+            onPress={resetDraft}
+            testID="meal-modal-dismiss"
+          />
+          <Card tone="lowest" className="gap-4" testID="meal-modal">
+            <View className="gap-2">
+              <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
+                {sessionMode === 'edit' ? 'Edit meal' : 'Add meal'}
+              </Text>
+              <Text className="text-[28px] font-extrabold leading-[32px] text-[#10201B]">
+                {sessionMode === 'edit' ? 'Update saved meal' : 'Log a meal'}
+              </Text>
+              <Text className="text-[14px] leading-[20px] text-[#51605A]">
+                {formatDateLabel(date)}
+              </Text>
+            </View>
+
+            <Field
+              label="Meal name"
+              value={mealName}
+              onChangeText={setMealName}
+              placeholder="Greek yogurt bowl"
+              testID="meal-name-input"
+            />
+            <Field
+              label="Points"
+              value={points}
+              onChangeText={setPoints}
+              placeholder="7"
+              keyboardType="numeric"
+              testID="meal-points-input"
+            />
+
+            <View className="gap-3">
+              <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
+                Meal type
+              </Text>
+              <View className="flex-row flex-wrap gap-2">
+                <SubtleButton
+                  label="No type"
+                  active={mealType === null}
+                  onPress={() => setMealType(null)}
+                  testID="meal-type-option-none"
+                />
+                {mealTypeOptions.map((option) => (
+                  <SubtleButton
+                    key={option}
+                    label={formatMealTypeLabel(option)}
+                    active={mealType === option}
+                    onPress={() => setMealType(option)}
+                    testID={`meal-type-option-${option}`}
+                  />
+                ))}
+              </View>
+            </View>
+
+            {error ? <InlineMessage message={error} tone="danger" /> : null}
+
+            <View className="flex-row gap-3">
+              <View className="flex-1">
+                <PrimaryButton
+                  label={sessionMode === 'edit' ? 'Save changes' : 'Save meal'}
+                  onPress={() => void submit()}
+                  testID="save-meal-button"
+                />
+              </View>
+              <SubtleButton label="Cancel" onPress={resetDraft} testID="cancel-meal-modal-button" />
+            </View>
+          </Card>
+        </View>
+      </Modal>
     </View>
   );
 }

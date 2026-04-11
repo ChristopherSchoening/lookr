@@ -1,5 +1,5 @@
 import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../helpers/app-helpers';
-import { createOverLimitSeedState } from '../fixtures/seed-states';
+import { createLegacyMealSeedState, createOverLimitSeedState } from '../fixtures/seed-states';
 import { getRelativeDateKey } from '../fixtures/seed-states';
 import { DashboardPage } from '../helpers/dashboard-page';
 import { expect, test } from '../fixtures/app-fixtures';
@@ -23,14 +23,21 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await dashboard.expectRemovedCopy();
 
     await dashboard.expectRemainingPoints(24);
-    await dashboard.addMeal('Greek yogurt bowl', 7);
+    await dashboard.openMealModal();
+    await expect(appPage.getByTestId('meal-modal')).toBeVisible();
+    await appPage.getByTestId('cancel-meal-modal-button').click();
+    await expect(appPage.getByTestId('meal-modal')).toHaveCount(0);
+
+    await dashboard.addMeal('Greek yogurt bowl', 7, 'breakfast');
     await dashboard.expectRemainingPoints(17);
     await dashboard.expectConsumedPoints(7);
+    await dashboard.expectMealType('Greek yogurt bowl', 'Breakfast');
 
     await dashboard.addMeal('Salmon rice bowl', 10);
     await dashboard.expectRemainingPoints(7);
     await dashboard.expectConsumedPoints(17);
     await dashboard.expectStatus('7 points left today.');
+    await dashboard.expectNoMealType('Salmon rice bowl');
   });
 
   test('dashboard-backfill-past-day covers US1-AS4', async ({ appPage }, testInfo) => {
@@ -67,5 +74,34 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await dashboard.expectConsumedPoints(29);
     await dashboard.expectStatus('5 points over today');
     await expect(dashboard.mealCardByName('Pasta dinner')).toBeVisible();
+    await dashboard.expectMealType('Pasta dinner', 'Dinner');
+  });
+
+  test('dashboard-legacy-untyped-meal stays editable covers US3-AS1, US3-AS2, and US3-AS3', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'dashboard-legacy-untyped-meal', ['US3-AS1', 'US3-AS2', 'US3-AS3']);
+
+    await seedAppState(appPage, createLegacyMealSeedState());
+
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+    await dashboard.goToYesterday();
+
+    const legacyMeal = dashboard.mealCardByName('Legacy soup');
+    await expect(legacyMeal).toBeVisible();
+    await dashboard.expectNoMealType('Legacy soup');
+
+    await legacyMeal.locator('[data-testid^="edit-meal-"]').click();
+    await expect(appPage.getByTestId('meal-modal')).toBeVisible();
+    await expect(appPage.getByTestId('meal-name-input')).toHaveValue('Legacy soup');
+    await expect(appPage.getByTestId('meal-points-input')).toHaveValue('8');
+    await appPage.getByTestId('meal-name-input').fill('Legacy soup fix');
+    await appPage.getByTestId('meal-points-input').fill('9');
+    await appPage.getByTestId('save-meal-button').click();
+
+    await expect(appPage.getByTestId('meal-modal')).toHaveCount(0);
+    await expect(dashboard.mealCardByName('Legacy soup fix')).toBeVisible();
+    await dashboard.expectNoMealType('Legacy soup fix');
   });
 });

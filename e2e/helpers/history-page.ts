@@ -28,12 +28,23 @@ export class HistoryPage {
 
   async startEditingMeal(name: string) {
     await this.mealCardByName(name).locator('[data-testid^="edit-meal-"]').click();
+    await expect(this.page.getByTestId('meal-modal')).toBeVisible();
   }
 
-  async saveMeal(name: string, points: number) {
+  async saveMeal(
+    name: string,
+    points: number,
+    mealType?: 'breakfast' | 'lunch' | 'dinner' | 'snack' | null,
+  ) {
     await this.page.getByTestId('meal-name-input').fill(name);
     await this.page.getByTestId('meal-points-input').fill(String(points));
+    if (mealType === null) {
+      await this.page.getByTestId('meal-type-option-none').click();
+    } else if (mealType) {
+      await this.page.getByTestId(`meal-type-option-${mealType}`).click();
+    }
     await this.page.getByTestId('save-meal-button').click();
+    await expect(this.page.getByTestId('meal-modal')).toHaveCount(0);
   }
 
   async deleteMeal(name: string) {
@@ -46,5 +57,15 @@ export class HistoryPage {
 
   async expectSummaryStatus(dateKey: string, text: string) {
     await expect(this.page.getByTestId(`history-summary-status-${dateKey}`)).toContainText(text);
+  }
+
+  async expectMealType(name: string, label: string) {
+    await expect(this.mealCardByName(name).locator('[data-testid^="meal-type-"]')).toHaveText(
+      label,
+    );
+  }
+
+  async expectNoMealType(name: string) {
+    await expect(this.mealCardByName(name).locator('[data-testid^="meal-type-"]')).toHaveCount(0);
   }
 }

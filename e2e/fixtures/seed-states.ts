@@ -25,8 +25,20 @@ export function createOverLimitSeedState(): E2ESeedState {
   return {
     profile: { dailyPointsLimit: 24 },
     meals: [
-      { mealName: 'Breakfast tacos', points: 11, entryDate: today, entryTime: '8:15 AM' },
-      { mealName: 'Pasta dinner', points: 18, entryDate: today, entryTime: '7:10 PM' },
+      {
+        mealName: 'Breakfast tacos',
+        points: 11,
+        entryDate: today,
+        entryTime: '8:15 AM',
+        mealType: 'breakfast',
+      },
+      {
+        mealName: 'Pasta dinner',
+        points: 18,
+        entryDate: today,
+        entryTime: '7:10 PM',
+        mealType: 'dinner',
+      },
     ],
     weights: [],
   };
@@ -40,15 +52,52 @@ export function createHistorySeedState(): E2ESeedState {
   return {
     profile: { dailyPointsLimit: 24 },
     meals: [
-      { mealName: 'Greek yogurt bowl', points: 7, entryDate: today, entryTime: '8:00 AM' },
-      { mealName: 'Lunch wrap', points: 12, entryDate: yesterday, entryTime: '12:30 PM' },
-      { mealName: 'Soup dinner', points: 6, entryDate: yesterday, entryTime: '6:45 PM' },
+      {
+        mealName: 'Greek yogurt bowl',
+        points: 7,
+        entryDate: today,
+        entryTime: '8:00 AM',
+        mealType: 'breakfast',
+      },
+      {
+        mealName: 'Lunch wrap',
+        points: 12,
+        entryDate: yesterday,
+        entryTime: '12:30 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Soup dinner',
+        points: 6,
+        entryDate: yesterday,
+        entryTime: '6:45 PM',
+        mealType: 'dinner',
+      },
       { mealName: 'Chili leftovers', points: 15, entryDate: twoDaysAgo, entryTime: '7:00 PM' },
     ],
     weights: [
       { entryDate: yesterday, weight: 81.8 },
       { entryDate: twoDaysAgo, weight: 82.3 },
     ],
+  };
+}
+
+export function createLegacyMealSeedState(): E2ESeedState {
+  const yesterday = toDateKey(-1);
+
+  return {
+    profile: { dailyPointsLimit: 24 },
+    meals: [
+      { mealName: 'Legacy soup', points: 8, entryDate: yesterday, entryTime: '6:30 PM' },
+      {
+        mealName: 'Typed lunch',
+        points: 11,
+        entryDate: yesterday,
+        entryTime: '12:10 PM',
+        mealType: 'lunch',
+      },
+    ],
+    weights: [],
   };
 }
 
@@ -61,11 +110,41 @@ export function createProgressSeedState(): E2ESeedState {
   return {
     profile: { dailyPointsLimit: 24 },
     meals: [
-      { mealName: 'Protein oats', points: 8, entryDate: today, entryTime: '8:05 AM' },
-      { mealName: 'Salad bowl', points: 7, entryDate: today, entryTime: '1:00 PM' },
-      { mealName: 'Takeaway burger', points: 26, entryDate: yesterday, entryTime: '7:15 PM' },
-      { mealName: 'Chicken rice', points: 18, entryDate: twoDaysAgo, entryTime: '6:30 PM' },
-      { mealName: 'Toast and eggs', points: 6, entryDate: threeDaysAgo, entryTime: '8:10 AM' },
+      {
+        mealName: 'Protein oats',
+        points: 8,
+        entryDate: today,
+        entryTime: '8:05 AM',
+        mealType: 'breakfast',
+      },
+      {
+        mealName: 'Salad bowl',
+        points: 7,
+        entryDate: today,
+        entryTime: '1:00 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Takeaway burger',
+        points: 26,
+        entryDate: yesterday,
+        entryTime: '7:15 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Chicken rice',
+        points: 18,
+        entryDate: twoDaysAgo,
+        entryTime: '6:30 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Toast and eggs',
+        points: 6,
+        entryDate: threeDaysAgo,
+        entryTime: '8:10 AM',
+        mealType: 'breakfast',
+      },
     ],
     weights: [
       { entryDate: threeDaysAgo, weight: 82.6 },

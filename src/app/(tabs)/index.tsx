@@ -120,7 +120,7 @@ export default function DashboardScreen() {
             </Card>
 
             <MealEditor
-              body="Add, edit, or remove meals for this day."
+              body="Add in modal, then edit or remove meals for this day."
               date={selectedDate}
               emptyBody="Add one meal to start the day total."
               emptyTitle="No meals yet"

@@ -4,7 +4,13 @@ import type { E2ESeedState } from '../../src/lib/db';
 
 type AppSnapshot = {
   profile: { dailyPointsLimit: number } | null;
-  meals: Array<{ id: number; mealName: string; points: number; entryDate: string }>;
+  meals: Array<{
+    id: number;
+    mealName: string;
+    points: number;
+    entryDate: string;
+    mealType?: string | null;
+  }>;
   weights: Array<{ id: number; entryDate: string; weight: number }>;
 };
 
@@ -46,6 +52,7 @@ export async function readAppSnapshot(page: Page): Promise<AppSnapshot> {
           mealName: meal.mealName,
           points: meal.points,
           entryDate: meal.entryDate,
+          mealType: meal.mealType ?? null,
         })) ?? [],
       weights:
         snapshot?.weights.map((weight) => ({

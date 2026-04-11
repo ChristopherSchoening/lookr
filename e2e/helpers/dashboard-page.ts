@@ -23,10 +23,34 @@ export class DashboardPage {
     await this.page.getByTestId('start-tracking-button').click();
   }
 
-  async addMeal(mealName: string, points: number) {
+  async openMealModal() {
+    await this.page.getByTestId('open-add-meal-button').click();
+    await expect(this.page.getByTestId('meal-modal')).toBeVisible();
+  }
+
+  async addMeal(
+    mealName: string,
+    points: number,
+    mealType?: 'breakfast' | 'lunch' | 'dinner' | 'snack',
+  ) {
+    await this.openMealModal();
     await this.page.getByTestId('meal-name-input').fill(mealName);
     await this.page.getByTestId('meal-points-input').fill(String(points));
+    if (mealType) {
+      await this.page.getByTestId(`meal-type-option-${mealType}`).click();
+    }
     await this.page.getByTestId('save-meal-button').click();
+    await expect(this.page.getByTestId('meal-modal')).toHaveCount(0);
+  }
+
+  async expectMealType(name: string, label: string) {
+    await expect(this.mealCardByName(name).locator('[data-testid^="meal-type-"]')).toHaveText(
+      label,
+    );
+  }
+
+  async expectNoMealType(name: string) {
+    await expect(this.mealCardByName(name).locator('[data-testid^="meal-type-"]')).toHaveCount(0);
   }
 
   async goToYesterday() {
