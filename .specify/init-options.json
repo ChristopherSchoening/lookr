@@ -1,9 +1,8 @@
 {
-  "ai": "codex",
-  "ai_skills": true,
+  "ai": "junie",
   "branch_numbering": "sequential",
   "here": true,
-  "integration": "codex",
+  "integration": "junie",
   "preset": null,
   "script": "sh",
   "speckit_version": "0.5.2.dev0"
