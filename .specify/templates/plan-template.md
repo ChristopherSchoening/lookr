@@ -39,6 +39,8 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 - Story-to-task traceability preserved so each user story can be validated
   independently
 - Complexity exceptions documented only when a simpler alternative was rejected
+- Implementation approach keeps added code lean, readable, modular, and
+  extension-first, with new abstractions justified explicitly
 
 ## Project Structure
 
@@ -110,3 +112,4 @@ directories captured above]
 | -------------------------- | ------------------ | ------------------------------------ |
 | [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
 | [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |
+| [e.g., New module/file]    | [reuse/readability need] | [why extending existing code was worse]  |

@@ -13,6 +13,9 @@ checks when the project supports them and explicit manual acceptance steps for
 all affected stories.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
+Implementation tasks SHOULD favor extending existing files or modules when that
+keeps the design readable; introduce new files only when they improve clarity
+or reuse enough to justify the added surface area.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -186,6 +189,7 @@ Examples of foundational tasks (adjust based on your project):
 
 - Verification tasks MUST be defined before implementation begins
 - Automated tests MUST be written first when a suitable harness exists
+- Prefer extending existing code before adding parallel modules or abstractions
 - Models before services
 - Services before endpoints
 - Core implementation before integration
@@ -254,6 +258,8 @@ With multiple developers:
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable
 - Verify planned checks run before marking a story complete
+- Keep new code concise and readable; split modules only when it reduces
+  complexity for the story being delivered
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence

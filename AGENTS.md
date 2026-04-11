@@ -24,6 +24,11 @@ This repository does not have a test suite yet. When adding tests, place them ne
 
 Use TypeScript for app code and keep files ASCII unless the file already requires Unicode. Prefer functional React components and Expo Router route files. Use NativeWind utility classes via `className` instead of new `StyleSheet`-heavy patterns unless native APIs require inline styles.
 
+Keep additions lean and readable. Extend existing modules, routes, and shared
+utilities before creating new abstractions. When a new component or helper is
+the clearest option, keep it narrowly scoped and easy to trace from the user
+flow it supports.
+
 Follow existing naming:
 
 - Route files: lowercase file-based names such as `index.tsx`.

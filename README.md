@@ -84,6 +84,13 @@ This project uses NativeWind instead of traditional CSS modules or React Native 
 - Tailwind config: [tailwind.config.js](/home/tanome/dev/lookr/tailwind.config.js)
 - NativeWind wiring: [babel.config.js](/home/tanome/dev/lookr/babel.config.js), [metro.config.js](/home/tanome/dev/lookr/metro.config.js)
 
+## Engineering Constraints
+
+Keep new code lean, readable, and modular. Prefer extending existing screens,
+components, and utilities before adding new files or abstractions. When a new
+module is necessary, keep its responsibility narrow and justify the added
+surface area in the relevant spec or plan.
+
 ## Project Structure
 
 - App routes: [src/app](/home/tanome/dev/lookr/src/app)

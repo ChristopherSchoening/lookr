@@ -1,12 +1,8 @@
 <!--
 Sync Impact Report
-Version change: template -> 1.0.0
+Version change: 1.0.0 -> 1.1.0
 Modified principles:
-- Principle slot 1 -> I. Testable Changes First
-- Principle slot 2 -> II. UX Consistency Across Platforms
-- Principle slot 3 -> III. Fast, Trustworthy Feedback Loops
-- Principle slot 4 -> IV. Spec-to-Delivery Traceability
-- Principle slot 5 -> V. Keep Scope Coherent
+- V. Keep Scope Coherent -> V. Keep Scope Coherent and Code Lean
 Added sections:
 - Product Quality Gates
 - Delivery Workflow
@@ -18,7 +14,9 @@ Templates requiring updates:
 - ✅ updated: .specify/templates/tasks-template.md
 - ✅ updated: README.md
 - ✅ updated: AGENTS.md
-- ⚠ pending: .specify/templates/commands/*.md (directory not present in this repository; no update applied)
+- ✅ checked: .specify/extensions/git/commands/*.md
+- ✅ checked: .specify/extensions/git/README.md
+- ⚠ pending: .specify/templates/commands/*.md (directory not present in this repository)
 Follow-up TODOs:
 - None
 -->
@@ -74,16 +72,20 @@ evidence demonstrates that the story works independently.
 Rationale: Traceability keeps delivery aligned with user value and prevents work
 from drifting into disconnected technical activity.
 
-### V. Keep Scope Coherent
+### V. Keep Scope Coherent and Code Lean
 
 Feature slices MUST stay focused on the smallest user-meaningful outcome that
 can be verified independently. New dependencies, broad refactors, or extra
 surface area MUST be justified against a simpler alternative in the plan's
-complexity tracking. Nice-to-have additions that do not materially improve the
-target user journey belong in later slices.
+complexity tracking. Implementation MUST prefer the fewest lines that preserve
+clarity, favor small readable modules over large multi-purpose files, and
+extend existing functionality before introducing parallel abstractions. Nice-
+to-have additions that do not materially improve the target user journey belong
+in later slices.
 
 Rationale: Small, coherent scope improves delivery speed, preserves UX
-consistency, and makes testing realistic.
+consistency, and makes testing realistic. Lean, readable code also lowers the
+cost of future changes and discourages speculative abstractions.
 
 ## Product Quality Gates
 
@@ -91,8 +93,13 @@ consistency, and makes testing realistic.
   cross-platform consistency expectations that affect the feature.
 - Plans MUST fail Constitution Check if they do not define testing strategy,
   UX consistency review points, or required quality commands.
+- Plans MUST record when an implementation extends an existing module versus
+  introducing a new abstraction, and MUST justify any added surface area.
 - Tasks MUST include verification work for each user story and MUST not mark
   testing as optional when behavior changes.
+- Implementation tasks MUST prefer modifying existing modules when that keeps
+  the design readable, and MUST call out any new file or abstraction that is
+  added only for reuse or separation of concerns.
 - UI changes MUST include platform review evidence appropriate to the change,
   such as screenshots, recordings, or a documented justification for why visual
   evidence is unnecessary.
@@ -106,7 +113,8 @@ consistency, and makes testing realistic.
 2. Produce a plan that names affected platforms, verification strategy, and any
    complexity exceptions requiring approval.
 3. Generate tasks grouped by user story, with implementation and verification
-   work both present.
+   work both present and with extension-first changes preferred over new
+   abstractions.
 4. Implement in small slices, running focused checks as changes land.
 5. Before completion, confirm required quality commands pass and user-facing
    changes have consistency evidence for touched platforms.
@@ -124,4 +132,4 @@ mandatory during planning, task generation, code review, and final delivery.
 Any approved exception MUST be documented in the relevant plan or review notes
 with scope, reason, and owner.
 
-**Version**: 1.0.0 | **Ratified**: 2026-04-09 | **Last Amended**: 2026-04-09
+**Version**: 1.1.0 | **Ratified**: 2026-04-09 | **Last Amended**: 2026-04-11

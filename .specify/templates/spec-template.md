@@ -82,7 +82,8 @@
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right functional requirements. Include explicit
   consistency requirements when users must experience the same workflow or
-  feedback across supported platforms.
+  feedback across supported platforms. Note when the feature should extend
+  existing flows or modules instead of introducing new surface area.
 -->
 
 ### Functional Requirements
@@ -131,3 +132,4 @@ _Example of marking unclear requirements:_
 - [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
 - [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+- [Assumption about implementation shape, e.g., "Existing screens/components will be extended unless a new module materially improves readability"]
