@@ -11,12 +11,36 @@ import {
   SubtleButton,
 } from '@/components/ui';
 import { formatDateLabel } from '@/lib/date';
-import type { MealEntry, MealType } from '@/lib/types';
+import type { MealEntry, MealSuggestion, MealType } from '@/lib/types';
 
 const mealTypeOptions: MealType[] = ['breakfast', 'lunch', 'dinner', 'snack'];
+const suggestionDebounceMs = 250;
+const suggestionLimit = 5;
+const suggestionThreshold = 3;
 
 function formatMealTypeLabel(mealType: MealType) {
   return mealType[0].toUpperCase() + mealType.slice(1);
+}
+
+function normalizeMealName(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function buildMealTimestamp(meal: MealEntry) {
+  const match = meal.entryTime.match(/^(\d{1,2}):(\d{2}) (AM|PM)$/);
+  if (!match) {
+    return Date.parse(`${meal.entryDate}T00:00:00Z`);
+  }
+
+  let hours = Number(match[1]) % 12;
+  const minutes = Number(match[2]);
+  if (match[3] === 'PM') {
+    hours += 12;
+  }
+
+  return Date.parse(
+    `${meal.entryDate}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00Z`,
+  );
 }
 
 type MealEditorInput = {
@@ -29,6 +53,7 @@ type MealEditorInput = {
 export function MealEditor({
   date,
   meals,
+  suggestionMeals = meals,
   onAdd,
   onUpdate,
   onDelete,
@@ -40,6 +65,7 @@ export function MealEditor({
 }: {
   date: string;
   meals: MealEntry[];
+  suggestionMeals?: MealEntry[];
   onAdd: (input: MealEditorInput) => Promise<void>;
   onUpdate: (id: number, input: MealEditorInput) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
@@ -54,6 +80,10 @@ export function MealEditor({
   const [mealType, setMealType] = useState<MealType | null>(null);
   const [sessionMode, setSessionMode] = useState<'add' | 'edit' | null>(null);
   const [editingMealId, setEditingMealId] = useState<number | null>(null);
+  const [initialMealName, setInitialMealName] = useState('');
+  const [hasEditedMealName, setHasEditedMealName] = useState(false);
+  const [debouncedMealName, setDebouncedMealName] = useState('');
+  const [dismissedSuggestions, setDismissedSuggestions] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -69,6 +99,10 @@ export function MealEditor({
     setMealType(null);
     setSessionMode(null);
     setEditingMealId(null);
+    setInitialMealName('');
+    setHasEditedMealName(false);
+    setDebouncedMealName('');
+    setDismissedSuggestions(false);
     setError('');
   }
 
@@ -78,6 +112,10 @@ export function MealEditor({
     setMealType(null);
     setSessionMode('add');
     setEditingMealId(null);
+    setInitialMealName('');
+    setHasEditedMealName(false);
+    setDebouncedMealName('');
+    setDismissedSuggestions(false);
     setError('');
     setMessage('');
   }
@@ -88,6 +126,10 @@ export function MealEditor({
     setMealType(meal.mealType ?? null);
     setSessionMode('edit');
     setEditingMealId(meal.id);
+    setInitialMealName(meal.mealName);
+    setHasEditedMealName(false);
+    setDebouncedMealName(meal.mealName);
+    setDismissedSuggestions(false);
     setError('');
     setMessage('');
   }
@@ -96,6 +138,80 @@ export function MealEditor({
     resetDraft();
     setMessage('');
   }, [date]);
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setDebouncedMealName(mealName);
+    }, suggestionDebounceMs);
+
+    return () => clearTimeout(timeoutId);
+  }, [isModalOpen, mealName]);
+
+  const shouldEvaluateSuggestions =
+    isModalOpen &&
+    !dismissedSuggestions &&
+    (sessionMode === 'add' || hasEditedMealName) &&
+    normalizeMealName(debouncedMealName).length >= suggestionThreshold;
+
+  const visibleSuggestions = useMemo(() => {
+    if (!shouldEvaluateSuggestions) {
+      return [];
+    }
+
+    const normalizedQuery = normalizeMealName(debouncedMealName);
+    const nextSuggestions: MealSuggestion[] = [];
+    const seenNames = new Set<string>();
+    const mealsByRecency = [...suggestionMeals].sort((left, right) => {
+      const rightTimestamp = buildMealTimestamp(right);
+      const leftTimestamp = buildMealTimestamp(left);
+      return rightTimestamp - leftTimestamp || right.id - left.id;
+    });
+
+    for (const meal of mealsByRecency) {
+      const normalizedName = normalizeMealName(meal.mealName);
+      if (!normalizedName.startsWith(normalizedQuery) || seenNames.has(normalizedName)) {
+        continue;
+      }
+
+      seenNames.add(normalizedName);
+      nextSuggestions.push({
+        displayName: meal.mealName.trim(),
+        normalizedName,
+        sourceMealId: meal.id,
+        sourcePoints: meal.points,
+        sourceMealType: meal.mealType ?? null,
+      });
+
+      if (nextSuggestions.length === suggestionLimit) {
+        break;
+      }
+    }
+
+    return nextSuggestions;
+  }, [debouncedMealName, shouldEvaluateSuggestions, suggestionMeals]);
+
+  function handleMealNameChange(nextMealName: string) {
+    setMealName(nextMealName);
+    setDismissedSuggestions(false);
+    if (sessionMode === 'edit') {
+      setHasEditedMealName(nextMealName !== initialMealName);
+      return;
+    }
+    setHasEditedMealName(true);
+  }
+
+  function applySuggestion(suggestion: MealSuggestion) {
+    setMealName(suggestion.displayName);
+    setPoints(String(suggestion.sourcePoints));
+    setMealType(suggestion.sourceMealType ?? null);
+    setHasEditedMealName(true);
+    setDismissedSuggestions(true);
+    setError('');
+  }
 
   async function submit() {
     const parsedPoints = Number(points);
@@ -262,10 +378,47 @@ export function MealEditor({
             <Field
               label="Meal name"
               value={mealName}
-              onChangeText={setMealName}
+              onChangeText={handleMealNameChange}
               placeholder="Greek yogurt bowl"
               testID="meal-name-input"
             />
+            {visibleSuggestions.length > 0 ? (
+              <View className="gap-2" testID="meal-suggestion-list">
+                <Text className="text-[13px] font-bold uppercase tracking-[1.2px] text-[#51605A]">
+                  Prior meals
+                </Text>
+                <View className="gap-2">
+                  {visibleSuggestions.map((suggestion, index) => (
+                    <Pressable
+                      key={suggestion.normalizedName}
+                      className="rounded-[22px] bg-[#E9EEEC] px-4 py-3"
+                      onPress={() => applySuggestion(suggestion)}
+                      testID={`meal-suggestion-row-${index}`}
+                    >
+                      <Text
+                        className="text-[15px] font-bold text-[#10201B]"
+                        testID={`meal-suggestion-name-${index}`}
+                      >
+                        {suggestion.displayName}
+                      </Text>
+                      <Text
+                        className="mt-1 text-[12px] uppercase tracking-[1px] text-[#51605A]"
+                        testID={`meal-suggestion-meta-${index}`}
+                      >
+                        {suggestion.sourceMealType
+                          ? `${suggestion.sourcePoints} pt · ${formatMealTypeLabel(suggestion.sourceMealType)}`
+                          : `${suggestion.sourcePoints} pt`}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            ) : shouldEvaluateSuggestions ? (
+              <InlineMessage
+                message="No saved meals match that start yet."
+                testID="meal-suggestion-empty"
+              />
+            ) : null}
             <Field
               label="Points"
               value={points}

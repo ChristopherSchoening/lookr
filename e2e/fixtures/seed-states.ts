@@ -82,6 +82,70 @@ export function createHistorySeedState(): E2ESeedState {
   };
 }
 
+export function createMealSuggestionSeedState(): E2ESeedState {
+  const today = toDateKey(0);
+  const yesterday = toDateKey(-1);
+  const twoDaysAgo = toDateKey(-2);
+  const threeDaysAgo = toDateKey(-3);
+  const fourDaysAgo = toDateKey(-4);
+
+  return {
+    profile: { dailyPointsLimit: 24 },
+    meals: [
+      {
+        mealName: 'Chicken rice',
+        points: 18,
+        entryDate: today,
+        entryTime: '7:30 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Chipotle bowl',
+        points: 14,
+        entryDate: today,
+        entryTime: '1:00 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Chili leftovers',
+        points: 15,
+        entryDate: yesterday,
+        entryTime: '7:00 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Chia pudding',
+        points: 9,
+        entryDate: yesterday,
+        entryTime: '8:00 AM',
+        mealType: 'breakfast',
+      },
+      {
+        mealName: 'Chicken salad',
+        points: 11,
+        entryDate: twoDaysAgo,
+        entryTime: '6:30 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Chickpea curry',
+        points: 13,
+        entryDate: threeDaysAgo,
+        entryTime: '12:15 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: '  chicken rice  ',
+        points: 16,
+        entryDate: fourDaysAgo,
+        entryTime: '6:45 PM',
+        mealType: 'lunch',
+      },
+    ],
+    weights: [],
+  };
+}
+
 export function createLegacyMealSeedState(): E2ESeedState {
   const yesterday = toDateKey(-1);
 

@@ -104,6 +104,7 @@ export default function HistoryScreen() {
               onAdd={appData.addMeal}
               onUpdate={appData.updateMeal}
               onDelete={appData.deleteMeal}
+              suggestionMeals={appData.meals}
               title={`Meals for ${formatDateLabel(selectedDate).toLowerCase()}`}
             />
           </>

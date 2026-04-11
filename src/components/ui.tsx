@@ -230,15 +230,21 @@ export function EmptyState({ title, body }: { title: string; body: string }) {
 export function InlineMessage({
   message,
   tone = 'neutral',
+  testID,
 }: {
   message: string;
   tone?: 'neutral' | 'danger';
+  testID?: string;
 }) {
   const background = tone === 'danger' ? colors.dangerSoft : colors.surfaceLow;
   const textColor = tone === 'danger' ? colors.danger : colors.textMuted;
 
   return (
-    <View className="rounded-[22px] px-4 py-3" style={{ backgroundColor: background }}>
+    <View
+      className="rounded-[22px] px-4 py-3"
+      style={{ backgroundColor: background }}
+      testID={testID}
+    >
       <Text className="text-[14px] leading-[20px]" style={{ color: textColor }}>
         {message}
       </Text>

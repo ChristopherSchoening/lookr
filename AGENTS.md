@@ -74,6 +74,7 @@ Pull requests should include:
 - Confirmation that `npm run format`, `npm run lint`, and `npm run typecheck` passed.
 
 ## Active Technologies
+
 - Existing local SQLite meal records via `expo-sqlite`; no schema change planned for this slice (006-meal-suggestions)
 
 - TypeScript, React 19, Expo SDK 55 + Expo Router, React Native, NativeWind, `expo-sqlite`, `react-native-safe-area-context`, `@playwright/test` (005-meal-type-modal)

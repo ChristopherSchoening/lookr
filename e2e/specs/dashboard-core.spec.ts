@@ -4,7 +4,11 @@ import {
   prepareLegacyMealTypeMigration,
   seedAppState,
 } from '../helpers/app-helpers';
-import { createLegacyMealSeedState, createOverLimitSeedState } from '../fixtures/seed-states';
+import {
+  createLegacyMealSeedState,
+  createMealSuggestionSeedState,
+  createOverLimitSeedState,
+} from '../fixtures/seed-states';
 import { getRelativeDateKey } from '../fixtures/seed-states';
 import { DashboardPage } from '../helpers/dashboard-page';
 import { expect, test } from '../fixtures/app-fixtures';
@@ -92,6 +96,56 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await dashboard.expectStatus('5 points over today');
     await expect(dashboard.mealCardByName('Pasta dinner')).toBeVisible();
     await dashboard.expectMealType('Pasta dinner', 'Dinner');
+  });
+
+  test('dashboard-add-meal-suggestions cover threshold, ordering, dedupe, and selection', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'dashboard-add-meal-suggestions', [
+      'US1-AS1',
+      'US1-AS2',
+      'US1-AS3',
+      'US1-AS4',
+      'US1-AS5',
+      'US2-AS2',
+      'US2-AS3',
+      'US2-AS4',
+      'US2-AS5',
+      'US3-AS1',
+      'US3-AS2',
+      'US3-AS3',
+    ]);
+
+    await seedAppState(appPage, createMealSuggestionSeedState());
+
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+    await dashboard.openMealModal();
+
+    await dashboard.fillMealName('Ch');
+    await dashboard.expectNoMealSuggestions();
+
+    await dashboard.fillMealName('Chi');
+    await dashboard.expectNoMealSuggestions();
+    await dashboard.expectMealSuggestionNames([
+      'Chicken rice',
+      'Chipotle bowl',
+      'Chili leftovers',
+      'Chia pudding',
+      'Chicken salad',
+    ]);
+
+    await dashboard.selectMealSuggestion('Chicken rice');
+    await dashboard.expectMealFormValues('Chicken rice', 18);
+    await dashboard.fillMealName('Chicken rice repeat');
+    await dashboard.saveMealModal();
+
+    await expect(dashboard.mealCardByName('Chicken rice repeat')).toContainText('18 pt');
+    await dashboard.expectMealType('Chicken rice repeat', 'Dinner');
+
+    await dashboard.openMealModal();
+    await dashboard.fillMealName('zzz');
+    await dashboard.expectMealSuggestionEmpty();
   });
 
   test('dashboard-legacy-untyped-meal stays editable covers US3-AS1, US3-AS2, and US3-AS3', async ({
