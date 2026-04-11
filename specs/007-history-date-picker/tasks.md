@@ -33,8 +33,8 @@ helpers, or suites.
 
 **Purpose**: Align feature docs, current History flow, and existing test touchpoints before implementation starts
 
-- [ ] T001 Review and align feature docs in `specs/007-history-date-picker/spec.md`, `specs/007-history-date-picker/plan.md`, `specs/007-history-date-picker/contracts/history-date-picker-contract.md`, and `specs/007-history-date-picker/quickstart.md`
-- [ ] T002 Inspect current History selection and correction flow in `src/app/(tabs)/history.tsx`, `src/components/date-navigator.tsx`, `src/context/app-data.tsx`, `e2e/helpers/history-page.ts`, and `e2e/specs/history-regression.spec.ts`
+- [x] T001 Review and align feature docs in `specs/007-history-date-picker/spec.md`, `specs/007-history-date-picker/plan.md`, `specs/007-history-date-picker/contracts/history-date-picker-contract.md`, and `specs/007-history-date-picker/quickstart.md`
+- [x] T002 Inspect current History selection and correction flow in `src/app/(tabs)/history.tsx`, `src/components/date-navigator.tsx`, `src/context/app-data.tsx`, `e2e/helpers/history-page.ts`, and `e2e/specs/history-regression.spec.ts`
 
 ---
 
@@ -44,11 +44,11 @@ helpers, or suites.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Add month-grid and date-range helper utilities for History picker behavior in `src/lib/date.ts`
-- [ ] T004 Add derived tracked-date lookup support for History picker state in `src/context/app-data.tsx`
-- [ ] T005 Refactor `DateNavigator` into a selectable date-picker surface with stable test IDs in `src/components/date-navigator.tsx`
-- [ ] T006 [P] Extend History Playwright page helpers for date-picker interactions and empty-day assertions in `e2e/helpers/history-page.ts`
-- [ ] T007 [P] Update History fixture expectations and seeded date coverage in `e2e/fixtures/seed-states.ts` and `e2e/specs/history-regression.spec.ts`
+- [x] T003 Add month-grid and date-range helper utilities for History picker behavior in `src/lib/date.ts`
+- [x] T004 Add derived tracked-date lookup support for History picker state in `src/context/app-data.tsx`
+- [x] T005 Refactor `DateNavigator` into a selectable date-picker surface with stable test IDs in `src/components/date-navigator.tsx`
+- [x] T006 [P] Extend History Playwright page helpers for date-picker interactions and empty-day assertions in `e2e/helpers/history-page.ts`
+- [x] T007 [P] Update History fixture expectations and seeded date coverage in `e2e/fixtures/seed-states.ts` and `e2e/specs/history-regression.spec.ts`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -62,14 +62,14 @@ helpers, or suites.
 
 ### Verification for User Story 1 ⚠️
 
-- [ ] T008 [P] [US1] Extend tracked-date picker acceptance coverage in `e2e/specs/history-regression.spec.ts`
-- [ ] T009 [US1] Document manual picker-entry and tracked-date review steps in `specs/007-history-date-picker/quickstart.md`
+- [x] T008 [P] [US1] Extend tracked-date picker acceptance coverage in `e2e/specs/history-regression.spec.ts`
+- [x] T009 [US1] Document manual picker-entry and tracked-date review steps in `specs/007-history-date-picker/quickstart.md`
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Replace the History tracked-day card selector with the new date picker in `src/app/(tabs)/history.tsx`
-- [ ] T011 [US1] Wire today-default selection and selected-date display behavior in `src/app/(tabs)/history.tsx` and `src/components/date-navigator.tsx`
-- [ ] T012 [US1] Render tracked-date summary and meal list updates from picker selection in `src/app/(tabs)/history.tsx`
+- [x] T010 [US1] Replace the History tracked-day card selector with the new date picker in `src/app/(tabs)/history.tsx`
+- [x] T011 [US1] Wire today-default selection and selected-date display behavior in `src/app/(tabs)/history.tsx` and `src/components/date-navigator.tsx`
+- [x] T012 [US1] Render tracked-date summary and meal list updates from picker selection in `src/app/(tabs)/history.tsx`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -83,14 +83,14 @@ helpers, or suites.
 
 ### Verification for User Story 2 ⚠️
 
-- [ ] T013 [P] [US2] Extend tracked-versus-empty date emphasis coverage in `e2e/specs/history-regression.spec.ts`
-- [ ] T014 [US2] Document manual visual review steps for tracked-date emphasis and empty-date selection in `specs/007-history-date-picker/quickstart.md`
+- [x] T013 [P] [US2] Extend tracked-versus-empty date emphasis coverage in `e2e/specs/history-regression.spec.ts`
+- [x] T014 [US2] Document manual visual review steps for tracked-date emphasis and empty-date selection in `specs/007-history-date-picker/quickstart.md`
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Add tracked-date, empty-date, selected-date, and today visual states to the picker in `src/components/date-navigator.tsx`
-- [ ] T016 [US2] Feed tracked-date and empty-date state from app data into History picker rendering in `src/app/(tabs)/history.tsx` and `src/context/app-data.tsx`
-- [ ] T017 [US2] Ensure empty dates stay selectable without disabled treatment in `src/components/date-navigator.tsx`
+- [x] T015 [US2] Add tracked-date, empty-date, selected-date, and today visual states to the picker in `src/components/date-navigator.tsx`
+- [x] T016 [US2] Feed tracked-date and empty-date state from app data into History picker rendering in `src/app/(tabs)/history.tsx` and `src/context/app-data.tsx`
+- [x] T017 [US2] Ensure empty dates stay selectable without disabled treatment in `src/components/date-navigator.tsx`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -104,14 +104,14 @@ helpers, or suites.
 
 ### Verification for User Story 3 ⚠️
 
-- [ ] T018 [P] [US3] Extend correction-flow and empty-day acceptance coverage in `e2e/specs/history-regression.spec.ts`
-- [ ] T019 [US3] Document manual correction-flow and empty-day review steps in `specs/007-history-date-picker/quickstart.md`
+- [x] T018 [P] [US3] Extend correction-flow and empty-day acceptance coverage in `e2e/specs/history-regression.spec.ts`
+- [x] T019 [US3] Document manual correction-flow and empty-day review steps in `specs/007-history-date-picker/quickstart.md`
 
 ### Implementation for User Story 3
 
-- [ ] T020 [US3] Keep `MealEditor` corrections wired to the selected picker date in `src/app/(tabs)/history.tsx`
-- [ ] T021 [US3] Add empty-day state with add-meal availability for selected dates without meals in `src/app/(tabs)/history.tsx` and `src/components/meal-editor.tsx`
-- [ ] T022 [US3] Refresh picker emphasis, summary state, and empty-day transitions after add, edit, and delete actions in `src/app/(tabs)/history.tsx` and `src/context/app-data.tsx`
+- [x] T020 [US3] Keep `MealEditor` corrections wired to the selected picker date in `src/app/(tabs)/history.tsx`
+- [x] T021 [US3] Add empty-day state with add-meal availability for selected dates without meals in `src/app/(tabs)/history.tsx` and `src/components/meal-editor.tsx`
+- [x] T022 [US3] Refresh picker emphasis, summary state, and empty-day transitions after add, edit, and delete actions in `src/app/(tabs)/history.tsx` and `src/context/app-data.tsx`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -121,8 +121,8 @@ helpers, or suites.
 
 **Purpose**: Final verification and cross-story cleanup
 
-- [ ] T023 [P] Capture touched-platform review notes for web, iOS, and Android History picker behavior in `specs/007-history-date-picker/quickstart.md`
-- [ ] T024 Run full verification commands and record outcomes in `specs/007-history-date-picker/quickstart.md`
+- [x] T023 [P] Capture touched-platform review notes for web, iOS, and Android History picker behavior in `specs/007-history-date-picker/quickstart.md`
+- [x] T024 Run full verification commands and record outcomes in `specs/007-history-date-picker/quickstart.md`
 
 ---
 

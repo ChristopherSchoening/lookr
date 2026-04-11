@@ -221,3 +221,16 @@ export function createProgressSeedState(): E2ESeedState {
 export function getRelativeDateKey(offsetDays = 0) {
   return toDateKey(offsetDays);
 }
+
+export function getEmptyDateKey(offsets: number[], usedDateKeys: string[]) {
+  const usedDates = new Set(usedDateKeys);
+
+  for (const offset of offsets) {
+    const dateKey = toDateKey(offset);
+    if (!usedDates.has(dateKey)) {
+      return dateKey;
+    }
+  }
+
+  throw new Error('No empty date available for requested offsets.');
+}

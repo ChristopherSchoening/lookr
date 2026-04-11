@@ -19,6 +19,11 @@ import {
 } from '@/lib/db';
 import type { DailySummary, MealEntry, MealType, UserProfile, WeightEntry } from '@/lib/types';
 
+type TrackedDateInfo = {
+  mealCount: number;
+  status: DailySummary['status'];
+};
+
 type E2EWindowControls = {
   enabled: boolean;
   reset: () => Promise<void>;
@@ -57,6 +62,8 @@ type AppDataContextValue = {
   deleteWeight: (id: number) => Promise<void>;
   getMealsByDate: (date: string) => MealEntry[];
   getSummaryByDate: (date: string) => DailySummary;
+  trackedDates: Record<string, TrackedDateInfo>;
+  hasTrackedMeals: (date: string) => boolean;
 };
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
@@ -154,6 +161,13 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   }, [profile, meals, weights]);
 
   const summaries = buildSummaries(meals, profile);
+  const trackedDates = summaries.reduce<Record<string, TrackedDateInfo>>((lookup, summary) => {
+    lookup[summary.date] = {
+      mealCount: summary.mealCount,
+      status: summary.status,
+    };
+    return lookup;
+  }, {});
 
   const value: AppDataContextValue = {
     isReady,
@@ -204,6 +218,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         mealCount: 0,
         status: 'empty',
       };
+    },
+    trackedDates,
+    hasTrackedMeals(date) {
+      return (trackedDates[date]?.mealCount ?? 0) > 0;
     },
   };
 

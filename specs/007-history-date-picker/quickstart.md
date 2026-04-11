@@ -63,6 +63,7 @@ npm run e2e:us2
 - Open History with several logged days
 - Confirm the old per-date card list is gone
 - Open the date picker and jump directly to a tracked date
+- Confirm today is selected when History first opens
 - Confirm that tracked day's meals and summary render immediately
 
 ### User Story 2
@@ -81,11 +82,14 @@ npm run e2e:us2
 
 ## Verification Log
 
-- `npm run lint`: pending implementation
-- `npm run typecheck`: pending implementation
-- `npm run e2e:us2`: pending implementation
-- `npm run e2e:coverage`: pending implementation
-- Touched-platform evidence: Web acceptance proof will come from
-  `e2e/specs/history-regression.spec.ts`. Manual review should still confirm
-  the picker emphasis and empty-day layout on iOS and Android because this is
-  a user-visible History control shared across platforms.
+- `npm run lint`: pass on 2026-04-12
+- `npm run typecheck`: pass on 2026-04-12
+- `npm run e2e:us2`: pass on 2026-04-12
+- `npm run e2e:coverage`: pass on 2026-04-12
+- Web review notes: Playwright covered today-default entry, tracked-date
+  selection, empty-date state, suggestion flow, legacy meal-type edits, and
+  refresh after deleting the last meal on a selected date.
+- iOS review notes: manual review still needed in Expo client or simulator for
+  picker spacing, month navigation touch targets, and empty-day layout.
+- Android review notes: manual review still needed in Expo client or emulator
+  for picker spacing, month navigation touch targets, and empty-day layout.

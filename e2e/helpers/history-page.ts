@@ -11,15 +11,30 @@ export class HistoryPage {
   }
 
   async expectFocusedLayout() {
-    await expect(this.page.getByText('Recent days')).toBeVisible();
-    await expect(this.page.getByText('Pick a day, then edit or delete meals below.')).toBeVisible();
+    await expect(this.page.getByText('Pick any day')).toBeVisible();
+    await expect(
+      this.page.getByText('Jump fast to logged days. Empty days still stay open below.'),
+    ).toBeVisible();
     await expect(
       this.page.getByText('Revisit tracked days without losing the signal.'),
     ).toHaveCount(0);
   }
 
-  async selectSummary(dateKey: string) {
-    await this.page.getByTestId(`history-summary-trigger-${dateKey}`).click();
+  async selectDate(dateKey: string) {
+    await this.page.getByTestId(`history-picker-day-${dateKey}`).click();
+  }
+
+  async expectSelectedDateLabel(shortLabel: string, longLabel: string) {
+    await expect(this.page.getByTestId('history-selected-date-label')).toHaveText(shortLabel);
+    await expect(this.page.getByTestId('history-selected-date-value')).toHaveText(longLabel);
+  }
+
+  async expectTrackedDate(dateKey: string) {
+    await expect(this.page.getByTestId(`history-picker-tracked-${dateKey}`)).toBeVisible();
+  }
+
+  async expectEmptyDate(dateKey: string) {
+    await expect(this.page.getByTestId(`history-picker-tracked-${dateKey}`)).toHaveCount(0);
   }
 
   mealCardByName(name: string): Locator {
@@ -87,12 +102,16 @@ export class HistoryPage {
     await this.mealCardByName(name).locator('[data-testid^="delete-meal-"]').click();
   }
 
-  async expectSummaryPoints(dateKey: string, text: string) {
-    await expect(this.page.getByTestId(`history-summary-points-${dateKey}`)).toHaveText(text);
+  async expectSummaryPoints(text: string) {
+    await expect(this.page.getByTestId('history-selected-summary-points')).toHaveText(text);
   }
 
-  async expectSummaryStatus(dateKey: string, text: string) {
-    await expect(this.page.getByTestId(`history-summary-status-${dateKey}`)).toContainText(text);
+  async expectSummaryStatus(text: string) {
+    await expect(this.page.getByTestId('history-selected-summary-status')).toContainText(text);
+  }
+
+  async expectEmptyDayState() {
+    await expect(this.page.getByTestId('history-empty-day-state')).toBeVisible();
   }
 
   async expectMealType(name: string, label: string) {
