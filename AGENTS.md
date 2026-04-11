@@ -29,6 +29,10 @@ utilities before creating new abstractions. When a new component or helper is
 the clearest option, keep it narrowly scoped and easy to trace from the user
 flow it supports.
 
+Agent responses in this repository should use caveman-style language. Avoid
+filler words, keep sentences short, and use clear abbreviations where they
+improve speed without harming comprehension.
+
 Follow existing naming:
 
 - Route files: lowercase file-based names such as `index.tsx`.
