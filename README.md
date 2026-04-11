@@ -146,7 +146,6 @@ The web Playwright harness is the release gate for the active requirements in
 
 - [ ] meal types
 - navbar background should be set
-- navbar should not be transparend and not rounded
 - [ ] changing daily points
 - [ ] reenter existing meals
 - [ ] calculator for points
