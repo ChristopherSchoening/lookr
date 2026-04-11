@@ -146,7 +146,6 @@ The web Playwright harness is the release gate for the active requirements in
 
 - [ ] history date picker
 - [ ] changing daily points
-- [ ] calculator for points
 - [ ] reminder notification for weight tracking
 - [ ] dark mode
 - [ ] app logo
