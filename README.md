@@ -148,3 +148,4 @@ The web Playwright harness is the release gate for the active requirements in
 - dark mode
 - app logo
 - points calculator
+- points (daily limit) calculator
