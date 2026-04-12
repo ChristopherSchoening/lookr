@@ -63,13 +63,14 @@ helpers, or suites.
 ### Verification for User Story 1 ⚠️
 
 - [ ] T008 [P] [US1] Extend current-day limit update acceptance coverage in `e2e/specs/dashboard-core.spec.ts`
-- [ ] T009 [US1] Document manual limit-edit and same-day refresh checks in `specs/008-daily-limit-adherence/quickstart.md`
+- [ ] T009 [US1] Document manual timed limit-edit, same-day refresh, and invalid-input checks in `specs/008-daily-limit-adherence/quickstart.md`
 
 ### Implementation for User Story 1
 
 - [ ] T010 [US1] Add editable daily-limit UI for existing profiles in `src/app/(tabs)/index.tsx`
 - [ ] T011 [US1] Wire limit-save validation and current-day refresh through shared app data in `src/app/(tabs)/index.tsx` and `src/context/app-data.tsx`
 - [ ] T012 [US1] Ensure same-day and future-day summaries consume the updated effective limit in `src/context/app-data.tsx` and `src/app/(tabs)/index.tsx`
+- [ ] T013 [US1] Verify current-day budget displays stay consistent after a same-day limit change in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -83,15 +84,15 @@ helpers, or suites.
 
 ### Verification for User Story 2 ⚠️
 
-- [ ] T013 [P] [US2] Extend historical-limit History acceptance coverage in `e2e/specs/history-regression.spec.ts`
-- [ ] T014 [P] [US2] Extend historical-limit fixture coverage in `e2e/fixtures/seed-states.ts`
-- [ ] T015 [US2] Document manual historical-adherence review steps in `specs/008-daily-limit-adherence/quickstart.md`
+- [ ] T014 [P] [US2] Extend historical-limit History acceptance coverage in `e2e/specs/history-regression.spec.ts`
+- [ ] T015 [P] [US2] Extend historical-limit fixture coverage in `e2e/fixtures/seed-states.ts`
+- [ ] T016 [US2] Document manual historical-adherence review steps in `specs/008-daily-limit-adherence/quickstart.md`
 
 ### Implementation for User Story 2
 
-- [ ] T016 [US2] Show History day summaries from historical effective limits in `src/app/(tabs)/history.tsx` and `src/context/app-data.tsx`
-- [ ] T017 [US2] Recalculate edited or deleted past-day meals against the limit active on that past date in `src/context/app-data.tsx` and `src/lib/db.ts`
-- [ ] T018 [US2] Keep empty-day and mixed-history adherence behavior stable after later limit changes in `src/context/app-data.tsx` and `src/app/(tabs)/history.tsx`
+- [ ] T017 [US2] Show History day summaries from historical effective limits in `src/app/(tabs)/history.tsx` and `src/context/app-data.tsx`
+- [ ] T018 [US2] Recalculate edited or deleted past-day meals against the limit active on that past date in `src/context/app-data.tsx` and `src/lib/db.ts`
+- [ ] T019 [US2] Keep empty-day and mixed-history adherence behavior stable after later limit changes in `src/context/app-data.tsx` and `src/app/(tabs)/history.tsx`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -105,14 +106,14 @@ helpers, or suites.
 
 ### Verification for User Story 3 ⚠️
 
-- [ ] T019 [P] [US3] Extend adherence-boundary acceptance coverage in `e2e/specs/progress-regression.spec.ts`
-- [ ] T020 [US3] Document manual Progress consistency review steps in `specs/008-daily-limit-adherence/quickstart.md`
+- [ ] T020 [P] [US3] Extend adherence-boundary acceptance coverage in `e2e/specs/progress-regression.spec.ts`
+- [ ] T021 [US3] Document manual Progress consistency review steps in `specs/008-daily-limit-adherence/quickstart.md`
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Update Progress adherence aggregation to use per-day effective limits in `src/app/(tabs)/progress.tsx` and `src/context/app-data.tsx`
-- [ ] T022 [US3] Ensure current day enters adherence immediately after same-day limit changes in `src/context/app-data.tsx` and `src/app/(tabs)/progress.tsx`
-- [ ] T023 [US3] Keep Home, History, and Progress summary wording consistent with shared effective-limit status in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
+- [ ] T022 [US3] Update Progress adherence aggregation to use per-day effective limits in `src/app/(tabs)/progress.tsx` and `src/context/app-data.tsx`
+- [ ] T023 [US3] Ensure current day enters adherence immediately after same-day limit changes in `src/context/app-data.tsx` and `src/app/(tabs)/progress.tsx`
+- [ ] T024 [US3] Keep Home, History, and Progress summary wording consistent with shared effective-limit status in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -122,8 +123,9 @@ helpers, or suites.
 
 **Purpose**: Final verification and cross-story cleanup
 
-- [ ] T024 [P] Capture touched-platform review notes for web, iOS, and Android limit-edit and adherence behavior in `specs/008-daily-limit-adherence/quickstart.md`
-- [ ] T025 Run full verification commands and record outcomes in `specs/008-daily-limit-adherence/quickstart.md`
+- [ ] T025 [P] Capture touched-platform screenshots or recordings, or explicit justification when notes are sufficient, for web, iOS, and Android limit-edit and adherence behavior in `specs/008-daily-limit-adherence/quickstart.md`
+- [ ] T026 [P] Confirm the UI/data contract stays aligned with implemented hooks and surfaces in `specs/008-daily-limit-adherence/contracts/daily-limit-adherence-contract.md` and `specs/008-daily-limit-adherence/quickstart.md`
+- [ ] T027 Run full verification commands and record outcomes in `specs/008-daily-limit-adherence/quickstart.md`
 
 ---
 
@@ -159,9 +161,9 @@ helpers, or suites.
 
 - `T004`, `T006`, and `T007` can run in parallel after `T003`
 - In US1, `T008` and `T009` can run in parallel before `T010` to `T012`
-- In US2, `T013`, `T014`, and `T015` can run in parallel before `T016` to `T018`
-- In US3, `T019` and `T020` can run in parallel before `T021` to `T023`
-- `T024` and `T025` can run in parallel after implementation is complete
+- In US2, `T014`, `T015`, and `T016` can run in parallel before `T017` to `T019`
+- In US3, `T020` and `T021` can run in parallel before `T022` to `T024`
+- `T025`, `T026`, and `T027` can run in parallel after implementation is complete
 
 ---
 
