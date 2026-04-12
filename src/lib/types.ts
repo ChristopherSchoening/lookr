@@ -3,6 +3,13 @@ export type UserProfile = {
   updatedAt: string;
 };
 
+export type DailyPointLimitHistoryEntry = {
+  id: number;
+  effectiveDate: string;
+  dailyPointsLimit: number;
+  createdAt: string;
+};
+
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
 export type MealEntry = {

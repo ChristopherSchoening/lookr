@@ -54,7 +54,7 @@ npm run e2e:us2
 ## Manual Review
 
 - Set an initial daily limit, log meals today, then change the limit and confirm
-  Home updates remaining points right away
+  Home updates remaining points right away and rejects invalid values
 - Review a past tracked day that was within its old limit, change today's limit,
   and confirm that past day still shows its original adherence result
 - Edit a meal on a past day and confirm that day's totals recalculate against
@@ -71,7 +71,9 @@ npm run e2e:us2
 - Start with an existing daily limit
 - Change the limit from Home
 - Confirm today's limit metric, remaining points, and status refresh
-- Move to a future day and confirm that day uses the new limit
+- Confirm the save message appears and the current-day status updates without
+  leaving Home
+- Try `0`, blank, and non-numeric input and confirm validation blocks save
 
 ### User Story 2
 
@@ -80,21 +82,28 @@ npm run e2e:us2
 - Confirm past days keep their original within/over result
 - Edit a meal on one past day and confirm recalculation uses that past day's
   historical limit
+- Delete one past meal and confirm that day still uses the older historical
+  limit instead of today's new limit
 
 ### User Story 3
 
 - Open Progress before and after a same-day limit change
 - Confirm current day counts immediately under the new limit
 - Confirm aggregate adherence matches visible day-level history
+- Confirm adherence wording still matches the shared effective-limit rule
 
 ## Verification Log
 
-- `npm run lint`: not run in planning
-- `npm run typecheck`: not run in planning
-- `npm run e2e:coverage`: not run in planning
-- Web review notes: covered later by existing Playwright suites for Home,
-  History, and Progress after fixture and helper updates
-- iOS review notes: manual review needed after implementation for limit-edit
-  field behavior, same-day summary refresh, and cross-screen consistency
-- Android review notes: manual review needed after implementation for limit-edit
-  field behavior, same-day summary refresh, and cross-screen consistency
+- `npm run lint`: PASS
+- `npm run typecheck`: PASS
+- `npm run e2e:coverage`: PASS
+- `npm run e2e:us1`: PASS
+- `npm run e2e:us2`: PASS
+- Web review notes: Playwright coverage extended for same-day limit edits,
+  historical-limit preservation, and Progress adherence refresh
+- iOS review notes: no simulator capture in this terminal session; manual review
+  still needed for limit-edit field behavior, same-day summary refresh, and
+  cross-screen consistency
+- Android review notes: no simulator capture in this terminal session; manual
+  review still needed for limit-edit field behavior, same-day summary refresh,
+  and cross-screen consistency

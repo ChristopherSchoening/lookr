@@ -33,8 +33,8 @@ helpers, or suites.
 
 **Purpose**: Align feature docs, current data flow, and existing acceptance touchpoints before implementation starts
 
-- [ ] T001 Review and align feature docs in `specs/008-daily-limit-adherence/spec.md`, `specs/008-daily-limit-adherence/plan.md`, `specs/008-daily-limit-adherence/data-model.md`, `specs/008-daily-limit-adherence/contracts/daily-limit-adherence-contract.md`, and `specs/008-daily-limit-adherence/quickstart.md`
-- [ ] T002 Inspect current limit, summary, and adherence flow in `src/lib/db.ts`, `src/context/app-data.tsx`, `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, `src/app/(tabs)/progress.tsx`, `e2e/fixtures/seed-states.ts`, `e2e/helpers/dashboard-page.ts`, `e2e/helpers/history-page.ts`, `e2e/helpers/progress-page.ts`, `e2e/specs/dashboard-core.spec.ts`, `e2e/specs/history-regression.spec.ts`, and `e2e/specs/progress-regression.spec.ts`
+- [x] T001 Review and align feature docs in `specs/008-daily-limit-adherence/spec.md`, `specs/008-daily-limit-adherence/plan.md`, `specs/008-daily-limit-adherence/data-model.md`, `specs/008-daily-limit-adherence/contracts/daily-limit-adherence-contract.md`, and `specs/008-daily-limit-adherence/quickstart.md`
+- [x] T002 Inspect current limit, summary, and adherence flow in `src/lib/db.ts`, `src/context/app-data.tsx`, `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, `src/app/(tabs)/progress.tsx`, `e2e/fixtures/seed-states.ts`, `e2e/helpers/dashboard-page.ts`, `e2e/helpers/history-page.ts`, `e2e/helpers/progress-page.ts`, `e2e/specs/dashboard-core.spec.ts`, `e2e/specs/history-regression.spec.ts`, and `e2e/specs/progress-regression.spec.ts`
 
 ---
 
@@ -44,11 +44,11 @@ helpers, or suites.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Add the additive `daily_point_limit_history` schema migration and history-table read/write helpers in `src/lib/db.ts`
-- [ ] T004 [P] Add dated limit history types and summary typing updates in `src/lib/types.ts`
-- [ ] T005 Build effective-limit lookup and per-day summary derivation from limit history in `src/context/app-data.tsx`
-- [ ] T006 [P] Extend seeded app state and E2E snapshot support for limit-history scenarios in `src/lib/db.ts` and `e2e/fixtures/seed-states.ts`
-- [ ] T007 [P] Extend shared Playwright page helpers for limit-edit and historical summary assertions in `e2e/helpers/dashboard-page.ts`, `e2e/helpers/history-page.ts`, and `e2e/helpers/progress-page.ts`
+- [x] T003 Add the additive `daily_point_limit_history` schema migration and history-table read/write helpers in `src/lib/db.ts`
+- [x] T004 [P] Add dated limit history types and summary typing updates in `src/lib/types.ts`
+- [x] T005 Build effective-limit lookup and per-day summary derivation from limit history in `src/context/app-data.tsx`
+- [x] T006 [P] Extend seeded app state and E2E snapshot support for limit-history scenarios in `src/lib/db.ts` and `e2e/fixtures/seed-states.ts`
+- [x] T007 [P] Extend shared Playwright page helpers for limit-edit and historical summary assertions in `e2e/helpers/dashboard-page.ts`, `e2e/helpers/history-page.ts`, and `e2e/helpers/progress-page.ts`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -62,15 +62,15 @@ helpers, or suites.
 
 ### Verification for User Story 1 ⚠️
 
-- [ ] T008 [P] [US1] Extend current-day limit update acceptance coverage in `e2e/specs/dashboard-core.spec.ts`
-- [ ] T009 [US1] Document manual timed limit-edit, same-day refresh, and invalid-input checks in `specs/008-daily-limit-adherence/quickstart.md`
+- [x] T008 [P] [US1] Extend current-day limit update acceptance coverage in `e2e/specs/dashboard-core.spec.ts`
+- [x] T009 [US1] Document manual timed limit-edit, same-day refresh, and invalid-input checks in `specs/008-daily-limit-adherence/quickstart.md`
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Add editable daily-limit UI for existing profiles in `src/app/(tabs)/index.tsx`
-- [ ] T011 [US1] Wire limit-save validation and current-day refresh through shared app data in `src/app/(tabs)/index.tsx` and `src/context/app-data.tsx`
-- [ ] T012 [US1] Ensure same-day and future-day summaries consume the updated effective limit in `src/context/app-data.tsx` and `src/app/(tabs)/index.tsx`
-- [ ] T013 [US1] Verify current-day budget displays stay consistent after a same-day limit change in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
+- [x] T010 [US1] Add editable daily-limit UI for existing profiles in `src/app/(tabs)/index.tsx`
+- [x] T011 [US1] Wire limit-save validation and current-day refresh through shared app data in `src/app/(tabs)/index.tsx` and `src/context/app-data.tsx`
+- [x] T012 [US1] Ensure same-day and future-day summaries consume the updated effective limit in `src/context/app-data.tsx` and `src/app/(tabs)/index.tsx`
+- [x] T013 [US1] Verify current-day budget displays stay consistent after a same-day limit change in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -84,15 +84,15 @@ helpers, or suites.
 
 ### Verification for User Story 2 ⚠️
 
-- [ ] T014 [P] [US2] Extend historical-limit History acceptance coverage in `e2e/specs/history-regression.spec.ts`
-- [ ] T015 [P] [US2] Extend historical-limit fixture coverage in `e2e/fixtures/seed-states.ts`
-- [ ] T016 [US2] Document manual historical-adherence review steps in `specs/008-daily-limit-adherence/quickstart.md`
+- [x] T014 [P] [US2] Extend historical-limit History acceptance coverage in `e2e/specs/history-regression.spec.ts`
+- [x] T015 [P] [US2] Extend historical-limit fixture coverage in `e2e/fixtures/seed-states.ts`
+- [x] T016 [US2] Document manual historical-adherence review steps in `specs/008-daily-limit-adherence/quickstart.md`
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Show History day summaries from historical effective limits in `src/app/(tabs)/history.tsx` and `src/context/app-data.tsx`
-- [ ] T018 [US2] Recalculate edited or deleted past-day meals against the limit active on that past date in `src/context/app-data.tsx` and `src/lib/db.ts`
-- [ ] T019 [US2] Keep empty-day and mixed-history adherence behavior stable after later limit changes in `src/context/app-data.tsx` and `src/app/(tabs)/history.tsx`
+- [x] T017 [US2] Show History day summaries from historical effective limits in `src/app/(tabs)/history.tsx` and `src/context/app-data.tsx`
+- [x] T018 [US2] Recalculate edited or deleted past-day meals against the limit active on that past date in `src/context/app-data.tsx` and `src/lib/db.ts`
+- [x] T019 [US2] Keep empty-day and mixed-history adherence behavior stable after later limit changes in `src/context/app-data.tsx` and `src/app/(tabs)/history.tsx`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -106,14 +106,14 @@ helpers, or suites.
 
 ### Verification for User Story 3 ⚠️
 
-- [ ] T020 [P] [US3] Extend adherence-boundary acceptance coverage in `e2e/specs/progress-regression.spec.ts`
-- [ ] T021 [US3] Document manual Progress consistency review steps in `specs/008-daily-limit-adherence/quickstart.md`
+- [x] T020 [P] [US3] Extend adherence-boundary acceptance coverage in `e2e/specs/progress-regression.spec.ts`
+- [x] T021 [US3] Document manual Progress consistency review steps in `specs/008-daily-limit-adherence/quickstart.md`
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Update Progress adherence aggregation to use per-day effective limits in `src/app/(tabs)/progress.tsx` and `src/context/app-data.tsx`
-- [ ] T023 [US3] Ensure current day enters adherence immediately after same-day limit changes in `src/context/app-data.tsx` and `src/app/(tabs)/progress.tsx`
-- [ ] T024 [US3] Keep Home, History, and Progress summary wording consistent with shared effective-limit status in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
+- [x] T022 [US3] Update Progress adherence aggregation to use per-day effective limits in `src/app/(tabs)/progress.tsx` and `src/context/app-data.tsx`
+- [x] T023 [US3] Ensure current day enters adherence immediately after same-day limit changes in `src/context/app-data.tsx` and `src/app/(tabs)/progress.tsx`
+- [x] T024 [US3] Keep Home, History, and Progress summary wording consistent with shared effective-limit status in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -123,9 +123,9 @@ helpers, or suites.
 
 **Purpose**: Final verification and cross-story cleanup
 
-- [ ] T025 [P] Capture touched-platform screenshots or recordings, or explicit justification when notes are sufficient, for web, iOS, and Android limit-edit and adherence behavior in `specs/008-daily-limit-adherence/quickstart.md`
-- [ ] T026 [P] Confirm the UI/data contract stays aligned with implemented hooks and surfaces in `specs/008-daily-limit-adherence/contracts/daily-limit-adherence-contract.md` and `specs/008-daily-limit-adherence/quickstart.md`
-- [ ] T027 Run full verification commands and record outcomes in `specs/008-daily-limit-adherence/quickstart.md`
+- [x] T025 [P] Capture touched-platform screenshots or recordings, or explicit justification when notes are sufficient, for web, iOS, and Android limit-edit and adherence behavior in `specs/008-daily-limit-adherence/quickstart.md`
+- [x] T026 [P] Confirm the UI/data contract stays aligned with implemented hooks and surfaces in `specs/008-daily-limit-adherence/contracts/daily-limit-adherence-contract.md` and `specs/008-daily-limit-adherence/quickstart.md`
+- [x] T027 Run full verification commands and record outcomes in `specs/008-daily-limit-adherence/quickstart.md`
 
 ---
 

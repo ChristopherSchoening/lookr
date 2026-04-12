@@ -2,6 +2,7 @@ import {
   attachSnapshotOnFailure,
   annotateScenario,
   prepareLegacyMealTypeMigration,
+  readAppSnapshot,
   seedAppState,
 } from '../helpers/app-helpers';
 import {
@@ -96,6 +97,30 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await dashboard.expectStatus('5 points over today');
     await expect(dashboard.mealCardByName('Pasta dinner')).toBeVisible();
     await dashboard.expectMealType('Pasta dinner', 'Dinner');
+  });
+
+  test('dashboard-limit-edit refreshes same day and appends history row', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'dashboard-limit-edit-refresh', ['US1-AS1', 'US1-AS2', 'US1-AS3']);
+
+    await seedAppState(appPage, createOverLimitSeedState());
+
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+
+    await dashboard.expectDailyLimit(24);
+    await dashboard.expectRemainingPoints(-5);
+    await dashboard.updateDailyLimit(30);
+    await dashboard.expectDailyLimit(30);
+    await dashboard.expectRemainingPoints(1);
+    await dashboard.expectStatus('1 points left today.');
+    await dashboard.expectDailyLimitMessage('Daily point limit updated for today.');
+
+    const snapshot = await readAppSnapshot(appPage);
+    expect(snapshot.profile?.dailyPointsLimit).toBe(30);
+    expect(snapshot.dailyPointLimitHistory[0]?.dailyPointsLimit).toBe(30);
+    expect(snapshot.dailyPointLimitHistory[0]?.effectiveDate).toBe(getRelativeDateKey(0));
   });
 
   test('dashboard-add-meal-suggestions cover threshold, ordering, dedupe, and selection', async ({

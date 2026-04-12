@@ -6,6 +6,7 @@ import {
   deleteMeal as deleteMealRecord,
   deleteWeight as deleteWeightRecord,
   getE2ESnapshot,
+  listDailyPointLimitHistory,
   listMeals,
   listWeights,
   loadProfile,
@@ -17,7 +18,14 @@ import {
   type E2ESeedState,
   updateMeal as updateMealRecord,
 } from '@/lib/db';
-import type { DailySummary, MealEntry, MealType, UserProfile, WeightEntry } from '@/lib/types';
+import type {
+  DailyPointLimitHistoryEntry,
+  DailySummary,
+  MealEntry,
+  MealType,
+  UserProfile,
+  WeightEntry,
+} from '@/lib/types';
 
 type TrackedDateInfo = {
   mealCount: number;
@@ -42,6 +50,7 @@ declare global {
 type AppDataContextValue = {
   isReady: boolean;
   profile: UserProfile | null;
+  dailyPointLimitHistory: DailyPointLimitHistoryEntry[];
   meals: MealEntry[];
   weights: WeightEntry[];
   summaries: DailySummary[];
@@ -68,8 +77,20 @@ type AppDataContextValue = {
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
 
-function buildSummaries(meals: MealEntry[], profile: UserProfile | null): DailySummary[] {
-  const dailyLimit = profile?.dailyPointsLimit ?? 0;
+function resolveDailyLimitForDate(
+  date: string,
+  dailyPointLimitHistory: DailyPointLimitHistoryEntry[],
+  profile: UserProfile | null,
+) {
+  const effectiveEntry = dailyPointLimitHistory.find((entry) => entry.effectiveDate <= date);
+  return effectiveEntry?.dailyPointsLimit ?? profile?.dailyPointsLimit ?? 0;
+}
+
+function buildSummaries(
+  meals: MealEntry[],
+  dailyPointLimitHistory: DailyPointLimitHistoryEntry[],
+  profile: UserProfile | null,
+): DailySummary[] {
   const grouped = new Map<string, MealEntry[]>();
 
   for (const meal of meals) {
@@ -81,6 +102,7 @@ function buildSummaries(meals: MealEntry[], profile: UserProfile | null): DailyS
   return [...grouped.entries()]
     .sort((left, right) => right[0].localeCompare(left[0]))
     .map(([date, items]) => {
+      const dailyLimit = resolveDailyLimitForDate(date, dailyPointLimitHistory, profile);
       const consumedPoints = items.reduce((total, meal) => total + meal.points, 0);
       const remainingPoints = dailyLimit - consumedPoints;
 
@@ -106,17 +128,22 @@ function isE2EEnabled() {
 export function AppDataProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [dailyPointLimitHistory, setDailyPointLimitHistory] = useState<
+    DailyPointLimitHistoryEntry[]
+  >([]);
   const [meals, setMeals] = useState<MealEntry[]>([]);
   const [weights, setWeights] = useState<WeightEntry[]>([]);
 
   async function refresh() {
-    const [nextProfile, nextMeals, nextWeights] = await Promise.all([
+    const [nextProfile, nextDailyPointLimitHistory, nextMeals, nextWeights] = await Promise.all([
       loadProfile(),
+      listDailyPointLimitHistory(),
       listMeals(),
       listWeights(),
     ]);
 
     setProfile(nextProfile);
+    setDailyPointLimitHistory(nextDailyPointLimitHistory);
     setMeals(nextMeals);
     setWeights(nextWeights);
     setIsReady(true);
@@ -160,7 +187,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     };
   }, [profile, meals, weights]);
 
-  const summaries = buildSummaries(meals, profile);
+  const summaries = buildSummaries(meals, dailyPointLimitHistory, profile);
   const trackedDates = summaries.reduce<Record<string, TrackedDateInfo>>((lookup, summary) => {
     lookup[summary.date] = {
       mealCount: summary.mealCount,
@@ -172,6 +199,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const value: AppDataContextValue = {
     isReady,
     profile,
+    dailyPointLimitHistory,
     meals,
     weights,
     summaries,
@@ -209,7 +237,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         return existing;
       }
 
-      const dailyLimit = profile?.dailyPointsLimit ?? 0;
+      const dailyLimit = resolveDailyLimitForDate(date, dailyPointLimitHistory, profile);
       return {
         date,
         dailyLimit,

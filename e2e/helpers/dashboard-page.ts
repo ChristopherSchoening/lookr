@@ -23,6 +23,11 @@ export class DashboardPage {
     await this.page.getByTestId('start-tracking-button').click();
   }
 
+  async updateDailyLimit(points: number) {
+    await this.page.getByTestId('daily-limit-input').fill(String(points));
+    await this.page.getByTestId('save-daily-limit-button').click();
+  }
+
   async openMealModal() {
     await this.page.getByTestId('open-add-meal-button').click();
     await expect(this.page.getByTestId('meal-modal')).toBeVisible();
@@ -110,8 +115,16 @@ export class DashboardPage {
     await expect(this.page.getByTestId('consumed-points-metric')).toContainText(String(value));
   }
 
+  async expectDailyLimit(value: number) {
+    await expect(this.page.getByTestId('daily-limit-metric')).toContainText(String(value));
+  }
+
   async expectStatus(text: string) {
     await expect(this.page.getByTestId('summary-status')).toContainText(text);
+  }
+
+  async expectDailyLimitMessage(text: string) {
+    await expect(this.page.getByTestId('daily-limit-message')).toContainText(text);
   }
 
   async expectRemovedCopy() {
