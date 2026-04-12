@@ -66,6 +66,8 @@ point limit while preserving historical adherence by effective date.
 
 - Existing `daily-limit-input`, `daily-limit-metric`, `remaining-points-value`,
   and summary status hooks remain the anchor for Home checks
+- Existing profile setup keeps `start-tracking-button`; limit editing after
+  setup uses `save-daily-limit-button` and optional `daily-limit-message`
 - History assertions continue through existing day summary hooks and meal edit
   flows; new hooks should be added only if historical-limit visibility cannot
   be proven otherwise

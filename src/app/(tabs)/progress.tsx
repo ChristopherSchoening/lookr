@@ -32,8 +32,9 @@ export default function ProgressScreen() {
   const previousWeight = sortedWeights[1];
   const weightDelta =
     latestWeight && previousWeight ? latestWeight.weight - previousWeight.weight : 0;
-  const trackedDays = appData.summaries.filter((summary) => summary.mealCount > 0).length;
-  const withinDays = appData.summaries.filter((summary) => summary.status === 'within').length;
+  const trackedSummaries = appData.summaries.filter((summary) => summary.mealCount > 0);
+  const trackedDays = trackedSummaries.length;
+  const withinDays = trackedSummaries.filter((summary) => summary.status === 'within').length;
 
   async function submitWeight() {
     const parsedWeight = Number(weightInput);
@@ -77,7 +78,7 @@ export default function ProgressScreen() {
             <Metric
               label="Adherence"
               value={trackedDays > 0 ? `${withinDays}/${trackedDays}` : '—'}
-              note="Days within point limit"
+              note="Days within effective point limit"
               testID="adherence-metric"
             />
           </View>

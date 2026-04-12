@@ -1,13 +1,19 @@
 import { openDatabaseAsync, type SQLiteDatabase, type SQLiteRunResult } from 'expo-sqlite';
 import { Platform } from 'react-native';
 
-import { currentTimeLabel, isFutureDate, nowIso } from '@/lib/date';
-import type { MealEntry, MealType, UserProfile, WeightEntry } from '@/lib/types';
+import { currentTimeLabel, isFutureDate, nowIso, todayKey } from '@/lib/date';
+import type {
+  DailyPointLimitHistoryEntry,
+  MealEntry,
+  MealType,
+  UserProfile,
+  WeightEntry,
+} from '@/lib/types';
 
 let databasePromise: Promise<SQLiteDatabase> | null = null;
 let databaseInitializationPromise: Promise<SQLiteDatabase> | null = null;
 
-const DATABASE_SCHEMA_VERSION = 2;
+const DATABASE_SCHEMA_VERSION = 3;
 
 type ProfileRow = {
   daily_points_limit: number;
@@ -23,6 +29,13 @@ type MealRow = {
   meal_type: string | null;
   created_at: string;
   updated_at: string;
+};
+
+type DailyPointLimitHistoryRow = {
+  id: number;
+  effective_date: string;
+  daily_points_limit: number;
+  created_at: string;
 };
 
 type WeightRow = {
@@ -50,8 +63,15 @@ export type E2ESeedWeight = {
   updatedAt?: string;
 };
 
+export type E2ESeedDailyPointLimitHistory = {
+  effectiveDate: string;
+  dailyPointsLimit: number;
+  createdAt?: string;
+};
+
 export type E2ESeedState = {
-  profile?: { dailyPointsLimit: number } | null;
+  profile?: { dailyPointsLimit: number; updatedAt?: string } | null;
+  dailyPointLimitHistory?: E2ESeedDailyPointLimitHistory[];
   meals?: E2ESeedMeal[];
   weights?: E2ESeedWeight[];
 };
@@ -83,6 +103,12 @@ async function getDb() {
           daily_points_limit INTEGER NOT NULL,
           updated_at TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS daily_point_limit_history (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          effective_date TEXT NOT NULL,
+          daily_points_limit INTEGER NOT NULL,
+          created_at TEXT NOT NULL
+        );
         CREATE TABLE IF NOT EXISTS meal_entries (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           meal_name TEXT NOT NULL,
@@ -111,6 +137,39 @@ async function getDb() {
         );
         if (!mealColumns.some((column) => column.name === 'meal_type')) {
           await db.execAsync('ALTER TABLE meal_entries ADD COLUMN meal_type TEXT;');
+        }
+      }
+
+      if (currentVersion < 3) {
+        await db.execAsync(`
+          CREATE TABLE IF NOT EXISTS daily_point_limit_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            effective_date TEXT NOT NULL,
+            daily_points_limit INTEGER NOT NULL,
+            created_at TEXT NOT NULL
+          );
+        `);
+
+        const profileRow = await db.getFirstAsync<ProfileRow>(
+          'SELECT daily_points_limit, updated_at FROM user_profile WHERE id = 1',
+        );
+        const historyCountRow = await db.getFirstAsync<{ count: number }>(
+          'SELECT COUNT(*) AS count FROM daily_point_limit_history',
+        );
+
+        if (profileRow && (historyCountRow?.count ?? 0) === 0) {
+          await db.runAsync(
+            `
+              INSERT INTO daily_point_limit_history (
+                effective_date,
+                daily_points_limit,
+                created_at
+              ) VALUES (?, ?, ?)
+            `,
+            todayKey(),
+            profileRow.daily_points_limit,
+            profileRow.updated_at,
+          );
         }
       }
 
@@ -172,6 +231,39 @@ async function insertWeightSeed(db: SQLiteDatabase, weight: E2ESeedWeight) {
   );
 }
 
+async function insertProfileSeed(
+  db: SQLiteDatabase,
+  profile: NonNullable<E2ESeedState['profile']>,
+) {
+  const updatedAt = profile.updatedAt ?? nowIso();
+  await db.runAsync(
+    `
+      INSERT INTO user_profile (id, daily_points_limit, updated_at)
+      VALUES (1, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        daily_points_limit = excluded.daily_points_limit,
+        updated_at = excluded.updated_at
+    `,
+    profile.dailyPointsLimit,
+    updatedAt,
+  );
+}
+
+async function insertDailyPointLimitHistorySeed(
+  db: SQLiteDatabase,
+  historyEntry: E2ESeedDailyPointLimitHistory,
+) {
+  await db.runAsync(
+    `
+      INSERT INTO daily_point_limit_history (effective_date, daily_points_limit, created_at)
+      VALUES (?, ?, ?)
+    `,
+    historyEntry.effectiveDate,
+    historyEntry.dailyPointsLimit,
+    historyEntry.createdAt ?? nowIso(),
+  );
+}
+
 export async function loadProfile(): Promise<UserProfile | null> {
   const db = await getDb();
   const row = await db.getFirstAsync<ProfileRow>(
@@ -186,6 +278,24 @@ export async function loadProfile(): Promise<UserProfile | null> {
   };
 }
 
+export async function listDailyPointLimitHistory(): Promise<DailyPointLimitHistoryEntry[]> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<DailyPointLimitHistoryRow>(
+    `
+      SELECT id, effective_date, daily_points_limit, created_at
+      FROM daily_point_limit_history
+      ORDER BY effective_date DESC, created_at DESC, id DESC
+    `,
+  );
+
+  return rows.map((row) => ({
+    id: row.id,
+    effectiveDate: row.effective_date,
+    dailyPointsLimit: row.daily_points_limit,
+    createdAt: row.created_at,
+  }));
+}
+
 export async function saveProfile(dailyPointsLimit: number) {
   const db = await getDb();
   const updatedAt = nowIso();
@@ -197,6 +307,15 @@ export async function saveProfile(dailyPointsLimit: number) {
         daily_points_limit = excluded.daily_points_limit,
         updated_at = excluded.updated_at
     `,
+    dailyPointsLimit,
+    updatedAt,
+  );
+  await db.runAsync(
+    `
+      INSERT INTO daily_point_limit_history (effective_date, daily_points_limit, created_at)
+      VALUES (?, ?, ?)
+    `,
+    todayKey(),
     dailyPointsLimit,
     updatedAt,
   );
@@ -353,10 +472,12 @@ export async function resetE2EState() {
   assertWebE2EAccess();
   const db = await getDb();
   await db.execAsync(`
+    DELETE FROM daily_point_limit_history;
     DELETE FROM meal_entries;
     DELETE FROM weight_entries;
     DELETE FROM user_profile;
-    DELETE FROM sqlite_sequence WHERE name IN ('meal_entries', 'weight_entries');
+    DELETE FROM sqlite_sequence
+    WHERE name IN ('daily_point_limit_history', 'meal_entries', 'weight_entries');
   `);
 }
 
@@ -364,11 +485,23 @@ export async function seedE2EState(seed: E2ESeedState) {
   assertWebE2EAccess();
   await resetE2EState();
 
+  const db = await getDb();
+
   if (seed.profile) {
-    await saveProfile(seed.profile.dailyPointsLimit);
+    await insertProfileSeed(db, seed.profile);
   }
 
-  const db = await getDb();
+  for (const historyEntry of seed.dailyPointLimitHistory ?? []) {
+    await insertDailyPointLimitHistorySeed(db, historyEntry);
+  }
+
+  if (seed.profile && (seed.dailyPointLimitHistory?.length ?? 0) === 0) {
+    await insertDailyPointLimitHistorySeed(db, {
+      effectiveDate: todayKey(),
+      dailyPointsLimit: seed.profile.dailyPointsLimit,
+      createdAt: seed.profile.updatedAt,
+    });
+  }
 
   for (const meal of seed.meals ?? []) {
     await insertMealSeed(db, meal);
@@ -421,10 +554,16 @@ export async function prepareLegacyMealTypeMigrationE2E() {
 export async function getE2ESnapshot() {
   assertWebE2EAccess();
 
-  const [profile, meals, weights] = await Promise.all([loadProfile(), listMeals(), listWeights()]);
+  const [profile, dailyPointLimitHistory, meals, weights] = await Promise.all([
+    loadProfile(),
+    listDailyPointLimitHistory(),
+    listMeals(),
+    listWeights(),
+  ]);
 
   return {
     profile,
+    dailyPointLimitHistory,
     meals,
     weights,
   };

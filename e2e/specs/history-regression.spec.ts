@@ -2,11 +2,13 @@ import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../help
 import { formatLongDate } from '../../src/lib/date';
 import {
   createHistorySeedState,
+  createHistoricalLimitSeedState,
   createLegacyMealSeedState,
   createMealSuggestionSeedState,
   getEmptyDateKey,
   getRelativeDateKey,
 } from '../fixtures/seed-states';
+import { DashboardPage } from '../helpers/dashboard-page';
 import { HistoryPage } from '../helpers/history-page';
 import { expect, test } from '../fixtures/app-fixtures';
 
@@ -114,6 +116,39 @@ test.describe('History picker and editing coverage', () => {
     await history.expectSummaryPoints('6/24');
     await history.expectSummaryStatus('18 points remaining');
     await expect(history.mealCardByName('Recovery soup')).toBeVisible();
+  });
+
+  test('history-keeps old limit after today changes and past edits recalc against that limit', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'history-historical-limit-preserved', [
+      'US2-AS1',
+      'US2-AS2',
+      'US2-AS3',
+    ]);
+
+    await seedAppState(appPage, createHistoricalLimitSeedState());
+
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+    await dashboard.updateDailyLimit(30);
+    await dashboard.expectDailyLimit(30);
+
+    const yesterday = getRelativeDateKey(-1);
+    const history = new HistoryPage(appPage);
+    await history.goto();
+    await history.selectDate(yesterday);
+    await history.expectSummaryPoints('21/20');
+    await history.expectSummaryStatus('1 points over limit');
+
+    await history.startEditingMeal('Lunch wrap');
+    await history.saveMeal('Lunch wrap', 11, 'lunch');
+    await history.expectSummaryPoints('20/20');
+    await history.expectSummaryStatus('0 points remaining');
+
+    await history.deleteMeal('Soup dinner');
+    await history.expectSummaryPoints('11/20');
+    await history.expectSummaryStatus('9 points remaining');
   });
 
   test('history-edit-suggestions stay quiet until name changes and remain editable', async ({

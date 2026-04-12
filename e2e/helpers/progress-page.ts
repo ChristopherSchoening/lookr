@@ -21,6 +21,10 @@ export class ProgressPage {
     await this.page.getByTestId('save-weight-button').click();
   }
 
+  async expectAdherence(text: string) {
+    await expect(this.page.getByTestId('adherence-metric')).toContainText(text);
+  }
+
   async expectWeightEntry(dateKey: string, value: string) {
     await expect(this.page.getByTestId(`weight-value-${dateKey}`)).toHaveText(value);
   }

@@ -4,6 +4,11 @@ import type { E2ESeedState } from '../../src/lib/db';
 
 type AppSnapshot = {
   profile: { dailyPointsLimit: number } | null;
+  dailyPointLimitHistory: Array<{
+    id: number;
+    effectiveDate: string;
+    dailyPointsLimit: number;
+  }>;
   meals: Array<{
     id: number;
     mealName: string;
@@ -53,6 +58,12 @@ export async function readAppSnapshot(page: Page): Promise<AppSnapshot> {
 
     return {
       profile: snapshot?.profile ? { dailyPointsLimit: snapshot.profile.dailyPointsLimit } : null,
+      dailyPointLimitHistory:
+        snapshot?.dailyPointLimitHistory.map((entry) => ({
+          id: entry.id,
+          effectiveDate: entry.effectiveDate,
+          dailyPointsLimit: entry.dailyPointsLimit,
+        })) ?? [],
       meals:
         snapshot?.meals.map((meal) => ({
           id: meal.id,

@@ -218,6 +218,102 @@ export function createProgressSeedState(): E2ESeedState {
   };
 }
 
+export function createHistoricalLimitSeedState(): E2ESeedState {
+  const today = toDateKey(0);
+  const yesterday = toDateKey(-1);
+  const twoDaysAgo = toDateKey(-2);
+  const fiveDaysAgo = toDateKey(-5);
+
+  return {
+    profile: { dailyPointsLimit: 24 },
+    dailyPointLimitHistory: [
+      {
+        effectiveDate: fiveDaysAgo,
+        dailyPointsLimit: 20,
+        createdAt: `${fiveDaysAgo}T08:00:00.000Z`,
+      },
+      { effectiveDate: today, dailyPointsLimit: 24 },
+    ],
+    meals: [
+      {
+        mealName: 'Today lunch',
+        points: 16,
+        entryDate: today,
+        entryTime: '12:30 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Lunch wrap',
+        points: 12,
+        entryDate: yesterday,
+        entryTime: '12:30 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Soup dinner',
+        points: 9,
+        entryDate: yesterday,
+        entryTime: '6:45 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Chili leftovers',
+        points: 18,
+        entryDate: twoDaysAgo,
+        entryTime: '7:00 PM',
+        mealType: 'dinner',
+      },
+    ],
+    weights: [],
+  };
+}
+
+export function createHistoricalLimitProgressSeedState(): E2ESeedState {
+  const today = toDateKey(0);
+  const yesterday = toDateKey(-1);
+  const twoDaysAgo = toDateKey(-2);
+  const fiveDaysAgo = toDateKey(-5);
+
+  return {
+    profile: { dailyPointsLimit: 24 },
+    dailyPointLimitHistory: [
+      {
+        effectiveDate: fiveDaysAgo,
+        dailyPointsLimit: 20,
+        createdAt: `${fiveDaysAgo}T08:00:00.000Z`,
+      },
+      { effectiveDate: today, dailyPointsLimit: 24 },
+    ],
+    meals: [
+      {
+        mealName: 'Today bowl',
+        points: 26,
+        entryDate: today,
+        entryTime: '7:10 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Yesterday soup',
+        points: 18,
+        entryDate: yesterday,
+        entryTime: '6:30 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Burger night',
+        points: 22,
+        entryDate: twoDaysAgo,
+        entryTime: '7:00 PM',
+        mealType: 'dinner',
+      },
+    ],
+    weights: [
+      { entryDate: twoDaysAgo, weight: 82.2 },
+      { entryDate: yesterday, weight: 81.9 },
+    ],
+  };
+}
+
 export function getRelativeDateKey(offsetDays = 0) {
   return toDateKey(offsetDays);
 }
