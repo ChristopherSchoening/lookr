@@ -16,6 +16,9 @@
 ### Session 2026-04-25
 
 - Q: Where should users change the daily point limit? → A: The daily point limit setting belongs in Progress, not Home.
+- Q: Where should first-time daily limit setup happen? → A: Progress owns initial setup and later edits; Home never shows the daily limit setting.
+- Q: What should Home do when daily limit setup is incomplete? → A: Home shows a brief prompt or action that sends the user to Progress setup, without showing the setting.
+- Q: Which number formats should daily point limits accept? → A: Daily point limits accept any positive numeric value, including whole numbers and decimals.
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -25,14 +28,16 @@ A user opens Progress, changes their daily point limit, and sees the new limit t
 
 **Why this priority**: The feature has no value if users cannot change the limit they actively track against.
 
-**Independent Test**: Can be fully tested by starting with an existing daily point limit, opening Progress, updating it there, and confirming the current day's budget and future-day budget use the new value while Home no longer offers the setting.
+**Independent Test**: Can be fully tested by starting with no daily point limit or an existing daily point limit, opening Progress, saving the limit there, and confirming the current day's budget and future-day budget use the saved value while Home never offers the setting.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user already has a daily point limit, **When** they open Progress and save a new daily point limit, **Then** the entire current day, including meals logged earlier that day, updates to use the new limit immediately and its adherence status refreshes at once.
-2. **Given** a user updates their daily point limit, **When** they later view a future day before or after logging meals, **Then** that day uses the new limit until the user changes it again.
-3. **Given** a user enters an invalid daily point limit, **When** they try to save it, **Then** the system rejects the change and explains what must be corrected.
-4. **Given** a user opens Home, **When** they scan the current-day summary, **Then** they can see the current budget state but cannot edit the daily point limit from Home.
+1. **Given** a user has no saved daily point limit, **When** they open Progress and save a valid daily point limit, **Then** the app starts tracking against that limit for the current day and future days.
+2. **Given** a user already has a daily point limit, **When** they open Progress and save a new daily point limit, **Then** the entire current day, including meals logged earlier that day, updates to use the new limit immediately and its adherence status refreshes at once.
+3. **Given** a user updates their daily point limit, **When** they later view a future day before or after logging meals, **Then** that day uses the new limit until the user changes it again.
+4. **Given** a user enters zero, a negative value, a blank value, or non-numeric text as the daily point limit in Progress, **When** they try to save it, **Then** the system rejects the change and explains that the limit must be a positive number.
+5. **Given** a user opens Home without a saved daily point limit, **When** they scan the current-day summary, **Then** Home shows a brief prompt or action that sends them to Progress setup without showing the daily point limit setting.
+6. **Given** a user opens Home with a saved daily point limit, **When** they scan the current-day summary, **Then** they can see the current budget state but cannot edit the daily point limit from Home.
 
 **Automated Proof**: Extend `e2e/specs/progress-regression.spec.ts` to cover editing the limit from Progress, verifying the current-day budget refreshes, and confirming Home does not expose the daily limit setting.
 
@@ -80,14 +85,16 @@ A user opens Progress and sees adherence totals that match the limit that was ac
 - What happens when a past day has no logged meals? A later limit change must not turn that day into an adhered day if it was previously treated as untracked.
 - What happens when the new limit is lower than points already consumed today? The day must remain valid, but the user must see that today is over the new limit.
 - What happens when a user edits a past day's meals after several later limit changes? That past day must be recalculated only against the limit that was active on that past date.
-- What happens when a user expects to change the daily limit from Home? Home must not expose the setting, but must still reflect the saved limit in current-day budget feedback after the user changes it from Progress.
+- What happens when a user has not set a daily point limit yet? Progress must provide setup, and Home must show a brief prompt or action that sends the user to Progress setup without showing the setting.
+- What happens when a user expects to set or change the daily limit from Home? Home must not expose the setting, but must still reflect the saved limit in current-day budget feedback after the user sets or changes it from Progress.
+- What happens when a user enters a positive decimal daily point limit? The system must accept it and apply the decimal limit consistently to daily budget and adherence calculations.
 
 ## Requirements _(mandatory)_
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST allow a user to update their daily point limit from the Progress tab after initial setup.
-- **FR-002**: The system MUST validate that an updated daily point limit is a positive numeric value before saving it.
+- **FR-001**: The system MUST allow a user to set their initial daily point limit and update it later from the Progress tab.
+- **FR-002**: The system MUST validate that a saved daily point limit is a positive numeric value, accepting both whole numbers and decimals.
 - **FR-003**: The system MUST apply an updated daily point limit to the entire current day immediately after the change is saved, including meals logged earlier that day.
 - **FR-004**: The system MUST apply an updated daily point limit to all future days until the user changes it again.
 - **FR-005**: The system MUST NOT recalculate completed past days against a newer daily point limit.
@@ -99,8 +106,9 @@ A user opens Progress and sees adherence totals that match the limit that was ac
 - **FR-010**: The system MUST keep history views and progress summaries consistent with the rule that each day is judged against the limit active at that time.
 - **FR-010a**: The system MUST include the current day in adherence summaries immediately after a daily point limit change, using the current day's total points against the current effective limit.
 - **FR-011**: The system MUST keep past days with no tracked intake outside adherence counts unless they already qualify under the existing tracking rules.
-- **FR-012**: The system MUST NOT offer the daily point limit setting on Home, while Home MUST continue to reflect the effective limit in current-day budget feedback.
+- **FR-012**: The system MUST NOT offer the daily point limit setting on Home, while Home MUST continue to reflect the effective limit in current-day budget feedback after setup.
 - **FR-013**: The system MUST extend existing acceptance coverage for progress, home display, and history flows instead of introducing a parallel end-to-end harness for this behavior.
+- **FR-014**: When daily point limit setup is incomplete, Home MUST show a brief prompt or action that sends the user to Progress setup without showing the daily point limit setting on Home.
 
 ### Key Entities _(include if feature involves data)_
 
@@ -112,16 +120,16 @@ A user opens Progress and sees adherence totals that match the limit that was ac
 
 ### Measurable Outcomes
 
-- **SC-001**: In acceptance testing, users can change the daily point limit from Progress in under 1 minute without losing existing meal history.
+- **SC-001**: In acceptance testing, users can set or change the daily point limit from Progress in under 1 minute without losing existing meal history.
 - **SC-002**: In acceptance testing, 100% of verified past tracked days keep the same adherence result after a later limit change.
 - **SC-003**: In acceptance testing, the current day's remaining-points value updates immediately after a limit change in every touched view.
 - **SC-004**: In acceptance testing, the progress adherence total matches the visible day-level history across at least one limit-change scenario, including today's immediate classification after a same-day limit update.
 
 ## Assumptions
 
-- Users already have an existing daily point limit and meal-tracking flow; this feature extends that behavior rather than redefining the points model.
+- Users may need initial daily point limit setup or later edits; both happen from Progress without redefining the points model.
 - "Current day" means the calendar day active in the user's local app context when they save the new limit.
-- Progress is the expected place for longer-term tracking controls, including the daily point limit setting; Home remains focused on today's meal logging and budget status.
+- Progress is the expected place for longer-term tracking controls, including initial daily point limit setup and later edits; Home remains focused on today's meal logging and budget status.
 - A limit change affects the whole current day once saved, including meals that were logged earlier that day under the prior limit.
 - The app's existing adherence model includes the current day in summaries, and this feature keeps that behavior while recalculating today immediately after a limit update.
 - Past days remain historically frozen for adherence reporting, even if the user later raises or lowers the limit.
