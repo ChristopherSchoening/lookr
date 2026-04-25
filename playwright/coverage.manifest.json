@@ -70,6 +70,70 @@
           "notes": "Adherence context is asserted alongside the weight trend on the progress screen."
         }
       ]
+    },
+    {
+      "featureId": "009-meal-entry-counts",
+      "featureTitle": "Meal Entry Counts",
+      "surface": "web",
+      "lastReviewedAt": "2026-04-25",
+      "scenarios": [
+        {
+          "storyId": "US1",
+          "acceptanceScenarioRef": "009-US1-AS1",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "dashboard-counted-meal-add",
+          "notes": "Adds a 4-point meal with count 3, verifies dashboard totals, and asserts three separate meal rows in the E2E snapshot."
+        },
+        {
+          "storyId": "US1",
+          "acceptanceScenarioRef": "009-US1-AS2",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "dashboard-counted-meal-add",
+          "notes": "The count field default is asserted as 1 before the counted save path changes it."
+        },
+        {
+          "storyId": "US1",
+          "acceptanceScenarioRef": "009-US1-AS3",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "dashboard-counted-meal-add",
+          "notes": "Blank, zero, negative, decimal, non-numeric, and above-99 counts keep the modal open with validation guidance."
+        },
+        {
+          "storyId": "US2",
+          "acceptanceScenarioRef": "009-US2-AS1",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "history-combined-duplicate-display",
+          "notes": "Seeded exact duplicates display as one row with count 3 and multiplied value 15 pt."
+        },
+        {
+          "storyId": "US2",
+          "acceptanceScenarioRef": "009-US2-AS2",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "history-combined-duplicate-display",
+          "notes": "Same-name rows with different points, time, or meal type remain separate rows without count badges."
+        },
+        {
+          "storyId": "US2",
+          "acceptanceScenarioRef": "009-US2-AS3",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "history-combined-duplicate-display",
+          "notes": "A mixed history day shows repeated meals with count and single meals without count badges."
+        },
+        {
+          "storyId": "US3",
+          "acceptanceScenarioRef": "009-US3-AS1",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "history-combined-edit-delete",
+          "notes": "Deleting a combined row removes all represented entries and recalculates day totals."
+        },
+        {
+          "storyId": "US3",
+          "acceptanceScenarioRef": "009-US3-AS2",
+          "coverageStatus": "covered",
+          "regressionScenarioId": "history-combined-edit-delete",
+          "notes": "Editing combined details and count updates represented rows, the grouped row, and the selected-day summary."
+        }
+      ]
     }
   ]
 }

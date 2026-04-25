@@ -32,10 +32,14 @@ export class DashboardPage {
     mealName: string,
     points: number,
     mealType?: 'breakfast' | 'lunch' | 'dinner' | 'snack',
+    count?: number,
   ) {
     await this.openMealModal();
     await this.page.getByTestId('meal-name-input').fill(mealName);
     await this.page.getByTestId('meal-points-input').fill(String(points));
+    if (count !== undefined) {
+      await this.page.getByTestId('meal-count-input').fill(String(count));
+    }
     if (mealType) {
       await this.page.getByTestId(`meal-type-option-${mealType}`).click();
     }
@@ -45,6 +49,19 @@ export class DashboardPage {
 
   async fillMealName(value: string) {
     await this.page.getByTestId('meal-name-input').fill(value);
+  }
+
+  async fillMealCount(value: string) {
+    await this.page.getByTestId('meal-count-input').fill(value);
+  }
+
+  async expectMealCount(value: string) {
+    await expect(this.page.getByTestId('meal-count-input')).toHaveValue(value);
+  }
+
+  async expectCountError() {
+    await expect(this.page.getByText('Enter a whole-number count from 1 to 99.')).toBeVisible();
+    await expect(this.page.getByTestId('meal-modal')).toBeVisible();
   }
 
   async expectNoMealSuggestions() {
@@ -108,6 +125,12 @@ export class DashboardPage {
 
   async expectConsumedPoints(value: number) {
     await expect(this.page.getByTestId('consumed-points-metric')).toContainText(String(value));
+  }
+
+  async expectLoggedMealCount(value: number) {
+    await expect(this.page.getByTestId('consumed-points-metric')).toContainText(
+      `${value} logged meals`,
+    );
   }
 
   async expectDailyLimit(value: number) {

@@ -46,13 +46,25 @@ export class HistoryPage {
     await expect(this.page.getByTestId('meal-modal')).toBeVisible();
   }
 
+  async startEditingCombinedMeal(name: string, pointsText: string) {
+    await this.mealCardByName(name)
+      .filter({ hasText: pointsText })
+      .locator('[data-testid^="edit-meal-"]')
+      .click();
+    await expect(this.page.getByTestId('meal-modal')).toBeVisible();
+  }
+
   async saveMeal(
     name: string,
     points: number,
     mealType?: 'breakfast' | 'lunch' | 'dinner' | 'snack' | null,
+    count?: number,
   ) {
     await this.page.getByTestId('meal-name-input').fill(name);
     await this.page.getByTestId('meal-points-input').fill(String(points));
+    if (count !== undefined) {
+      await this.page.getByTestId('meal-count-input').fill(String(count));
+    }
     if (mealType === null) {
       await this.page.getByTestId('meal-type-option-none').click();
     } else if (mealType) {
@@ -98,8 +110,35 @@ export class HistoryPage {
     await expect(this.page.getByTestId('meal-points-input')).toHaveValue(String(points));
   }
 
+  async expectMealFormCount(count: number) {
+    await expect(this.page.getByTestId('meal-count-input')).toHaveValue(String(count));
+  }
+
   async deleteMeal(name: string) {
     await this.mealCardByName(name).locator('[data-testid^="delete-meal-"]').click();
+  }
+
+  async deleteCombinedMeal(name: string, pointsText: string) {
+    await this.mealCardByName(name)
+      .filter({ hasText: pointsText })
+      .locator('[data-testid^="delete-meal-"]')
+      .click();
+  }
+
+  async expectMealRowCount(name: string, count: number) {
+    await expect(this.mealCardByName(name)).toHaveCount(count);
+  }
+
+  async expectCombinedMeal(name: string, count: number, pointsText: string) {
+    const card = this.mealCardByName(name).filter({ hasText: pointsText }).first();
+    await expect(card).toBeVisible();
+    await expect(card.locator('[data-testid^="meal-count-badge-"]')).toHaveText(`x${count}`);
+  }
+
+  async expectNoCountBadge(name: string, pointsText: string) {
+    const card = this.mealCardByName(name).filter({ hasText: pointsText }).first();
+    await expect(card).toBeVisible();
+    await expect(card.locator('[data-testid^="meal-count-badge-"]')).toHaveCount(0);
   }
 
   async expectSummaryPoints(text: string) {

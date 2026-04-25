@@ -1,6 +1,7 @@
 import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../helpers/app-helpers';
 import { formatLongDate } from '../../src/lib/date';
 import {
+  createCountedHistorySeedState,
   createHistorySeedState,
   createHistoricalLimitSeedState,
   createLegacyMealSeedState,
@@ -116,6 +117,53 @@ test.describe('History picker and editing coverage', () => {
     await history.expectSummaryPoints('6/24');
     await history.expectSummaryStatus('18 points remaining');
     await expect(history.mealCardByName('Recovery soup')).toBeVisible();
+  });
+
+  test('history-combines-exact-duplicates-and-keeps-variants-separate', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'history-combined-duplicate-display', [
+      '009-US2-AS1',
+      '009-US2-AS2',
+      '009-US2-AS3',
+    ]);
+
+    await seedAppState(appPage, createCountedHistorySeedState());
+
+    const yesterday = getRelativeDateKey(-1);
+    const history = new HistoryPage(appPage);
+    await history.goto();
+    await history.selectDate(yesterday);
+
+    await history.expectSummaryPoints('31/40');
+    await history.expectMealRowCount('Turkey lunch', 4);
+    await history.expectCombinedMeal('Turkey lunch', 3, '15 pt');
+    await history.expectNoCountBadge('Turkey lunch', '6 pt');
+    await history.expectNoCountBadge('Turkey lunch', '5 pt');
+  });
+
+  test('history-edits-and-deletes-combined-rows', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'history-combined-edit-delete', ['009-US3-AS1', '009-US3-AS2']);
+
+    await seedAppState(appPage, createCountedHistorySeedState());
+
+    const yesterday = getRelativeDateKey(-1);
+    const history = new HistoryPage(appPage);
+    await history.goto();
+    await history.selectDate(yesterday);
+
+    await history.startEditingCombinedMeal('Turkey lunch', '15 pt');
+    await history.expectMealFormCount(3);
+    await history.saveMeal('Turkey lunch fixed', 4, 'dinner', 2);
+    await history.expectSummaryPoints('24/40');
+    await history.expectSummaryStatus('16 points remaining');
+    await history.expectMealRowCount('Turkey lunch fixed', 1);
+    await history.expectCombinedMeal('Turkey lunch fixed', 2, '8 pt');
+
+    await history.deleteCombinedMeal('Turkey lunch fixed', '8 pt');
+    await history.expectSummaryPoints('16/40');
+    await history.expectSummaryStatus('24 points remaining');
+    await history.expectMealRowCount('Turkey lunch fixed', 0);
   });
 
   test('history-keeps old limit after today changes and past edits recalc against that limit', async ({

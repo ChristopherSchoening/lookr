@@ -74,6 +74,7 @@ Pull requests should include:
 - Confirmation that `npm run format`, `npm run lint`, and `npm run typecheck` passed.
 
 ## Active Technologies
+
 - TypeScript 5.9, React 19, Expo SDK 55 + Expo Router, React Native, NativeWind, `expo-sqlite`, existing shared UI primitives, existing Playwright helpers (009-meal-entry-counts)
 - Existing local SQLite `meal_entries`; no schema change. Counted meals are stored as separate rows. (009-meal-entry-counts)
 

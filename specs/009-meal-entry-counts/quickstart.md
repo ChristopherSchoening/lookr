@@ -28,8 +28,20 @@ npm run e2e:us2
 
 ## Manual Acceptance
 
-1. On Home, add a meal with count `3` and points `4`; verify consumed points increase by `12` and the meal count summary shows three logged meals.
-2. In History, select a day with exact duplicate meals; verify one row shows count `3` and `12 pt`.
-3. Add same-name meals with different points or types; verify they remain separate history rows.
-4. Edit a combined history row count; verify row count, row value, and day summary update.
-5. Delete a combined history row; verify all represented entries leave the day total.
+1. On Home, add a meal with count `3` and points `4`; verify consumed points increase by `12`, remaining points decrease by `12`, and the meal count summary shows three logged meals.
+2. On Home, try blank, zero, negative, decimal, non-numeric, and above-99 counts; verify the modal stays open and asks for a whole-number count from `1` to `99`.
+3. In History, select a day with exact duplicate meals; verify one row shows count `3` and `15 pt` for three 5-point entries.
+4. In History, verify same-name meals with different points, times, or meal types remain separate history rows without count badges.
+5. Edit a combined history row count and details; verify row count, row value, and day summary update.
+6. Delete a combined history row; verify all represented entries leave the day total.
+
+## Validation Result
+
+2026-04-25 implementation validation passed with:
+
+- `npm run format`
+- `npm run lint`
+- `npm run typecheck`
+- `npm run e2e:coverage`
+- `npm run e2e:us1`
+- `npm run e2e:us2`

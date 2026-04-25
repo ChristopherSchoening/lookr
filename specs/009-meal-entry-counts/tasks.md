@@ -17,9 +17,9 @@
 
 **Purpose**: Confirm existing project harness and constraints before feature work.
 
-- [ ] T001 [P] Verify required scripts for `npm run lint`, `npm run typecheck`, `npm run e2e:coverage`, `npm run e2e:us1`, and `npm run e2e:us2` in `/home/tanome/dev/lookr/package.json`
-- [ ] T002 [P] Confirm `meal_entries` keeps no count column or migration for this feature in `/home/tanome/dev/lookr/src/lib/db.ts`
-- [ ] T003 [P] Review stable meal editor and history selectors from the UI contract against `/home/tanome/dev/lookr/specs/009-meal-entry-counts/contracts/ui-contract.md`
+- [x] T001 [P] Verify required scripts for `npm run lint`, `npm run typecheck`, `npm run e2e:coverage`, `npm run e2e:us1`, and `npm run e2e:us2` in `/home/tanome/dev/lookr/package.json`
+- [x] T002 [P] Confirm `meal_entries` keeps no count column or migration for this feature in `/home/tanome/dev/lookr/src/lib/db.ts`
+- [x] T003 [P] Review stable meal editor and history selectors from the UI contract against `/home/tanome/dev/lookr/specs/009-meal-entry-counts/contracts/ui-contract.md`
 
 ---
 
@@ -29,10 +29,10 @@
 
 **Critical**: No user story implementation starts until this phase is complete.
 
-- [ ] T004 Add `MealEditorInput` count support and grouped meal edit/delete callback types in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
-- [ ] T005 Add app data context method signatures for counted add and grouped update/delete operations in `/home/tanome/dev/lookr/src/context/app-data.tsx`
-- [ ] T006 [P] Add `CombinedHistoryRow` and meal count related types in `/home/tanome/dev/lookr/src/lib/types.ts`
-- [ ] T007 [P] Add counted-meal and grouped-history seed fixtures in `/home/tanome/dev/lookr/e2e/fixtures/seed-states.ts`
+- [x] T004 Add `MealEditorInput` count support and grouped meal edit/delete callback types in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
+- [x] T005 Add app data context method signatures for counted add and grouped update/delete operations in `/home/tanome/dev/lookr/src/context/app-data.tsx`
+- [x] T006 [P] Add `CombinedHistoryRow` and meal count related types in `/home/tanome/dev/lookr/src/lib/types.ts`
+- [x] T007 [P] Add counted-meal and grouped-history seed fixtures in `/home/tanome/dev/lookr/e2e/fixtures/seed-states.ts`
 
 **Checkpoint**: Shared contracts are ready. User stories can now proceed.
 
@@ -46,17 +46,17 @@
 
 ### Verification for User Story 1
 
-- [ ] T008 [P] [US1] Extend `DashboardPage.addMeal` and add count fill/assert helpers using `meal-count-input` in `/home/tanome/dev/lookr/e2e/helpers/dashboard-page.ts`
-- [ ] T009 [P] [US1] Add counted meal add and invalid count assertions to dashboard Playwright coverage in `/home/tanome/dev/lookr/e2e/specs/dashboard-core.spec.ts`
-- [ ] T010 [US1] Add 009 feature scenario entries for counted add validation to `/home/tanome/dev/lookr/playwright/coverage.manifest.json`
+- [x] T008 [P] [US1] Extend `DashboardPage.addMeal` and add count fill/assert helpers using `meal-count-input` in `/home/tanome/dev/lookr/e2e/helpers/dashboard-page.ts`
+- [x] T009 [P] [US1] Add counted meal add and invalid count assertions to dashboard Playwright coverage in `/home/tanome/dev/lookr/e2e/specs/dashboard-core.spec.ts`
+- [x] T010 [US1] Add 009 feature scenario entries for counted add validation to `/home/tanome/dev/lookr/playwright/coverage.manifest.json`
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Add count state, default value `1`, reset behavior, and `meal-count-input` rendering to `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
-- [ ] T012 [US1] Add count parser and validation for blank, zero, negative, decimal, non-numeric, and above-99 values in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
-- [ ] T013 [US1] Pass validated count from add mode to `onAdd` while preserving count `1` behavior in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
-- [ ] T014 [US1] Insert counted saves as N separate exact meal rows with one shared visible time in `/home/tanome/dev/lookr/src/context/app-data.tsx`
-- [ ] T015 [US1] Ensure snapshot row count and dashboard totals reflect separate counted entries through existing summary math in `/home/tanome/dev/lookr/src/context/app-data.tsx`
+- [x] T011 [US1] Add count state, default value `1`, reset behavior, and `meal-count-input` rendering to `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
+- [x] T012 [US1] Add count parser and validation for blank, zero, negative, decimal, non-numeric, and above-99 values in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
+- [x] T013 [US1] Pass validated count from add mode to `onAdd` while preserving count `1` behavior in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
+- [x] T014 [US1] Insert counted saves as N separate exact meal rows with one shared visible time in `/home/tanome/dev/lookr/src/context/app-data.tsx`
+- [x] T015 [US1] Ensure snapshot row count and dashboard totals reflect separate counted entries through existing summary math in `/home/tanome/dev/lookr/src/context/app-data.tsx`
 
 **Checkpoint**: User Story 1 is functional and testable on its own.
 
@@ -70,17 +70,17 @@
 
 ### Verification for User Story 2
 
-- [ ] T016 [P] [US2] Add history helper assertions for combined row count badges and multiplied points in `/home/tanome/dev/lookr/e2e/helpers/history-page.ts`
-- [ ] T017 [P] [US2] Add grouped duplicate and non-exact variant Playwright assertions in `/home/tanome/dev/lookr/e2e/specs/history-regression.spec.ts`
-- [ ] T018 [US2] Add 009 feature scenario entries for grouped history display to `/home/tanome/dev/lookr/playwright/coverage.manifest.json`
+- [x] T016 [P] [US2] Add history helper assertions for combined row count badges and multiplied points in `/home/tanome/dev/lookr/e2e/helpers/history-page.ts`
+- [x] T017 [P] [US2] Add grouped duplicate and non-exact variant Playwright assertions in `/home/tanome/dev/lookr/e2e/specs/history-regression.spec.ts`
+- [x] T018 [US2] Add 009 feature scenario entries for grouped history display to `/home/tanome/dev/lookr/playwright/coverage.manifest.json`
 
 ### Implementation for User Story 2
 
-- [ ] T019 [P] [US2] Add exact same-day grouping helper for `CombinedHistoryRow` in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
-- [ ] T020 [US2] Feed grouped rows into `MealEditor` for the selected history day in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
-- [ ] T021 [US2] Render count badges only for count greater than 1 with stable `meal-count-badge-*` test IDs in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
-- [ ] T022 [US2] Render multiplied row points for grouped rows while single rows keep base points in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
-- [ ] T023 [US2] Preserve separate rows when name, points, date, time, meal type, or future visible details differ in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
+- [x] T019 [P] [US2] Add exact same-day grouping helper for `CombinedHistoryRow` in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
+- [x] T020 [US2] Feed grouped rows into `MealEditor` for the selected history day in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
+- [x] T021 [US2] Render count badges only for count greater than 1 with stable `meal-count-badge-*` test IDs in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
+- [x] T022 [US2] Render multiplied row points for grouped rows while single rows keep base points in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
+- [x] T023 [US2] Preserve separate rows when name, points, date, time, meal type, or future visible details differ in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
 
 **Checkpoint**: User Stories 1 and 2 both work independently.
 
@@ -94,17 +94,17 @@
 
 ### Verification for User Story 3
 
-- [ ] T024 [P] [US3] Add history helper methods for editing count and deleting combined rows in `/home/tanome/dev/lookr/e2e/helpers/history-page.ts`
-- [ ] T025 [P] [US3] Add grouped edit count/details and grouped delete Playwright assertions in `/home/tanome/dev/lookr/e2e/specs/history-regression.spec.ts`
-- [ ] T026 [US3] Add 009 feature scenario entries for grouped edit/delete behavior to `/home/tanome/dev/lookr/playwright/coverage.manifest.json`
+- [x] T024 [P] [US3] Add history helper methods for editing count and deleting combined rows in `/home/tanome/dev/lookr/e2e/helpers/history-page.ts`
+- [x] T025 [P] [US3] Add grouped edit count/details and grouped delete Playwright assertions in `/home/tanome/dev/lookr/e2e/specs/history-regression.spec.ts`
+- [x] T026 [US3] Add 009 feature scenario entries for grouped edit/delete behavior to `/home/tanome/dev/lookr/playwright/coverage.manifest.json`
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Open edit mode with grouped row count and representative meal details in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
-- [ ] T028 [US3] Route grouped edit operations from history to the app data layer with represented meal IDs in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
-- [ ] T029 [US3] Reconcile grouped edits by updating existing represented rows and adding or deleting duplicate rows until requested count is reached in `/home/tanome/dev/lookr/src/context/app-data.tsx`
-- [ ] T030 [US3] Route grouped deletes from history to delete all represented meal IDs in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
-- [ ] T031 [US3] Implement grouped delete refresh and empty-day state updates in `/home/tanome/dev/lookr/src/context/app-data.tsx`
+- [x] T027 [US3] Open edit mode with grouped row count and representative meal details in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
+- [x] T028 [US3] Route grouped edit operations from history to the app data layer with represented meal IDs in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
+- [x] T029 [US3] Reconcile grouped edits by updating existing represented rows and adding or deleting duplicate rows until requested count is reached in `/home/tanome/dev/lookr/src/context/app-data.tsx`
+- [x] T030 [US3] Route grouped deletes from history to delete all represented meal IDs in `/home/tanome/dev/lookr/src/app/(tabs)/history.tsx`
+- [x] T031 [US3] Implement grouped delete refresh and empty-day state updates in `/home/tanome/dev/lookr/src/context/app-data.tsx`
 
 **Checkpoint**: All user stories are independently functional.
 
@@ -114,12 +114,12 @@
 
 **Purpose**: Final quality checks, UX review, and documentation traceability.
 
-- [ ] T032 [P] Update manual acceptance notes for counted add, grouped display, grouped edit, and grouped delete in `/home/tanome/dev/lookr/specs/009-meal-entry-counts/quickstart.md`
-- [ ] T033 [P] Run `npm run lint` and record result for `/home/tanome/dev/lookr/package.json`
-- [ ] T034 [P] Run `npm run typecheck` and record result for `/home/tanome/dev/lookr/package.json`
-- [ ] T035 Run `npm run e2e:coverage` and confirm 009 scenarios are covered in `/home/tanome/dev/lookr/playwright/coverage.manifest.json`
-- [ ] T036 Run focused `npm run e2e:us1` and `npm run e2e:us2` for changed dashboard/history flows from `/home/tanome/dev/lookr/package.json`
-- [ ] T037 Review mobile-sized modal layout for count input and grouped badges in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
+- [x] T032 [P] Update manual acceptance notes for counted add, grouped display, grouped edit, and grouped delete in `/home/tanome/dev/lookr/specs/009-meal-entry-counts/quickstart.md`
+- [x] T033 [P] Run `npm run lint` and record result for `/home/tanome/dev/lookr/package.json`
+- [x] T034 [P] Run `npm run typecheck` and record result for `/home/tanome/dev/lookr/package.json`
+- [x] T035 Run `npm run e2e:coverage` and confirm 009 scenarios are covered in `/home/tanome/dev/lookr/playwright/coverage.manifest.json`
+- [x] T036 Run focused `npm run e2e:us1` and `npm run e2e:us2` for changed dashboard/history flows from `/home/tanome/dev/lookr/package.json`
+- [x] T037 Review mobile-sized modal layout for count input and grouped badges in `/home/tanome/dev/lookr/src/components/meal-editor.tsx`
 
 ---
 

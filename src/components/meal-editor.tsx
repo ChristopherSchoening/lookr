@@ -11,7 +11,13 @@ import {
   SubtleButton,
 } from '@/components/ui';
 import { formatDateLabel } from '@/lib/date';
-import type { MealEntry, MealSuggestion, MealType } from '@/lib/types';
+import type {
+  CombinedHistoryRow,
+  MealEditorInput,
+  MealEntry,
+  MealSuggestion,
+  MealType,
+} from '@/lib/types';
 
 const mealTypeOptions: MealType[] = ['breakfast', 'lunch', 'dinner', 'snack'];
 const suggestionDebounceMs = 250;
@@ -43,12 +49,23 @@ function buildMealTimestamp(meal: MealEntry) {
   );
 }
 
-type MealEditorInput = {
-  mealName: string;
-  points: number;
-  entryDate: string;
-  mealType?: MealType | null;
-};
+type MealEditorRow = MealEntry | CombinedHistoryRow;
+
+function getMealIds(meal: MealEditorRow) {
+  return 'mealIds' in meal ? meal.mealIds : [meal.id];
+}
+
+function getMealCount(meal: MealEditorRow) {
+  return 'count' in meal ? meal.count : 1;
+}
+
+function getMealPoints(meal: MealEditorRow) {
+  return 'totalPoints' in meal ? meal.totalPoints : meal.points;
+}
+
+function getMealCountBadgeId(meal: MealEditorRow) {
+  return 'groupKey' in meal ? meal.groupKey : String(meal.id);
+}
 
 export function MealEditor({
   date,
@@ -64,11 +81,11 @@ export function MealEditor({
   emptyBody = 'Add one meal to update points for this day.',
 }: {
   date: string;
-  meals: MealEntry[];
+  meals: MealEditorRow[];
   suggestionMeals?: MealEntry[];
   onAdd: (input: MealEditorInput) => Promise<void>;
-  onUpdate: (id: number, input: MealEditorInput) => Promise<void>;
-  onDelete: (id: number) => Promise<void>;
+  onUpdate: (ids: number[], input: MealEditorInput) => Promise<void>;
+  onDelete: (ids: number[]) => Promise<void>;
   eyebrow?: string;
   title?: string;
   body?: string;
@@ -77,6 +94,7 @@ export function MealEditor({
 }) {
   const [mealName, setMealName] = useState('');
   const [points, setPoints] = useState('');
+  const [count, setCount] = useState('1');
   const [mealType, setMealType] = useState<MealType | null>(null);
   const [sessionMode, setSessionMode] = useState<'add' | 'edit' | null>(null);
   const [editingMealId, setEditingMealId] = useState<number | null>(null);
@@ -96,6 +114,7 @@ export function MealEditor({
   function resetDraft() {
     setMealName('');
     setPoints('');
+    setCount('1');
     setMealType(null);
     setSessionMode(null);
     setEditingMealId(null);
@@ -109,6 +128,7 @@ export function MealEditor({
   function openAddModal() {
     setMealName('');
     setPoints('');
+    setCount('1');
     setMealType(null);
     setSessionMode('add');
     setEditingMealId(null);
@@ -123,6 +143,7 @@ export function MealEditor({
   function openEditModal(meal: MealEntry) {
     setMealName(meal.mealName);
     setPoints(String(meal.points));
+    setCount(String(getMealCount(meal)));
     setMealType(meal.mealType ?? null);
     setSessionMode('edit');
     setEditingMealId(meal.id);
@@ -215,6 +236,8 @@ export function MealEditor({
 
   async function submit() {
     const parsedPoints = Number(points);
+    const trimmedCount = count.trim();
+    const parsedCount = Number(trimmedCount);
 
     if (!mealName.trim()) {
       setError('Meal name is required.');
@@ -226,6 +249,11 @@ export function MealEditor({
       return;
     }
 
+    if (!/^\d+$/.test(trimmedCount) || parsedCount < 1 || parsedCount > 99) {
+      setError('Enter a whole-number count from 1 to 99.');
+      return;
+    }
+
     setError('');
 
     try {
@@ -234,10 +262,11 @@ export function MealEditor({
         points: parsedPoints,
         entryDate: date,
         mealType,
+        count: parsedCount,
       } satisfies MealEditorInput;
 
       if (sessionMode === 'edit' && editingMeal) {
-        await onUpdate(editingMeal.id, payload);
+        await onUpdate(getMealIds(editingMeal), payload);
         setMessage('Meal updated.');
       } else {
         await onAdd(payload);
@@ -250,11 +279,11 @@ export function MealEditor({
     }
   }
 
-  async function remove(id: number) {
+  async function remove(meal: MealEditorRow) {
     setError('');
     setMessage('');
-    await onDelete(id);
-    if (editingMealId === id) {
+    await onDelete(getMealIds(meal));
+    if (editingMealId === meal.id) {
       resetDraft();
     }
     setMessage('Meal removed.');
@@ -303,23 +332,35 @@ export function MealEditor({
                   >
                     {meal.mealName}
                   </Text>
-                  {meal.mealType ? (
-                    <View
-                      className="self-start rounded-full bg-[#DDF6EA] px-3 py-2"
-                      testID={`meal-type-${meal.id}`}
-                    >
-                      <Text className="text-[11px] font-bold uppercase tracking-[1.1px] text-[#006C48]">
-                        {formatMealTypeLabel(meal.mealType)}
-                      </Text>
-                    </View>
-                  ) : null}
+                  <View className="flex-row flex-wrap gap-2">
+                    {getMealCount(meal) > 1 ? (
+                      <View
+                        className="self-start rounded-full bg-[#E6F1FF] px-3 py-2"
+                        testID={`meal-count-badge-${getMealCountBadgeId(meal)}`}
+                      >
+                        <Text className="text-[11px] font-bold uppercase tracking-[1.1px] text-[#1358A8]">
+                          x{getMealCount(meal)}
+                        </Text>
+                      </View>
+                    ) : null}
+                    {meal.mealType ? (
+                      <View
+                        className="self-start rounded-full bg-[#DDF6EA] px-3 py-2"
+                        testID={`meal-type-${meal.id}`}
+                      >
+                        <Text className="text-[11px] font-bold uppercase tracking-[1.1px] text-[#006C48]">
+                          {formatMealTypeLabel(meal.mealType)}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
                 </View>
                 <View className="rounded-full bg-[#FFFFFF] px-4 py-3">
                   <Text
                     className="text-[18px] font-extrabold text-[#006C48]"
                     testID={`meal-points-${meal.id}`}
                   >
-                    {meal.points} pt
+                    {getMealPoints(meal)} pt
                   </Text>
                 </View>
               </View>
@@ -333,7 +374,7 @@ export function MealEditor({
                 />
                 <Pressable
                   className="rounded-full bg-[#FFFFFF] px-4 py-3"
-                  onPress={() => void remove(meal.id)}
+                  onPress={() => void remove(meal)}
                   testID={`delete-meal-${meal.id}`}
                 >
                   <Text className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B]">
@@ -426,6 +467,14 @@ export function MealEditor({
               placeholder="7"
               keyboardType="numeric"
               testID="meal-points-input"
+            />
+            <Field
+              label="Count"
+              value={count}
+              onChangeText={setCount}
+              placeholder="1"
+              keyboardType="numeric"
+              testID="meal-count-input"
             />
 
             <View className="gap-3">

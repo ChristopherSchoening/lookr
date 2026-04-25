@@ -202,6 +202,59 @@ export function createLegacyMealSeedState(): E2ESeedState {
   };
 }
 
+export function createCountedHistorySeedState(): E2ESeedState {
+  const yesterday = toDateKey(-1);
+
+  return {
+    profile: { dailyPointsLimit: 40 },
+    meals: [
+      {
+        mealName: 'Turkey lunch',
+        points: 5,
+        entryDate: yesterday,
+        entryTime: '12:15 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Turkey lunch',
+        points: 5,
+        entryDate: yesterday,
+        entryTime: '12:15 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Turkey lunch',
+        points: 5,
+        entryDate: yesterday,
+        entryTime: '12:15 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Turkey lunch',
+        points: 6,
+        entryDate: yesterday,
+        entryTime: '12:15 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Turkey lunch',
+        points: 5,
+        entryDate: yesterday,
+        entryTime: '12:45 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'Turkey lunch',
+        points: 5,
+        entryDate: yesterday,
+        entryTime: '12:15 PM',
+        mealType: 'snack',
+      },
+    ],
+    weights: [],
+  };
+}
+
 export function createProgressSeedState(): E2ESeedState {
   const today = toDateKey(0);
   const yesterday = toDateKey(-1);
