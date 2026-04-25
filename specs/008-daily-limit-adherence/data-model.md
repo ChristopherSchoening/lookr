@@ -7,7 +7,8 @@ daily point limit for first-load and current-day views.
 
 **Fields**
 
-- `dailyPointsLimit`: latest saved daily point limit
+- `dailyPointsLimit`: latest saved positive numeric daily point limit,
+  including whole numbers or decimals
 - `updatedAt`: timestamp of the latest profile save
 
 **Behavioral Rules**
@@ -15,8 +16,8 @@ daily point limit for first-load and current-day views.
 - Still represents the current active limit for the app.
 - Saving a new daily limit updates this row and also writes a dated history
   record.
-- Initial setup creates both the profile row and the first effective-limit
-  history record.
+- Initial setup from Progress creates both the profile row and the first
+  effective-limit history record.
 
 ## Daily Point Limit Change
 
@@ -27,12 +28,14 @@ is effective from a specific date forward until replaced.
 
 - `id`: unique row identifier
 - `effectiveDate`: date key in `YYYY-MM-DD` form for when the limit starts
-- `dailyPointsLimit`: positive integer daily limit active from that date
+- `dailyPointsLimit`: positive numeric daily limit active from that date,
+  including whole numbers or decimals
 - `createdAt`: timestamp when the change was saved
 
 **Validation Rules**
 
-- `dailyPointsLimit` must be a positive numeric value.
+- `dailyPointsLimit` must be a positive finite numeric value and must preserve
+  valid decimal input without rounding.
 - `effectiveDate` must be a valid local app date key.
 - Multiple rows may share the same `effectiveDate`; the latest saved row for
   that date wins.
@@ -93,6 +96,8 @@ calendar day.
 **Behavioral Rules**
 
 - `remainingPoints = dailyLimit - consumedPoints`.
+- `remainingPoints` preserves decimal results when the effective daily limit or
+  consumed points include decimals.
 - `status = empty` when `mealCount` is zero.
 - `status = over` when `remainingPoints < 0`.
 - `status = within` when `mealCount > 0` and `remainingPoints >= 0`.
