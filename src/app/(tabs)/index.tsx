@@ -96,8 +96,8 @@ export default function DashboardScreen() {
               emptyTitle="No meals yet"
               meals={meals}
               onAdd={appData.addMeal}
-              onUpdate={appData.updateMeal}
-              onDelete={appData.deleteMeal}
+              onUpdate={appData.updateMealGroup}
+              onDelete={appData.deleteMealGroup}
               suggestionMeals={appData.meals}
             />
           </>

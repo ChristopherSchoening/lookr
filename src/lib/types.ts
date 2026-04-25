@@ -23,6 +23,21 @@ export type MealEntry = {
   updatedAt: string;
 };
 
+export type MealEditorInput = {
+  mealName: string;
+  points: number;
+  entryDate: string;
+  mealType?: MealType | null;
+  count?: number;
+};
+
+export type CombinedHistoryRow = MealEntry & {
+  groupKey: string;
+  mealIds: number[];
+  count: number;
+  totalPoints: number;
+};
+
 export type MealSuggestion = {
   displayName: string;
   normalizedName: string;

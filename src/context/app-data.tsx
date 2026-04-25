@@ -18,9 +18,11 @@ import {
   type E2ESeedState,
   updateMeal as updateMealRecord,
 } from '@/lib/db';
+import { currentTimeLabel } from '@/lib/date';
 import type {
   DailyPointLimitHistoryEntry,
   DailySummary,
+  MealEditorInput,
   MealEntry,
   MealType,
   UserProfile,
@@ -61,12 +63,15 @@ type AppDataContextValue = {
     points: number;
     entryDate: string;
     mealType?: MealType | null;
+    count?: number;
   }) => Promise<void>;
   updateMeal: (
     id: number,
     input: { mealName: string; points: number; entryDate: string; mealType?: MealType | null },
   ) => Promise<void>;
+  updateMealGroup: (ids: number[], input: MealEditorInput) => Promise<void>;
   deleteMeal: (id: number) => Promise<void>;
+  deleteMealGroup: (ids: number[]) => Promise<void>;
   saveWeight: (input: { entryDate: string; weight: number }) => Promise<void>;
   deleteWeight: (id: number) => Promise<void>;
   getMealsByDate: (date: string) => MealEntry[];
@@ -219,15 +224,47 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       await refresh();
     },
     async addMeal(input) {
-      await addMealRecord(input);
+      const count = input.count ?? 1;
+      const entryTime = currentTimeLabel();
+      for (let index = 0; index < count; index += 1) {
+        await addMealRecord({ ...input, entryTime });
+      }
       await refresh();
     },
     async updateMeal(id, input) {
       await updateMealRecord(id, input);
       await refresh();
     },
+    async updateMealGroup(ids, input) {
+      const count = input.count ?? ids.length;
+      const sortedIds = [...ids].sort((left, right) => left - right);
+      const idsToUpdate = sortedIds.slice(0, count);
+      const idsToDelete = sortedIds.slice(count);
+      const representative = meals.find((meal) => sortedIds.includes(meal.id));
+      const entryTime = representative?.entryTime ?? currentTimeLabel();
+
+      for (const id of idsToUpdate) {
+        await updateMealRecord(id, input);
+      }
+
+      for (let index = idsToUpdate.length; index < count; index += 1) {
+        await addMealRecord({ ...input, entryTime });
+      }
+
+      for (const id of idsToDelete) {
+        await deleteMealRecord(id);
+      }
+
+      await refresh();
+    },
     async deleteMeal(id) {
       await deleteMealRecord(id);
+      await refresh();
+    },
+    async deleteMealGroup(ids) {
+      for (const id of ids) {
+        await deleteMealRecord(id);
+      }
       await refresh();
     },
     async saveWeight(input) {

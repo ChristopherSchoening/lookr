@@ -91,6 +91,46 @@ test.describe('User Story 1: core dashboard coverage', () => {
     ).toBeVisible();
   });
 
+  test('dashboard-counted-meal-add creates separate rows and validates count', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'dashboard-counted-meal-add', [
+      '009-US1-AS1',
+      '009-US1-AS2',
+      '009-US1-AS3',
+    ]);
+
+    await seedAppState(appPage, createCleanSeedState());
+
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+
+    await dashboard.openMealModal();
+    await dashboard.expectMealCount('1');
+    await appPage.getByTestId('meal-name-input').fill('Repeat snack');
+    await appPage.getByTestId('meal-points-input').fill('4');
+
+    for (const invalidCount of ['', '0', '-1', '2.5', '2e1', 'abc', '100']) {
+      await dashboard.fillMealCount(invalidCount);
+      await appPage.getByTestId('save-meal-button').click();
+      await dashboard.expectCountError();
+    }
+
+    await dashboard.fillMealCount('3');
+    await appPage.getByTestId('save-meal-button').click();
+    await expect(appPage.getByTestId('meal-modal')).toHaveCount(0);
+
+    await dashboard.expectRemainingPoints(12);
+    await dashboard.expectConsumedPoints(12);
+    await dashboard.expectLoggedMealCount(3);
+
+    const snapshot = await readAppSnapshot(appPage);
+    const repeatSnacks = snapshot.meals.filter(
+      (meal) => meal.mealName === 'Repeat snack' && meal.points === 4,
+    );
+    expect(repeatSnacks).toHaveLength(3);
+  });
+
   test('dashboard-over-limit-warning preserves the meal and failure context', async ({
     appPage,
   }, testInfo) => {
