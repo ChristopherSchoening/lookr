@@ -13,10 +13,11 @@ import type {
 let databasePromise: Promise<SQLiteDatabase> | null = null;
 let databaseInitializationPromise: Promise<SQLiteDatabase> | null = null;
 
-const DATABASE_SCHEMA_VERSION = 4;
+const DATABASE_SCHEMA_VERSION = 5;
 
 type ProfileRow = {
   daily_points_limit: number;
+  target_weight: number | null;
   updated_at: string;
 };
 
@@ -70,7 +71,7 @@ export type E2ESeedDailyPointLimitHistory = {
 };
 
 export type E2ESeedState = {
-  profile?: { dailyPointsLimit: number; updatedAt?: string } | null;
+  profile?: { dailyPointsLimit: number; targetWeight?: number | null; updatedAt?: string } | null;
   dailyPointLimitHistory?: E2ESeedDailyPointLimitHistory[];
   meals?: E2ESeedMeal[];
   weights?: E2ESeedWeight[];
@@ -209,6 +210,10 @@ async function getDb() {
         `);
       }
 
+      if (currentVersion < 5) {
+        await db.execAsync('ALTER TABLE user_profile ADD COLUMN target_weight REAL;');
+      }
+
       await db.execAsync(`PRAGMA user_version = ${DATABASE_SCHEMA_VERSION};`);
 
       return db;
@@ -272,15 +277,18 @@ async function insertProfileSeed(
   profile: NonNullable<E2ESeedState['profile']>,
 ) {
   const updatedAt = profile.updatedAt ?? nowIso();
+  const targetWeight = profile.targetWeight ?? null;
   await db.runAsync(
     `
-      INSERT INTO user_profile (id, daily_points_limit, updated_at)
-      VALUES (1, ?, ?)
+      INSERT INTO user_profile (id, daily_points_limit, target_weight, updated_at)
+      VALUES (1, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         daily_points_limit = excluded.daily_points_limit,
+        target_weight = excluded.target_weight,
         updated_at = excluded.updated_at
     `,
     profile.dailyPointsLimit,
+    targetWeight,
     updatedAt,
   );
 }
@@ -303,13 +311,14 @@ async function insertDailyPointLimitHistorySeed(
 export async function loadProfile(): Promise<UserProfile | null> {
   const db = await getDb();
   const row = await db.getFirstAsync<ProfileRow>(
-    'SELECT daily_points_limit, updated_at FROM user_profile WHERE id = 1',
+    'SELECT daily_points_limit, target_weight, updated_at FROM user_profile WHERE id = 1',
   );
 
   if (!row) return null;
 
   return {
     dailyPointsLimit: row.daily_points_limit,
+    targetWeight: row.target_weight ?? null,
     updatedAt: row.updated_at,
   };
 }
@@ -500,6 +509,32 @@ export async function saveWeight(input: { entryDate: string; weight: number }) {
 export async function deleteWeight(id: number) {
   const db = await getDb();
   await db.runAsync('DELETE FROM weight_entries WHERE id = ?', id);
+}
+
+export async function updateWeight(id: number, input: { entryDate: string; weight: number }) {
+  const db = await getDb();
+  await db.runAsync(
+    'UPDATE weight_entries SET entry_date = ?, weight = ?, updated_at = ? WHERE id = ?',
+    input.entryDate,
+    input.weight,
+    nowIso(),
+    id,
+  );
+}
+
+export async function saveTargetWeight(weight: number | null) {
+  const db = await getDb();
+  await db.runAsync(
+    `
+      INSERT INTO user_profile (id, daily_points_limit, target_weight, updated_at)
+      VALUES (1, 0, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        target_weight = excluded.target_weight,
+        updated_at = excluded.updated_at
+    `,
+    weight,
+    nowIso(),
+  );
 }
 
 export type InsertResult = SQLiteRunResult;

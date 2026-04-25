@@ -218,9 +218,17 @@ export function Metric({
   );
 }
 
-export function EmptyState({ title, body }: { title: string; body: string }) {
+export function EmptyState({
+  title,
+  body,
+  testID,
+}: {
+  title: string;
+  body: string;
+  testID?: string;
+}) {
   return (
-    <Card tone="low" className="gap-2">
+    <Card tone="low" className="gap-2" testID={testID}>
       <Text className={`${typography.title} text-[#10201B]`}>{title}</Text>
       <Text className={`${typography.body} text-[#51605A]`}>{body}</Text>
     </Card>

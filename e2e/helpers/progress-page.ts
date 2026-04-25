@@ -49,4 +49,28 @@ export class ProgressPage {
   async expectWeightEntry(dateKey: string, value: string) {
     await expect(this.page.getByTestId(`weight-value-${dateKey}`)).toHaveText(value);
   }
+
+  async assertLatestWeight(value: string) {
+    await expect(this.page.getByTestId('latest-weight-metric')).toContainText(value);
+  }
+
+  async assertGoalWeight(value: string) {
+    await expect(this.page.getByTestId('goal-weight-metric')).toContainText(value);
+  }
+
+  async assertWeightChange(value: string) {
+    await expect(this.page.getByTestId('weight-change-metric')).toContainText(value);
+  }
+
+  async assertDetailsButton() {
+    await expect(this.page.getByTestId('view-details-button')).toBeVisible();
+  }
+
+  async assertEmptyState() {
+    await expect(this.page.getByTestId('progress-empty-state')).toBeVisible();
+  }
+
+  async tapViewDetails() {
+    await this.page.getByTestId('view-details-button').click();
+  }
 }

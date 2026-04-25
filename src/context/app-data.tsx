@@ -13,10 +13,12 @@ import {
   prepareLegacyMealTypeMigrationE2E,
   resetE2EState,
   saveProfile as saveProfileRecord,
+  saveTargetWeight as saveTargetWeightRecord,
   saveWeight as saveWeightRecord,
   seedE2EState,
   type E2ESeedState,
   updateMeal as updateMealRecord,
+  updateWeight as updateWeightRecord,
 } from '@/lib/db';
 import { currentTimeLabel } from '@/lib/date';
 import type {
@@ -73,7 +75,9 @@ type AppDataContextValue = {
   deleteMeal: (id: number) => Promise<void>;
   deleteMealGroup: (ids: number[]) => Promise<void>;
   saveWeight: (input: { entryDate: string; weight: number }) => Promise<void>;
+  updateWeight: (id: number, input: { entryDate: string; weight: number }) => Promise<void>;
   deleteWeight: (id: number) => Promise<void>;
+  saveTargetWeight: (weight: number | null) => Promise<void>;
   getMealsByDate: (date: string) => MealEntry[];
   getSummaryByDate: (date: string) => DailySummary;
   trackedDates: Record<string, TrackedDateInfo>;
@@ -271,8 +275,16 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       await saveWeightRecord(input);
       await refresh();
     },
+    async updateWeight(id, input) {
+      await updateWeightRecord(id, input);
+      await refresh();
+    },
     async deleteWeight(id) {
       await deleteWeightRecord(id);
+      await refresh();
+    },
+    async saveTargetWeight(weight) {
+      await saveTargetWeightRecord(weight);
       await refresh();
     },
     getMealsByDate(date) {

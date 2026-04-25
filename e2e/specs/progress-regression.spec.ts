@@ -1,149 +1,173 @@
+import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../helpers/app-helpers';
 import {
-  attachSnapshotOnFailure,
-  annotateScenario,
-  readAppSnapshot,
-  seedAppState,
-} from '../helpers/app-helpers';
-import {
-  createDecimalLimitSeedState,
-  createHistoricalLimitProgressSeedState,
-  createMixedHistorySeedState,
   createNoLimitSeedState,
-  createProgressSeedState,
-  createSameDayLimitEditSeedState,
+  createWeightChartSeedState,
+  createWeightDetailsEditSeedState,
+  createWeightOverviewNoTargetSeedState,
+  createWeightOverviewSeedState,
+  createWeightSingleEntrySeedState,
   getRelativeDateKey,
 } from '../fixtures/seed-states';
 import { ProgressPage } from '../helpers/progress-page';
+import { WeightDetailsPage } from '../helpers/weight-details-page';
 import { expect, test } from '../fixtures/app-fixtures';
 
 test.afterEach(async ({ appPage }, testInfo) => {
   await attachSnapshotOnFailure(appPage, testInfo);
 });
 
-test.describe('User Story 2: progress coverage', () => {
-  test.beforeEach(async ({ appPage }) => {
-    await seedAppState(appPage, createProgressSeedState());
-  });
-
-  test('progress-weight-trend and adherence context cover US3-AS1 and US3-AS2', async ({
+test.describe('US1: Weight overview', () => {
+  test('shows weight overview with all six stats when weight entries exist', async ({
     appPage,
   }, testInfo) => {
-    annotateScenario(testInfo, 'progress-weight-trend', ['US3-AS1', 'US3-AS2']);
+    annotateScenario(testInfo, 'weight-overview-with-data', ['US1']);
 
-    const today = getRelativeDateKey(0);
+    await seedAppState(appPage, createWeightOverviewSeedState());
+
     const progress = new ProgressPage(appPage);
-
     await progress.goto();
-    await progress.expectCoreLayout();
 
-    await expect(appPage.getByTestId('latest-weight-metric')).toContainText('81.9');
-    await expect(appPage.getByTestId('adherence-metric')).toContainText('3/4');
-    await expect(appPage.getByTestId('weight-delta')).toHaveText('-0.3');
-
-    await progress.saveWeight(81.4);
-    await expect(appPage.getByText('Weight saved for today.')).toBeVisible();
-    await progress.expectWeightEntry(today, '81.4');
-    await expect(appPage.getByTestId(`weight-bar-${today}`)).toBeVisible();
+    await progress.assertLatestWeight('81.9');
+    await progress.assertGoalWeight('78');
+    await progress.assertWeightChange('-0.3');
+    await progress.assertDetailsButton();
+    await expect(appPage.getByTestId('latest-entry-date')).toBeVisible();
   });
 
-  test('progress sets initial limit, accepts decimals, and rejects invalid values', async ({
-    appPage,
-  }, testInfo) => {
-    annotateScenario(testInfo, 'progress-limit-setup-and-validation', [
-      'US1-AS1',
-      'US1-AS4',
-      'US1-AS5',
-    ]);
+  test('shows empty state when no weight entries exist', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-overview-empty-state', ['US1']);
 
     await seedAppState(appPage, createNoLimitSeedState());
 
     const progress = new ProgressPage(appPage);
     await progress.goto();
-    await progress.expectDailyLimitMetric('—');
 
-    for (const invalidValue of ['', '0', '-2', 'abc']) {
-      await progress.saveDailyLimit(invalidValue);
-      await progress.expectDailyLimitValidation('Daily point limit must be a positive number.');
-    }
-
-    await progress.saveDailyLimit('24.5');
-    await progress.expectDailyLimitMessage('Daily point limit saved.');
-    await progress.expectDailyLimitMetric('24.5');
-
-    const snapshot = await readAppSnapshot(appPage);
-    expect(snapshot.profile?.dailyPointsLimit).toBe(24.5);
-    expect(snapshot.dailyPointLimitHistory[0]?.dailyPointsLimit).toBe(24.5);
-    expect(snapshot.dailyPointLimitHistory[0]?.effectiveDate).toBe(getRelativeDateKey(0));
+    await progress.assertEmptyState();
+    await expect(appPage.getByTestId('progress-overview-card')).toHaveCount(0);
   });
 
-  test('progress edit refreshes same-day budget and preserves decimal display', async ({
-    appPage,
-  }, testInfo) => {
-    annotateScenario(testInfo, 'progress-limit-edit-same-day-refresh', [
-      'US1-AS2',
-      'US1-AS3',
-      'US1-AS4',
-    ]);
+  test('does not show adherence or daily limit sections', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-overview-no-non-weight-sections', ['US1']);
 
-    await seedAppState(appPage, createSameDayLimitEditSeedState());
+    await seedAppState(appPage, createWeightOverviewSeedState());
 
     const progress = new ProgressPage(appPage);
     await progress.goto();
-    await progress.expectDailyLimitInput('24');
-    await progress.expectDailyLimitMetric('24');
-    await progress.expectAdherence('0/1');
 
-    await progress.saveDailyLimit('30.5');
-    await progress.expectDailyLimitMessage('Daily point limit updated for today.');
-    await progress.expectDailyLimitInput('30.5');
-    await progress.expectDailyLimitMetric('30.5');
-    await progress.expectAdherence('1/1');
+    await expect(appPage.getByTestId('progress-daily-limit-card')).toHaveCount(0);
+    await expect(appPage.getByTestId('adherence-metric')).toHaveCount(0);
+  });
+});
+
+test.describe('US2: Weight entry management', () => {
+  test.beforeEach(async ({ appPage }) => {
+    await seedAppState(appPage, createWeightDetailsEditSeedState());
   });
 
-  test('progress reads a seeded decimal limit without rounding', async ({ appPage }, testInfo) => {
-    annotateScenario(testInfo, 'progress-decimal-limit-seed', ['US1-AS4', 'US3-AS1']);
+  test('shows full entry list with date and weight per row', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-details-entry-list', ['US2']);
 
-    await seedAppState(appPage, createDecimalLimitSeedState());
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
 
-    const progress = new ProgressPage(appPage);
-    await progress.goto();
-    await progress.expectDailyLimitInput('24.5');
-    await progress.expectDailyLimitMetric('24.5');
-    await progress.expectAdherence('1/1');
+    await details.assertEntryCount(3);
+    await details.assertEntryWeight(0, '81.9');
   });
 
-  test('progress-adherence uses effective limit per day and refreshes after same-day edit', async ({
-    appPage,
-  }, testInfo) => {
-    annotateScenario(testInfo, 'progress-effective-limit-adherence', [
-      'US3-AS1',
-      'US3-AS2',
-      'US3-AS3',
-    ]);
+  test('valid edit updates entry in list', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-details-valid-edit', ['US2']);
 
-    await seedAppState(appPage, createHistoricalLimitProgressSeedState());
-
-    const progress = new ProgressPage(appPage);
-    await progress.goto();
-    await progress.expectAdherence('1/3');
-
-    await progress.saveDailyLimit(30);
-    await progress.expectDailyLimitMessage('Daily point limit updated for today.');
-    await progress.expectAdherence('2/3');
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
+    await details.editEntry(0);
+    await details.saveEdit('85.0', getRelativeDateKey(0));
+    await details.assertEntryWeight(0, '85.0');
   });
 
-  test('progress aggregate matches day outcomes across a limit boundary', async ({
-    appPage,
-  }, testInfo) => {
-    annotateScenario(testInfo, 'progress-mixed-history-adherence-boundary', ['US3-AS1', 'US3-AS2']);
+  test('rejects weight out of range with feedback', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-details-invalid-weight', ['US2']);
 
-    await seedAppState(appPage, createMixedHistorySeedState());
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
+    await details.editEntry(0);
+    await details.saveEdit('25', getRelativeDateKey(0));
+    await details.assertEditError('Weight must be between 30 and 300 kg');
+    await details.cancelEdit();
+    await details.assertEntryWeight(0, '81.9');
+  });
 
-    const progress = new ProgressPage(appPage);
-    await progress.goto();
-    await progress.expectAdherence('2/3');
+  test('rejects duplicate date with feedback', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-details-duplicate-date', ['US2']);
 
-    await progress.saveDailyLimit(20);
-    await progress.expectAdherence('1/3');
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
+    await details.editEntry(0);
+    await details.saveEdit('82.0', getRelativeDateKey(-1));
+    await details.assertEditError('An entry for this date already exists');
+  });
+
+  test('delete with confirmation removes entry', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-details-delete', ['US2']);
+
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
+    await details.assertEntryCount(3);
+    await details.deleteEntry(0);
+    await details.confirmDelete();
+    await details.assertEntryCount(2);
+  });
+});
+
+test.describe('US3: Weight trend chart', () => {
+  test('chart SVG is present when entries exist', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-chart-visible', ['US3']);
+
+    await seedAppState(appPage, createWeightChartSeedState());
+
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
+    await details.assertChartVisible();
+  });
+
+  test('no chart shown when no entries exist', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-chart-no-entries', ['US3']);
+
+    await seedAppState(appPage, createNoLimitSeedState());
+
+    const details = new WeightDetailsPage(appPage);
+    await expect(appPage.getByTestId('weight-details-screen')).toHaveCount(0);
+    await appPage.goto('/progress/details');
+    await expect(appPage.getByTestId('weight-details-empty')).toBeVisible();
+    await details.assertChartHidden();
+  });
+
+  test('single entry renders without implying trend', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-chart-single-entry', ['US3']);
+
+    await seedAppState(appPage, createWeightSingleEntrySeedState());
+
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
+    await details.assertChartVisible();
+  });
+
+  test('chart shows target line when target weight is set', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-chart-target-line', ['US3']);
+
+    await seedAppState(appPage, createWeightChartSeedState());
+
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
+    await expect(appPage.getByTestId('weight-chart-target-line')).toHaveCount(1);
+  });
+
+  test('no target line when target weight not set', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'weight-chart-no-target-line', ['US3']);
+
+    await seedAppState(appPage, createWeightOverviewNoTargetSeedState());
+
+    const details = new WeightDetailsPage(appPage);
+    await details.goto();
+    await expect(appPage.getByTestId('weight-chart-target-line')).toHaveCount(0);
   });
 });

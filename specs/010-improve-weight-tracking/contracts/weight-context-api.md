@@ -16,25 +16,25 @@ Changes to the context type in `src/context/app-data.tsx`:
 // src/lib/types.ts
 export type UserProfile = {
   dailyPointsLimit: number;
-  targetWeight: number | null;  // NEW
+  targetWeight: number | null; // NEW
   updatedAt: string;
 };
 ```
 
 ### New context methods
 
-| Method | Signature | Behavior |
-|--------|-----------|----------|
-| `updateWeight` | `(id: number, input: { entryDate: string; weight: number }) => Promise<void>` | UPDATE entry by id. Unique constraint rejects duplicate dates — caller catches and shows feedback. |
-| `saveTargetWeight` | `(weight: number \| null) => Promise<void>` | Persist or clear target weight in user_profile. Calls `refresh()` after write. |
+| Method             | Signature                                                                     | Behavior                                                                                           |
+| ------------------ | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `updateWeight`     | `(id: number, input: { entryDate: string; weight: number }) => Promise<void>` | UPDATE entry by id. Unique constraint rejects duplicate dates — caller catches and shows feedback. |
+| `saveTargetWeight` | `(weight: number \| null) => Promise<void>`                                   | Persist or clear target weight in user_profile. Calls `refresh()` after write.                     |
 
 ### Unchanged weight methods
 
-| Method | Signature | Notes |
-|--------|-----------|-------|
-| `saveWeight` | `(input: { entryDate: string; weight: number }) => Promise<void>` | Upsert by entryDate — used by the existing logging flow reused in add-entry action (FR-008c) |
-| `deleteWeight` | `(id: number) => Promise<void>` | DELETE by id — used in detail view delete action (FR-008a) |
-| `weights` | `WeightEntry[]` | Sorted DESC by entryDate; unchanged |
+| Method         | Signature                                                         | Notes                                                                                        |
+| -------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `saveWeight`   | `(input: { entryDate: string; weight: number }) => Promise<void>` | Upsert by entryDate — used by the existing logging flow reused in add-entry action (FR-008c) |
+| `deleteWeight` | `(id: number) => Promise<void>`                                   | DELETE by id — used in detail view delete action (FR-008a)                                   |
+| `weights`      | `WeightEntry[]`                                                   | Sorted DESC by entryDate; unchanged                                                          |
 
 ---
 
@@ -45,9 +45,9 @@ export type UserProfile = {
 import type { WeightEntry } from '@/lib/types';
 
 type WeightChartProps = {
-  entries: WeightEntry[];        // sorted ASC by entryDate; caller is responsible for ordering
-  targetWeight: number | null;   // renders a horizontal target line when set
-  yMin: number;                  // caller computes range per data-model.md formula
+  entries: WeightEntry[]; // sorted ASC by entryDate; caller is responsible for ordering
+  targetWeight: number | null; // renders a horizontal target line when set
+  yMin: number; // caller computes range per data-model.md formula
   yMax: number;
   testID?: string;
 };
@@ -77,9 +77,9 @@ Seed functions that provide `targetWeight` will insert it into `user_profile` du
 
 ## Screen Navigation Contract
 
-| Route | Screen | Entry point |
-|-------|--------|-------------|
-| `/progress` | Weight overview (index.tsx) | Progress tab tap |
+| Route               | Screen                           | Entry point                       |
+| ------------------- | -------------------------------- | --------------------------------- |
+| `/progress`         | Weight overview (index.tsx)      | Progress tab tap                  |
 | `/progress/details` | Weight detail view (details.tsx) | "View details" button on overview |
 
 Back navigation from `/progress/details` → `/progress` uses the expo-router Stack back action. No custom back handler needed.

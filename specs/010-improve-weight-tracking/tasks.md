@@ -19,8 +19,8 @@
 
 **Purpose**: Install new dependency and establish directory-based routing for the progress tab
 
-- [ ] T001 Install react-native-svg via `npx expo install react-native-svg`
-- [ ] T002 Create `src/app/(tabs)/progress/_layout.tsx` as a Stack navigator (converts `progress.tsx` flat file to directory-based routing; existing e2e navigation to `/progress` continues to work)
+- [X] T001 Install react-native-svg via `npx expo install react-native-svg`
+- [X] T002 Create `src/app/(tabs)/progress/_layout.tsx` as a Stack navigator (converts `progress.tsx` flat file to directory-based routing; existing e2e navigation to `/progress` continues to work)
 
 ---
 
@@ -30,9 +30,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Update `src/lib/db.ts` — add migration v4 (`ALTER TABLE user_profile ADD COLUMN target_weight REAL`), add `updateWeight(id, { entryDate, weight })` function, add `saveTargetWeight(weight: number | null)` function, update `loadProfile` to read and return `target_weight` as `targetWeight`, extend `E2ESeedState.profile` with optional `targetWeight?: number | null` field
-- [ ] T004 [P] Update `src/lib/types.ts` — add `targetWeight: number | null` to `UserProfile` type
-- [ ] T005 Update `src/context/app-data.tsx` — expose `updateWeight` and `saveTargetWeight` methods in context value, include `targetWeight` from loaded profile (depends on T003, T004)
+- [X] T003 Update `src/lib/db.ts` — add migration v4 (`ALTER TABLE user_profile ADD COLUMN target_weight REAL`), add `updateWeight(id, { entryDate, weight })` function, add `saveTargetWeight(weight: number | null)` function, update `loadProfile` to read and return `target_weight` as `targetWeight`, extend `E2ESeedState.profile` with optional `targetWeight?: number | null` field
+- [X] T004 [P] Update `src/lib/types.ts` — add `targetWeight: number | null` to `UserProfile` type
+- [X] T005 Update `src/context/app-data.tsx` — expose `updateWeight` and `saveTargetWeight` methods in context value, include `targetWeight` from loaded profile (depends on T003, T004)
 
 **Checkpoint**: Foundation ready — user story implementation can begin
 
@@ -48,14 +48,14 @@
 
 > **Define these before implementation; run before story sign-off**
 
-- [ ] T006 [P] [US1] Add weight overview assertion helpers (`assertLatestWeight`, `assertGoalWeight`, `assertWeightChange`, `assertDetailsButton`, `assertEmptyState`) to `e2e/helpers/progress-page.ts`
-- [ ] T007 [US1] Extend `e2e/specs/progress-regression.spec.ts` with US1 scenarios: weight-only overview with seeded data, empty state without weight entries, absence of non-weight sections (adherence, daily limit)
+- [X] T006 [P] [US1] Add weight overview assertion helpers (`assertLatestWeight`, `assertGoalWeight`, `assertWeightChange`, `assertDetailsButton`, `assertEmptyState`) to `e2e/helpers/progress-page.ts`
+- [X] T007 [US1] Extend `e2e/specs/progress-regression.spec.ts` with US1 scenarios: weight-only overview with seeded data, empty state without weight entries, absence of non-weight sections (adherence, daily limit)
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Rework `src/app/(tabs)/progress/index.tsx` (migrated from `progress.tsx`) — remove non-weight sections (daily limit card, adherence); compute `WeightOverview` (latestWeight, targetWeight, weightChange, remaining, trendDirection, latestEntryDate) from `AppDataContext`; render weight overview card with all six stats (FR-001, FR-002, FR-003)
-- [ ] T009 [US1] Add empty state to `src/app/(tabs)/progress/index.tsx` for when `weights` array is empty — show prompt to add weight entries or open details; no misleading values shown (FR-014)
-- [ ] T010 [US1] Add "View details" button in `src/app/(tabs)/progress/index.tsx` that navigates to `/progress/details` using expo-router (FR-004)
+- [X] T008 [US1] Rework `src/app/(tabs)/progress/index.tsx` (migrated from `progress.tsx`) — remove non-weight sections (daily limit card, adherence); compute `WeightOverview` (latestWeight, targetWeight, weightChange, remaining, trendDirection, latestEntryDate) from `AppDataContext`; render weight overview card with all six stats (FR-001, FR-002, FR-003)
+- [X] T009 [US1] Add empty state to `src/app/(tabs)/progress/index.tsx` for when `weights` array is empty — show prompt to add weight entries or open details; no misleading values shown (FR-014)
+- [X] T010 [US1] Add "View details" button in `src/app/(tabs)/progress/index.tsx` that navigates to `/progress/details` using expo-router (FR-004)
 
 **Checkpoint**: US1 fully functional and independently testable — run `npm run e2e:us2` to verify
 
@@ -71,15 +71,15 @@
 
 > **Define these before implementation; run before story sign-off**
 
-- [ ] T011 [P] [US2] Create `e2e/helpers/weight-details-page.ts` page object with methods: `getEntries()`, `editEntry(index)`, `saveEdit(weight, date)`, `assertEditError(message)`, `deleteEntry(index)`, `confirmDelete()`, `tapAddEntry()`
-- [ ] T012 [US2] Extend `e2e/specs/progress-regression.spec.ts` with US2 scenarios: full entry list visible, valid edit updates list and overview, weight-out-of-range rejected with feedback, duplicate-date rejected with feedback, delete with confirmation, add-entry opens logging flow and returns to details
+- [X] T011 [P] [US2] Create `e2e/helpers/weight-details-page.ts` page object with methods: `getEntries()`, `editEntry(index)`, `saveEdit(weight, date)`, `assertEditError(message)`, `deleteEntry(index)`, `confirmDelete()`, `tapAddEntry()`
+- [X] T012 [US2] Extend `e2e/specs/progress-regression.spec.ts` with US2 scenarios: full entry list visible, valid edit updates list and overview, weight-out-of-range rejected with feedback, duplicate-date rejected with feedback, delete with confirmation, add-entry opens logging flow and returns to details
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Create `src/app/(tabs)/progress/details.tsx` — render full weight log list from `AppDataContext.weights` sorted DESC by `entryDate`; each row shows date and weight with edit and delete actions (FR-005)
-- [ ] T014 [US2] Add inline edit form in `src/app/(tabs)/progress/details.tsx` — fields for weight (validated 30–300 kg; show "Weight must be between 30 and 300 kg" on violation) and date (validated `YYYY-MM-DD`); call `context.updateWeight` on save; catch SQLite UNIQUE constraint error and show "An entry for this date already exists" (FR-006, FR-007, FR-007a, FR-007b, FR-008)
-- [ ] T015 [US2] Add delete action in `src/app/(tabs)/progress/details.tsx` — show confirmation dialog before calling `context.deleteWeight(id)`; on confirm, entry removed from list, overview, and graph data (FR-008a, FR-008b)
-- [ ] T016 [US2] Add add-entry button in `src/app/(tabs)/progress/details.tsx` that navigates to the existing weight logging flow; after successful save, return user to `/progress/details` (FR-008c)
+- [X] T013 [US2] Create `src/app/(tabs)/progress/details.tsx` — render full weight log list from `AppDataContext.weights` sorted DESC by `entryDate`; each row shows date and weight with edit and delete actions (FR-005)
+- [X] T014 [US2] Add inline edit form in `src/app/(tabs)/progress/details.tsx` — fields for weight (validated 30–300 kg; show "Weight must be between 30 and 300 kg" on violation) and date (validated `YYYY-MM-DD`); call `context.updateWeight` on save; catch SQLite UNIQUE constraint error and show "An entry for this date already exists" (FR-006, FR-007, FR-007a, FR-007b, FR-008)
+- [X] T015 [US2] Add delete action in `src/app/(tabs)/progress/details.tsx` — show confirmation dialog before calling `context.deleteWeight(id)`; on confirm, entry removed from list, overview, and graph data (FR-008a, FR-008b)
+- [X] T016 [US2] Add add-entry button in `src/app/(tabs)/progress/details.tsx` that navigates to the existing weight logging flow; after successful save, return user to `/progress/details` (FR-008c)
 
 **Checkpoint**: US1 + US2 both independently functional — run `npm run e2e` progress subset to verify
 
@@ -95,13 +95,13 @@
 
 > **Define these before implementation; run before story sign-off**
 
-- [ ] T017 [P] [US3] Extend `e2e/specs/progress-regression.spec.ts` with US3 scenarios: chart SVG present when entries exist, target line rendered, y-axis range label verification, single entry renders cleanly, no entries shows empty log state without chart, landscape layout readable without label overlap
+- [X] T017 [P] [US3] Extend `e2e/specs/progress-regression.spec.ts` with US3 scenarios: chart SVG present when entries exist, target line rendered, y-axis range label verification, single entry renders cleanly, no entries shows empty log state without chart, landscape layout readable without label overlap
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Create `src/components/weight-chart.tsx` — pure component accepting `WeightChartProps` (`entries: WeightEntry[]` sorted ASC, `targetWeight: number | null`, `yMin: number`, `yMax: number`, `testID?: string`); render via `react-native-svg`: smooth curve `Path` for log entries, horizontal `Line` for target, `Text` labels for y-axis ticks, x-axis date labels at proportional positions relative to elapsed calendar days between first and last entry (FR-009, FR-010, FR-013a)
-- [ ] T019 [US3] Integrate `WeightChart` into `src/app/(tabs)/progress/details.tsx` — compute `yMin`/`yMax` per data-model.md formula, sort entries ASC by `entryDate`, pass to `WeightChart`; when `entries.length === 0` hide chart and show empty state message; when `targetWeight` is null show UI note indicating target is needed for target-based scaling (FR-011, FR-012, FR-014)
-- [ ] T020 [US3] Add landscape-capable chart layout in `src/app/(tabs)/progress/details.tsx` — wrap chart in a horizontal `ScrollView` or use a fixed aspect-ratio container (wider than tall) so chart labels and plotted values remain readable on both portrait phone screens and landscape orientation (FR-013)
+- [X] T018 [US3] Create `src/components/weight-chart.tsx` — pure component accepting `WeightChartProps` (`entries: WeightEntry[]` sorted ASC, `targetWeight: number | null`, `yMin: number`, `yMax: number`, `testID?: string`); render via `react-native-svg`: smooth curve `Path` for log entries, horizontal `Line` for target, `Text` labels for y-axis ticks, x-axis date labels at proportional positions relative to elapsed calendar days between first and last entry (FR-009, FR-010, FR-013a)
+- [X] T019 [US3] Integrate `WeightChart` into `src/app/(tabs)/progress/details.tsx` — compute `yMin`/`yMax` per data-model.md formula, sort entries ASC by `entryDate`, pass to `WeightChart`; when `entries.length === 0` hide chart and show empty state message; when `targetWeight` is null show UI note indicating target is needed for target-based scaling (FR-011, FR-012, FR-014)
+- [X] T020 [US3] Add landscape-capable chart layout in `src/app/(tabs)/progress/details.tsx` — wrap chart in a horizontal `ScrollView` or use a fixed aspect-ratio container (wider than tall) so chart labels and plotted values remain readable on both portrait phone screens and landscape orientation (FR-013)
 
 **Checkpoint**: All three user stories independently functional — run full `npm run e2e` suite
 
@@ -109,8 +109,8 @@
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T021 Run `npm run lint` (oxfmt + tsc + oxlint) and fix all type errors and lint violations across all changed files
-- [ ] T022 Run `npm run e2e` full suite; confirm all `progress-regression.spec.ts` scenarios pass (US1 + US2 + US3); fix any failures before sign-off
+- [X] T021 Run `npm run lint` (oxfmt + tsc + oxlint) and fix all type errors and lint violations across all changed files
+- [X] T022 Run `npm run e2e` full suite; confirm all `progress-regression.spec.ts` scenarios pass (US1 + US2 + US3); fix any failures before sign-off
 - [ ] T023 Complete quickstart.md acceptance validation checklist — manually verify all 11 acceptance rows (US1 overview, US1 empty state, US2 edit, US2 invalid edit, US2 delete, US2 add-entry, US3 chart visible, US3 target line, US3 range, US3 single entry, US3 no entries, US3 landscape)
 
 ---
