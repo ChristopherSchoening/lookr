@@ -1,119 +1,105 @@
-# Implementation Plan: [FEATURE]
+# Implementation Plan: Meal Entry Counts
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**Branch**: `009-meal-entry-counts` | **Date**: 2026-04-25 | **Spec**: [spec.md](/home/tanome/dev/lookr/specs/009-meal-entry-counts/spec.md)
+**Input**: Feature specification from `/home/tanome/dev/lookr/specs/009-meal-entry-counts/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
+**Note**: This file is produced by the `/speckit.plan` command.
 
 ## Summary
 
-[Extract from feature spec: primary requirement + technical approach from research]
+Add a whole-number meal count to the shared meal add/edit modal. Counted saves create multiple separate `meal_entries` rows, preserving existing storage and summary math. History displays exact same-day duplicate meals as one combined row with visible count and multiplied points, while edit/delete actions apply to all represented rows and keep day totals accurate.
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Language/Version**: TypeScript 5.9, React 19, Expo SDK 55, React Native 0.83, Expo Router
+**Primary Dependencies**: React Native, Expo Router, NativeWind, `expo-sqlite`, existing shared UI primitives, existing Playwright helpers
+**Storage**: Existing local SQLite `meal_entries`; no schema change. Counted meals are stored as separate rows.
+**Testing**: Playwright (`npm run e2e:coverage`, focused specs), TypeScript (`npm run typecheck`), Oxc formatting/linting (`npm run lint`)
+**Target Platform**: Expo app on web, iOS, and Android; automated user-flow proof on React Native Web through Playwright
+**Project Type**: Mobile app with web E2E harness
+**Performance Goals**: Adding or editing up to 99 entries stays responsive in normal local SQLite use; history grouping runs over in-memory meals for one selected day without perceptible delay.
+**Constraints**: Count must be integer 1-99; single-count behavior stays unchanged; future-date meal restrictions stay enforced; no copyleft dependencies; no new schema for count.
+**Scale/Scope**: Shared meal editor, dashboard meal totals, history grouped display/edit/delete, and Playwright coverage for counted add and grouped history behavior.
 
 ## Constitution Check
 
-_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
+_GATE: Pass before Phase 0 research. Re-check after Phase 1 design._
 
-- Verification strategy defined before implementation begins, including
-  automated checks and manual acceptance for each affected user story
-- Acceptance criteria mapped to concrete automated proof, with end-to-end
-  coverage called out for user-facing flows
-- Every feature or fix updates or adds at least one test; small changes prefer
-  extending existing tests before adding new suites
-- UX consistency review defined for all touched platforms, including any
-  intentional platform-specific deviations with rationale
-- Required repository quality commands identified and scheduled in the plan
-- Story-to-task traceability preserved so each user story can be validated
-  independently
-- Complexity exceptions documented only when a simpler alternative was rejected
-- Implementation approach keeps added code lean, readable, modular, and
-  extension-first, with new abstractions justified explicitly
+- Verification strategy defined before implementation begins: extend Playwright dashboard and history flows, then run `npm run lint`, `npm run typecheck`, `npm run e2e:coverage`, and focused Playwright specs.
+- Acceptance criteria mapped to concrete automated proof:
+  - US1 add counted meal: dashboard flow adds count 3 and asserts consumed/remaining totals and underlying snapshot row count.
+  - US2 combined history rows: history flow seeds exact duplicates and asserts one visible row with count and multiplied points, plus separate rows for non-exact details.
+  - US3 manage combined row: history edit/delete flow updates a combined row count and removes all represented rows.
+- Every feature updates tests. Existing `dashboard-core.spec.ts`, `history-regression.spec.ts`, page helpers, seed states, and coverage manifest are extended before adding new suites.
+- UX consistency review covers shared `MealEditor`, so dashboard and history modal behavior stays aligned across platforms. No intentional platform-specific variation.
+- Required quality commands: `npm run lint`, `npm run typecheck`, `npm run e2e:coverage`, plus focused `npm run e2e:us1` and `npm run e2e:us2` when implementation changes land.
+- Story-to-task traceability: each story has distinct implementation and verification work in the future `tasks.md`.
+- Complexity exceptions: none.
+- Implementation is extension-first: update shared `MealEditor`, app data helpers, and history route rather than adding a parallel logging flow. New helper types/functions are allowed only where they make grouped row handling traceable.
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+/home/tanome/dev/lookr/specs/009-meal-entry-counts/
+├── plan.md
+├── research.md
+├── data-model.md
+├── quickstart.md
+├── contracts/
+│   └── ui-contract.md
+└── tasks.md
 ```
 
 ### Source Code (repository root)
 
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
-
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
-tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
+/home/tanome/dev/lookr/
 ├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
+│   ├── app/
+│   │   └── (tabs)/
+│   │       ├── index.tsx
+│   │       └── history.tsx
 │   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+│   │   └── meal-editor.tsx
+│   ├── context/
+│   │   └── app-data.tsx
+│   └── lib/
+│       ├── db.ts
+│       └── types.ts
+├── e2e/
+│   ├── fixtures/
+│   │   └── seed-states.ts
+│   ├── helpers/
+│   │   ├── dashboard-page.ts
+│   │   └── history-page.ts
+│   └── specs/
+│       ├── dashboard-core.spec.ts
+│       └── history-regression.spec.ts
+└── playwright/
+    └── coverage.manifest.json
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: Keep work inside the existing Expo app. `MealEditor` remains the shared surface for add/edit controls. App data remains the state boundary around SQLite writes and refreshes. History grouping can be prepared in the history screen or a narrowly scoped helper near the history flow if keeping it inline becomes hard to read.
 
 ## Complexity Tracking
 
-> **Fill ONLY if Constitution Check has violations that must be justified**
+No constitution violations or complexity exceptions.
 
-| Violation                  | Why Needed               | Simpler Alternative Rejected Because    |
-| -------------------------- | ------------------------ | --------------------------------------- |
-| [e.g., 4th project]        | [current need]           | [why 3 projects insufficient]           |
-| [e.g., Repository pattern] | [specific problem]       | [why direct DB access insufficient]     |
-| [e.g., New module/file]    | [reuse/readability need] | [why extending existing code was worse] |
+## Phase 0 Research
+
+See [research.md](/home/tanome/dev/lookr/specs/009-meal-entry-counts/research.md).
+
+Research resolved storage, grouping identity, edit/delete semantics, validation, and test strategy. No open clarification items remain.
+
+## Phase 1 Design
+
+See [data-model.md](/home/tanome/dev/lookr/specs/009-meal-entry-counts/data-model.md), [quickstart.md](/home/tanome/dev/lookr/specs/009-meal-entry-counts/quickstart.md), and [ui-contract.md](/home/tanome/dev/lookr/specs/009-meal-entry-counts/contracts/ui-contract.md).
+
+Post-design Constitution Check remains passing:
+
+- Tests map all acceptance scenarios to Playwright proof.
+- No new dependency, database migration, or speculative abstraction is introduced.
+- UI behavior is centralized in the shared meal editor and reviewed through dashboard/history flows.
+- Verification commands are concrete and already present in `package.json`.
