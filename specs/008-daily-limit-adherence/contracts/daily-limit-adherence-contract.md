@@ -7,15 +7,17 @@ point limit while preserving historical adherence by effective date.
 
 ## Home Contract
 
-### Limit Editing
+### Budget Display
 
-- Users can save an initial daily point limit when no profile exists
-- Users can also edit the existing daily point limit after setup
-- Invalid limit input shows a clear validation message and does not save
+- Home never exposes the daily point limit setting
+- When no daily point limit exists, Home shows a brief prompt or action that
+  sends the user to Progress setup
+- After setup, Home shows current-day budget feedback from the latest effective
+  limit
 
 ### Same-Day Refresh
 
-- Saving a new limit updates the whole current day immediately
+- Saving a new limit from Progress updates the whole current day immediately
 - Meals already logged earlier today are judged against the new limit
 - Home remaining points, consumed points context, and status text refresh from
   the new effective limit without requiring navigation away
@@ -36,6 +38,15 @@ point limit while preserving historical adherence by effective date.
 - A later limit change does not turn an empty day into a tracked adhered day
 
 ## Progress Contract
+
+### Limit Setup and Editing
+
+- Users can set the initial daily point limit from Progress
+- Users can edit the existing daily point limit from Progress after setup
+- Valid limits include positive whole numbers and positive decimals
+- Invalid limit input shows a clear validation message and does not save
+- Saving a valid limit keeps the user in Progress and refreshes adherence
+  metrics from the new effective limit
 
 ### Adherence Count
 
@@ -64,13 +75,16 @@ point limit while preserving historical adherence by effective date.
 
 ## Acceptance-Oriented Test Hooks
 
-- Existing `daily-limit-input`, `daily-limit-metric`, `remaining-points-value`,
-  and summary status hooks remain the anchor for Home checks
-- Existing profile setup keeps `start-tracking-button`; limit editing after
-  setup uses `save-daily-limit-button` and optional `daily-limit-message`
+- Existing `daily-limit-input`, `save-daily-limit-button`, and optional
+  `daily-limit-message` hooks anchor Progress setup/edit checks
+- Existing `daily-limit-metric`, `remaining-points-value`, and summary status
+  hooks remain the anchor for Home budget-display checks
+- Home checks must assert the daily limit input and save controls are absent
+- Home incomplete-setup checks should assert the prompt/action to Progress
 - History assertions continue through existing day summary hooks and meal edit
   flows; new hooks should be added only if historical-limit visibility cannot
   be proven otherwise
 - Existing `adherence-metric` stays the anchor for Progress checks
 - Seed fixtures must support at least one scenario with an older limit, a later
-  limit change, tracked days on both sides of the change, and a same-day update
+  limit change, tracked days on both sides of the change, a same-day update,
+  and a positive decimal limit

@@ -16,6 +16,27 @@ export class ProgressPage {
     await expect(this.page.getByText('Weight context, not daily panic.')).toHaveCount(0);
   }
 
+  async saveDailyLimit(points: number | string) {
+    await this.page.getByTestId('daily-limit-input').fill(String(points));
+    await this.page.getByTestId('save-daily-limit-button').click();
+  }
+
+  async expectDailyLimitInput(value: string) {
+    await expect(this.page.getByTestId('daily-limit-input')).toHaveValue(value);
+  }
+
+  async expectDailyLimitMetric(value: string) {
+    await expect(this.page.getByTestId('progress-daily-limit-metric')).toContainText(value);
+  }
+
+  async expectDailyLimitMessage(text: string) {
+    await expect(this.page.getByTestId('daily-limit-message')).toContainText(text);
+  }
+
+  async expectDailyLimitValidation(text: string) {
+    await expect(this.page.getByText(text)).toBeVisible();
+  }
+
   async saveWeight(weight: number) {
     await this.page.getByTestId('weight-input').fill(String(weight));
     await this.page.getByTestId('save-weight-button').click();

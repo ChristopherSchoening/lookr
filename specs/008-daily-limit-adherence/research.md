@@ -40,6 +40,28 @@
   rejected because it adds extra lookup complexity to every current-limit read
   without clear feature value.
 
+## Decision: Preserve positive numeric limits, including decimals
+
+**Rationale**:
+
+- Clarification confirmed that daily point limits may be positive whole numbers
+  or positive decimal values.
+- The app already treats point values as numbers in TypeScript, so validation
+  should reject blank, zero, negative, non-finite, and non-numeric input without
+  rounding valid decimals.
+- Preserving decimals in profile, history, current-day budget, and adherence
+  calculations avoids mismatches where a saved value displays one way but
+  history evaluates another way.
+
+**Alternatives considered**:
+
+- Force whole-number daily limits: rejected because the clarification chose a
+  broader positive numeric rule.
+- Accept decimals in the form but round before saving: rejected because it would
+  silently change user intent and make decimal acceptance misleading.
+- Add a decimal math dependency: rejected because current local single-user
+  point arithmetic does not need new dependency surface.
+
 ## Decision: Resolve effective limits per date in shared app-data summary derivation
 
 **Rationale**:
@@ -57,6 +79,27 @@
   would duplicate logic and risk inconsistent adherence counts.
 - Materialize per-day summaries into storage: rejected because the data can be
   derived cheaply from local records and would require more invalidation paths.
+
+## Decision: Progress owns setup and editing; Home only prompts or displays budget state
+
+**Rationale**:
+
+- Clarification confirmed that Progress owns both first-time daily limit setup
+  and later daily limit edits.
+- Home should stay focused on today's meal logging and budget status. When a
+  user has no saved limit, Home should provide a short path to Progress setup
+  without embedding the setting.
+- This keeps one owner for the daily limit form and reduces duplicated
+  validation, save feedback, and test hooks across tabs.
+
+**Alternatives considered**:
+
+- Keep first-time setup on Home and only move later edits: rejected because it
+  leaves two owners for the same setting.
+- Let both Home and Progress set the initial limit: rejected because it
+  duplicates the input and creates more acceptance states.
+- Hide Home budget state without a setup prompt: rejected because new users
+  would have no clear next action from Home.
 
 ## Decision: Same-day limit changes recalculate the whole current day immediately
 

@@ -13,7 +13,7 @@ import type {
 let databasePromise: Promise<SQLiteDatabase> | null = null;
 let databaseInitializationPromise: Promise<SQLiteDatabase> | null = null;
 
-const DATABASE_SCHEMA_VERSION = 3;
+const DATABASE_SCHEMA_VERSION = 4;
 
 type ProfileRow = {
   daily_points_limit: number;
@@ -100,13 +100,13 @@ async function getDb() {
       await db.execAsync(`
         CREATE TABLE IF NOT EXISTS user_profile (
           id INTEGER PRIMARY KEY NOT NULL CHECK (id = 1),
-          daily_points_limit INTEGER NOT NULL,
+          daily_points_limit REAL NOT NULL,
           updated_at TEXT NOT NULL
         );
         CREATE TABLE IF NOT EXISTS daily_point_limit_history (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           effective_date TEXT NOT NULL,
-          daily_points_limit INTEGER NOT NULL,
+          daily_points_limit REAL NOT NULL,
           created_at TEXT NOT NULL
         );
         CREATE TABLE IF NOT EXISTS meal_entries (
@@ -145,7 +145,7 @@ async function getDb() {
           CREATE TABLE IF NOT EXISTS daily_point_limit_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             effective_date TEXT NOT NULL,
-            daily_points_limit INTEGER NOT NULL,
+            daily_points_limit REAL NOT NULL,
             created_at TEXT NOT NULL
           );
         `);
@@ -171,6 +171,42 @@ async function getDb() {
             profileRow.updated_at,
           );
         }
+      }
+
+      if (currentVersion < 4) {
+        await db.execAsync(`
+          CREATE TABLE user_profile_next (
+            id INTEGER PRIMARY KEY NOT NULL CHECK (id = 1),
+            daily_points_limit REAL NOT NULL,
+            updated_at TEXT NOT NULL
+          );
+          INSERT INTO user_profile_next (id, daily_points_limit, updated_at)
+          SELECT id, CAST(daily_points_limit AS REAL), updated_at
+          FROM user_profile;
+          DROP TABLE user_profile;
+          ALTER TABLE user_profile_next RENAME TO user_profile;
+
+          CREATE TABLE daily_point_limit_history_next (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            effective_date TEXT NOT NULL,
+            daily_points_limit REAL NOT NULL,
+            created_at TEXT NOT NULL
+          );
+          INSERT INTO daily_point_limit_history_next (
+            id,
+            effective_date,
+            daily_points_limit,
+            created_at
+          )
+          SELECT
+            id,
+            effective_date,
+            CAST(daily_points_limit AS REAL),
+            created_at
+          FROM daily_point_limit_history;
+          DROP TABLE daily_point_limit_history;
+          ALTER TABLE daily_point_limit_history_next RENAME TO daily_point_limit_history;
+        `);
       }
 
       await db.execAsync(`PRAGMA user_version = ${DATABASE_SCHEMA_VERSION};`);

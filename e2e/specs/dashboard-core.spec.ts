@@ -6,12 +6,14 @@ import {
   seedAppState,
 } from '../helpers/app-helpers';
 import {
+  createCleanSeedState,
   createLegacyMealSeedState,
   createMealSuggestionSeedState,
   createOverLimitSeedState,
 } from '../fixtures/seed-states';
 import { getRelativeDateKey } from '../fixtures/seed-states';
 import { DashboardPage } from '../helpers/dashboard-page';
+import { ProgressPage } from '../helpers/progress-page';
 import { expect, test } from '../fixtures/app-fixtures';
 
 test.afterEach(async ({ appPage }, testInfo) => {
@@ -27,7 +29,8 @@ test.describe('User Story 1: core dashboard coverage', () => {
     const dashboard = new DashboardPage(appPage);
     await dashboard.goto();
     await dashboard.expectHomeTabChrome();
-    await expect(appPage.getByTestId('profile-setup-card')).toBeVisible();
+    await dashboard.expectSetupPrompt();
+    await dashboard.expectNoDailyLimitControls();
     await expect(appPage.getByText('Add, edit, or remove meals for this day.')).toHaveCount(0);
     await expect(
       appPage.getByText('Add in modal, then edit or remove meals for this day.'),
@@ -37,8 +40,13 @@ test.describe('User Story 1: core dashboard coverage', () => {
     );
     await expect(appPage.getByText('Use one shared modal for add and edit.')).toHaveCount(0);
 
-    await dashboard.setDailyLimit(24);
+    await dashboard.openProgressLimitSetup();
+    const progress = new ProgressPage(appPage);
+    await progress.saveDailyLimit(24);
+    await progress.expectDailyLimitMessage('Daily point limit saved.');
+    await dashboard.goto();
     await dashboard.expectRemovedCopy();
+    await dashboard.expectNoDailyLimitControls();
     await expect(appPage.getByText('Add, edit, or remove meals for this day.')).toBeVisible();
     await expect(
       appPage.getByText('Keep each day accurate with quick meal changes.'),
@@ -65,10 +73,11 @@ test.describe('User Story 1: core dashboard coverage', () => {
   test('dashboard-backfill-past-day covers US1-AS4', async ({ appPage }, testInfo) => {
     annotateScenario(testInfo, 'dashboard-backfill-past-day', ['US1-AS4']);
 
+    await seedAppState(appPage, createCleanSeedState());
+
     const today = getRelativeDateKey(0);
     const dashboard = new DashboardPage(appPage);
     await dashboard.goto();
-    await dashboard.setDailyLimit(24);
 
     await dashboard.goToYesterday();
     await dashboard.addMeal('Late dinner fix', 5);
@@ -99,7 +108,7 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await dashboard.expectMealType('Pasta dinner', 'Dinner');
   });
 
-  test('dashboard-limit-edit refreshes same day and appends history row', async ({
+  test('dashboard-refreshes-after-progress-limit-edit and appends history row', async ({
     appPage,
   }, testInfo) => {
     annotateScenario(testInfo, 'dashboard-limit-edit-refresh', ['US1-AS1', 'US1-AS2', 'US1-AS3']);
@@ -111,11 +120,18 @@ test.describe('User Story 1: core dashboard coverage', () => {
 
     await dashboard.expectDailyLimit(24);
     await dashboard.expectRemainingPoints(-5);
-    await dashboard.updateDailyLimit(30);
+    await dashboard.expectNoDailyLimitControls();
+
+    const progress = new ProgressPage(appPage);
+    await progress.goto();
+    await progress.saveDailyLimit(30);
+    await progress.expectDailyLimitMessage('Daily point limit updated for today.');
+
+    await dashboard.goto();
     await dashboard.expectDailyLimit(30);
     await dashboard.expectRemainingPoints(1);
     await dashboard.expectStatus('1 points left today.');
-    await dashboard.expectDailyLimitMessage('Daily point limit updated for today.');
+    await dashboard.expectNoDailyLimitControls();
 
     const snapshot = await readAppSnapshot(appPage);
     expect(snapshot.profile?.dailyPointsLimit).toBe(30);

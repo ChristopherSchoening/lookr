@@ -19,6 +19,14 @@ export function createCleanSeedState(): E2ESeedState {
   };
 }
 
+export function createNoLimitSeedState(): E2ESeedState {
+  return {
+    profile: null,
+    meals: [],
+    weights: [],
+  };
+}
+
 export function createOverLimitSeedState(): E2ESeedState {
   const today = toDateKey(0);
 
@@ -38,6 +46,35 @@ export function createOverLimitSeedState(): E2ESeedState {
         entryDate: today,
         entryTime: '7:10 PM',
         mealType: 'dinner',
+      },
+    ],
+    weights: [],
+  };
+}
+
+export function createSameDayLimitEditSeedState(): E2ESeedState {
+  return createOverLimitSeedState();
+}
+
+export function createDecimalLimitSeedState(): E2ESeedState {
+  const today = toDateKey(0);
+
+  return {
+    profile: { dailyPointsLimit: 24.5 },
+    dailyPointLimitHistory: [
+      {
+        effectiveDate: today,
+        dailyPointsLimit: 24.5,
+        createdAt: `${today}T08:00:00.000Z`,
+      },
+    ],
+    meals: [
+      {
+        mealName: 'Decimal day lunch',
+        points: 12,
+        entryDate: today,
+        entryTime: '12:20 PM',
+        mealType: 'lunch',
       },
     ],
     weights: [],
@@ -311,6 +348,53 @@ export function createHistoricalLimitProgressSeedState(): E2ESeedState {
       { entryDate: twoDaysAgo, weight: 82.2 },
       { entryDate: yesterday, weight: 81.9 },
     ],
+  };
+}
+
+export function createMixedHistorySeedState(): E2ESeedState {
+  const today = toDateKey(0);
+  const yesterday = toDateKey(-1);
+  const twoDaysAgo = toDateKey(-2);
+  const sixDaysAgo = toDateKey(-6);
+
+  return {
+    profile: { dailyPointsLimit: 30 },
+    dailyPointLimitHistory: [
+      {
+        effectiveDate: sixDaysAgo,
+        dailyPointsLimit: 20,
+        createdAt: `${sixDaysAgo}T08:00:00.000Z`,
+      },
+      {
+        effectiveDate: yesterday,
+        dailyPointsLimit: 30,
+        createdAt: `${yesterday}T08:00:00.000Z`,
+      },
+    ],
+    meals: [
+      {
+        mealName: 'Today meal',
+        points: 28,
+        entryDate: today,
+        entryTime: '1:00 PM',
+        mealType: 'lunch',
+      },
+      {
+        mealName: 'New limit dinner',
+        points: 27,
+        entryDate: yesterday,
+        entryTime: '7:00 PM',
+        mealType: 'dinner',
+      },
+      {
+        mealName: 'Old limit dinner',
+        points: 22,
+        entryDate: twoDaysAgo,
+        entryTime: '7:00 PM',
+        mealType: 'dinner',
+      },
+    ],
+    weights: [],
   };
 }
 

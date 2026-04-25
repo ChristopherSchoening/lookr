@@ -2,9 +2,11 @@
 
 ## Goal
 
-Let users edit the daily points limit, make that new limit apply to the whole
-current day and all future days, and keep past adherence judged by the limit
-that was active on each past date.
+Let users set and edit the daily points limit from Progress, make that limit
+apply to the whole current day and all future days, and keep past adherence
+judged by the limit that was active on each past date. Home never shows the
+daily limit setting; it either shows budget status after setup or sends users
+to Progress setup when setup is incomplete.
 
 ## Implementation Outline
 
@@ -12,6 +14,7 @@ that was active on each past date.
    - add an additive migration for dated daily-limit history
    - persist a history row whenever the profile limit is created or updated
    - expose reads for historical limit changes alongside the current profile
+   - preserve positive decimal limits without rounding
 2. Extend [src/lib/types.ts](/home/tanome/dev/lookr/src/lib/types.ts) with the
    smallest new types needed for dated limit history and derived effective-limit
    summaries.
@@ -22,12 +25,13 @@ that was active on each past date.
    - derive `DailySummary` values from meals plus historical limits
    - keep Progress adherence counts aligned with that shared derivation
 4. Update [src/app/(tabs)/index.tsx](</home/tanome/dev/lookr/src/app/(tabs)/index.tsx>)
-   so users can edit an existing daily limit and see current-day metrics update
-   immediately.
+   so Home never exposes the daily limit setting, shows a short path to
+   Progress setup when setup is incomplete, and keeps current-day metrics
+   visible after setup.
 5. Update [src/app/(tabs)/history.tsx](</home/tanome/dev/lookr/src/app/(tabs)/history.tsx>)
    and [src/app/(tabs)/progress.tsx](</home/tanome/dev/lookr/src/app/(tabs)/progress.tsx>)
-   to consume the revised summary data without adding a parallel calculation
-   path.
+   so Progress owns daily limit setup and editing and both tabs consume revised
+   summary data without adding a parallel calculation path.
 6. Extend [e2e/fixtures/seed-states.ts](/home/tanome/dev/lookr/e2e/fixtures/seed-states.ts),
    existing Playwright page objects, and:
    - [e2e/specs/dashboard-core.spec.ts](/home/tanome/dev/lookr/e2e/specs/dashboard-core.spec.ts)
@@ -47,14 +51,20 @@ npm run e2e:coverage
 Targeted acceptance checks during development:
 
 ```bash
-npm run e2e:us1
+npm run e2e -- e2e/specs/progress-regression.spec.ts e2e/specs/dashboard-core.spec.ts
 npm run e2e:us2
 ```
 
 ## Manual Review
 
-- Set an initial daily limit, log meals today, then change the limit and confirm
-  Home updates remaining points right away and rejects invalid values
+- Start without a daily limit and confirm Home shows a short action to Progress
+  setup without showing the daily limit input
+- Set an initial daily limit from Progress, log meals today, then change the
+  limit from Progress and confirm Home updates remaining points right away
+- Confirm Home never exposes the daily limit setting, and Progress rejects zero,
+  negative, blank, and non-numeric values
+- Save a positive decimal limit from Progress and confirm Home, History, and
+  Progress use the decimal value consistently
 - Review a past tracked day that was within its old limit, change today's limit,
   and confirm that past day still shows its original adherence result
 - Edit a meal on a past day and confirm that day's totals recalculate against
@@ -68,12 +78,17 @@ npm run e2e:us2
 
 ### User Story 1
 
-- Start with an existing daily limit
-- Change the limit from Home
+- Start without a daily limit
+- Confirm Home sends the user to Progress setup without showing the limit input
+- Set the initial limit from Progress
+- Change the limit from Progress
 - Confirm today's limit metric, remaining points, and status refresh
 - Confirm the save message appears and the current-day status updates without
-  leaving Home
-- Try `0`, blank, and non-numeric input and confirm validation blocks save
+  leaving Progress
+- Confirm Home does not expose the daily limit setting before or after setup
+- Try `0`, negative, blank, and non-numeric input and confirm validation blocks
+  save
+- Try a positive decimal input and confirm it saves without rounding
 
 ### User Story 2
 
@@ -94,16 +109,17 @@ npm run e2e:us2
 
 ## Verification Log
 
-- `npm run lint`: PASS
-- `npm run typecheck`: PASS
-- `npm run e2e:coverage`: PASS
-- `npm run e2e:us1`: PASS
-- `npm run e2e:us2`: PASS
-- Web review notes: Playwright coverage extended for same-day limit edits,
-  historical-limit preservation, and Progress adherence refresh
-- iOS review notes: no simulator capture in this terminal session; manual review
-  still needed for limit-edit field behavior, same-day summary refresh, and
-  cross-screen consistency
-- Android review notes: no simulator capture in this terminal session; manual
-  review still needed for limit-edit field behavior, same-day summary refresh,
-  and cross-screen consistency
+- 2026-04-25: `npm run lint` passed.
+- 2026-04-25: `npm run typecheck` passed.
+- 2026-04-25: `npm run e2e:coverage` passed.
+- 2026-04-25: Targeted web acceptance passed with
+  `npm run e2e -- e2e/specs/dashboard-core.spec.ts e2e/specs/history-regression.spec.ts e2e/specs/progress-regression.spec.ts`
+  (19 tests).
+- Web review covered Progress setup/edit, invalid input, decimal input,
+  same-day budget refresh, Home prompt/absence behavior, historical-limit
+  preservation, past-meal edit/delete recalculation, and Progress adherence
+  refresh through Playwright.
+- iOS review not executed in this run; the touched UI uses shared React Native
+  screens and existing primitives with no platform-specific branches.
+- Android review not executed in this run; the touched UI uses shared React
+  Native screens and existing primitives with no platform-specific branches.
