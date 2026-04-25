@@ -7,12 +7,13 @@
 
 ## Summary
 
-Let users update the daily points limit while keeping past adherence judged by
-the limit active on each past date. The lean path is to extend the current
-SQLite profile storage with dated limit history, derive per-day summaries from
-that history inside existing app-data logic, update the shared Home, History,
-and Progress flows in place, and extend current Playwright coverage instead of
-adding new routes, new stores, or parallel test suites.
+Let users update the daily points limit from Progress while keeping past
+adherence judged by the limit active on each past date. The lean path is to
+extend the current SQLite profile storage with dated limit history, derive
+per-day summaries from that history inside existing app-data logic, keep Home
+focused on current-day budget display, update shared History and Progress flows
+in place, and extend current Playwright coverage instead of adding new routes,
+new stores, or parallel test suites.
 
 ## Technical Context
 
@@ -52,8 +53,9 @@ Status: PASS
   be extended for limit editing, historical adherence preservation, and
   progress-count consistency.
 - Acceptance proof mapping: User Story 1 maps to
-  `e2e/specs/dashboard-core.spec.ts`; User Story 2 maps to
-  `e2e/specs/history-regression.spec.ts`; User Story 3 maps to
+  `e2e/specs/progress-regression.spec.ts` for editing and
+  `e2e/specs/dashboard-core.spec.ts` for Home display and absence checks; User
+  Story 2 maps to `e2e/specs/history-regression.spec.ts`; User Story 3 maps to
   `e2e/specs/progress-regression.spec.ts`.
 - UX consistency: Home, History, and Progress all use the same derived
   day-summary logic from shared app data, so one historical-limit rule drives
@@ -145,8 +147,10 @@ suite or feature module.
   meals, and weights during refresh.
 - Extend `DailySummary`-like derivation so each date resolves its own effective
   limit and status from historical limit changes plus meal totals.
-- Keep the Home profile card but support editing an existing limit, with
-  current-day metrics refreshing immediately after save.
+- Keep Home focused on current-day budget display without exposing daily limit
+  editing after setup.
+- Put existing daily limit editing in Progress, with current-day metrics and
+  adherence totals refreshing immediately after save.
 - Keep History summary cards and Progress adherence metrics driven by the same
   per-date effective-limit derivation, including recalculation of edited past
   days against the limit active on those dates.

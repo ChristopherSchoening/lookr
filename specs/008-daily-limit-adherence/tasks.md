@@ -54,23 +54,23 @@ helpers, or suites.
 
 ---
 
-## Phase 3: User Story 1 - Update Daily Point Limit (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 - Update Daily Point Limit From Progress (Priority: P1) 🎯 MVP
 
-**Goal**: Let users edit the daily points limit and see the new limit apply to the whole current day and future days
+**Goal**: Let users edit the daily points limit from Progress and see the new limit apply to the whole current day and future days, while Home keeps only current-day budget feedback
 
-**Independent Test**: Start with an existing daily point limit, change it, confirm the current day's remaining points and status refresh immediately, then move to another day and confirm the new limit is used.
+**Independent Test**: Start with an existing daily point limit, open Progress to change it, confirm the current day's remaining points and status refresh immediately, confirm Home does not expose the setting, then move to another day and confirm the new limit is used.
 
 ### Verification for User Story 1 ⚠️
 
-- [x] T008 [P] [US1] Extend current-day limit update acceptance coverage in `e2e/specs/dashboard-core.spec.ts`
-- [x] T009 [US1] Document manual timed limit-edit, same-day refresh, and invalid-input checks in `specs/008-daily-limit-adherence/quickstart.md`
+- [ ] T008 [P] [US1] Extend current-day limit update acceptance coverage in `e2e/specs/progress-regression.spec.ts` and Home absence/display coverage in `e2e/specs/dashboard-core.spec.ts`
+- [ ] T009 [US1] Document manual timed Progress limit-edit, same-day refresh, Home absence, and invalid-input checks in `specs/008-daily-limit-adherence/quickstart.md`
 
 ### Implementation for User Story 1
 
-- [x] T010 [US1] Add editable daily-limit UI for existing profiles in `src/app/(tabs)/index.tsx`
-- [x] T011 [US1] Wire limit-save validation and current-day refresh through shared app data in `src/app/(tabs)/index.tsx` and `src/context/app-data.tsx`
-- [x] T012 [US1] Ensure same-day and future-day summaries consume the updated effective limit in `src/context/app-data.tsx` and `src/app/(tabs)/index.tsx`
-- [x] T013 [US1] Verify current-day budget displays stay consistent after a same-day limit change in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
+- [ ] T010 [US1] Move editable daily-limit UI for existing profiles from `src/app/(tabs)/index.tsx` to `src/app/(tabs)/progress.tsx`
+- [ ] T011 [US1] Wire limit-save validation and current-day refresh through shared app data in `src/app/(tabs)/progress.tsx` and `src/context/app-data.tsx`
+- [ ] T012 [US1] Ensure same-day and future-day summaries consume the updated effective limit in `src/context/app-data.tsx`, `src/app/(tabs)/index.tsx`, and `src/app/(tabs)/progress.tsx`
+- [ ] T013 [US1] Verify Home budget displays stay consistent after a same-day limit change without exposing the daily limit setting in `src/app/(tabs)/index.tsx`, `src/app/(tabs)/history.tsx`, and `src/app/(tabs)/progress.tsx`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -171,8 +171,8 @@ helpers, or suites.
 
 ```bash
 # Launch User Story 1 verification work together:
-Task: "Extend current-day limit update acceptance coverage in e2e/specs/dashboard-core.spec.ts"
-Task: "Document manual limit-edit and same-day refresh checks in specs/008-daily-limit-adherence/quickstart.md"
+Task: "Extend Progress limit-edit and Home absence coverage in e2e/specs/progress-regression.spec.ts and e2e/specs/dashboard-core.spec.ts"
+Task: "Document manual Progress limit-edit, Home absence, and same-day refresh checks in specs/008-daily-limit-adherence/quickstart.md"
 ```
 
 ---
@@ -222,7 +222,7 @@ With multiple developers:
 
 1. Team completes Setup + Foundational together
 2. Once Foundational is done:
-   - Developer A: User Story 1 limit-edit UI and same-day refresh
+   - Developer A: User Story 1 Progress limit-edit UI, Home absence, and same-day refresh
    - Developer B: User Story 2 historical History summaries and past-day recalculation
    - Developer C: User Story 3 Progress adherence aggregation and wording consistency
 3. Merge stories in priority order and finish with shared verification

@@ -2,9 +2,9 @@
 
 ## Goal
 
-Let users edit the daily points limit, make that new limit apply to the whole
-current day and all future days, and keep past adherence judged by the limit
-that was active on each past date.
+Let users edit the daily points limit from Progress, make that new limit apply
+to the whole current day and all future days, and keep past adherence judged by
+the limit that was active on each past date.
 
 ## Implementation Outline
 
@@ -22,12 +22,12 @@ that was active on each past date.
    - derive `DailySummary` values from meals plus historical limits
    - keep Progress adherence counts aligned with that shared derivation
 4. Update [src/app/(tabs)/index.tsx](</home/tanome/dev/lookr/src/app/(tabs)/index.tsx>)
-   so users can edit an existing daily limit and see current-day metrics update
-   immediately.
+   so Home keeps current-day metrics visible but does not expose the daily limit
+   setting after setup.
 5. Update [src/app/(tabs)/history.tsx](</home/tanome/dev/lookr/src/app/(tabs)/history.tsx>)
    and [src/app/(tabs)/progress.tsx](</home/tanome/dev/lookr/src/app/(tabs)/progress.tsx>)
-   to consume the revised summary data without adding a parallel calculation
-   path.
+   so Progress owns daily limit editing and both tabs consume revised summary
+   data without adding a parallel calculation path.
 6. Extend [e2e/fixtures/seed-states.ts](/home/tanome/dev/lookr/e2e/fixtures/seed-states.ts),
    existing Playwright page objects, and:
    - [e2e/specs/dashboard-core.spec.ts](/home/tanome/dev/lookr/e2e/specs/dashboard-core.spec.ts)
@@ -53,8 +53,10 @@ npm run e2e:us2
 
 ## Manual Review
 
-- Set an initial daily limit, log meals today, then change the limit and confirm
-  Home updates remaining points right away and rejects invalid values
+- Set an initial daily limit, log meals today, then change the limit from
+  Progress and confirm Home updates remaining points right away
+- Confirm Home does not expose the daily limit setting after setup, and Progress
+  rejects invalid limit values
 - Review a past tracked day that was within its old limit, change today's limit,
   and confirm that past day still shows its original adherence result
 - Edit a meal on a past day and confirm that day's totals recalculate against
@@ -69,10 +71,11 @@ npm run e2e:us2
 ### User Story 1
 
 - Start with an existing daily limit
-- Change the limit from Home
+- Change the limit from Progress
 - Confirm today's limit metric, remaining points, and status refresh
 - Confirm the save message appears and the current-day status updates without
-  leaving Home
+  leaving Progress
+- Confirm Home does not expose the daily limit setting after setup
 - Try `0`, blank, and non-numeric input and confirm validation blocks save
 
 ### User Story 2
@@ -101,6 +104,8 @@ npm run e2e:us2
 - `npm run e2e:us2`: PASS
 - Web review notes: Playwright coverage extended for same-day limit edits,
   historical-limit preservation, and Progress adherence refresh
+- 2026-04-25 update: daily limit editing moved to Progress in the spec; rerun
+  user story checks after implementing that placement change
 - iOS review notes: no simulator capture in this terminal session; manual review
   still needed for limit-edit field behavior, same-day summary refresh, and
   cross-screen consistency

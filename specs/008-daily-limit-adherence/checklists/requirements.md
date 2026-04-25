@@ -32,3 +32,4 @@
 ## Notes
 
 - Validation pass 1 complete. No open clarification markers. Spec ready for `/speckit.plan`.
+- 2026-04-25 validation pass: Progress-tab placement added for daily limit editing; Home absence and budget-display behavior covered. No open clarification markers.
