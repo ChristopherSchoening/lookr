@@ -5,6 +5,16 @@
 **Status**: Draft  
 **Input**: User description: "the weight tracking should be imporoved. the progress page should only show an overview of the weight (regarding only the weight progress). it should have an option to go into more details where I can see/edit all log entries and a graph that shows the weight entries over time. the graph should be a line/curve diagram. it should show the target/goal weight and the weight log entries. the graph should start at the target weight - 5(kg) and end at the highest value +5(kg). use landscape for the graph if needed."
 
+## Clarifications
+
+### Session 2026-04-25
+
+- Q: Can users delete weight log entries from the detail view? → A: Yes, with confirmation prompt before removal.
+- Q: How should the graph handle multiple weight entries on the same date? → A: Disallow same-date entries entirely; each date may have at most one entry.
+- Q: Should the detail view offer adding a new weight entry, or rely on the existing logging flow elsewhere? → A: Detail view shows an add-entry action that opens the existing logging flow.
+- Q: How should the graph's time axis be scaled? → A: Real date scale; gaps between entries shown proportionally to elapsed time.
+- Q: What numeric bounds define a "plausible" weight value for validation? → A: 30–300 kg inclusive.
+
 ## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Review Weight Overview (Priority: P1)
@@ -64,8 +74,8 @@ As a user, I want a detailed graph that plots my weight entries over time togeth
 
 - If the user has no weight entries, the details view shows an empty log state and no misleading graph line.
 - If the user has one weight entry, the graph still shows the entry and target in a readable way without implying a trend that does not exist.
-- If multiple entries share the same date, each entry remains visible or distinguishable in the log, and the graph represents the same-date values without hiding data.
-- If editing an entry would create an invalid value, missing date, or implausible value, the user cannot save until the entry is corrected.
+- If editing or adding an entry would assign a date that already has a saved entry, the system rejects the change with clear feedback; only one entry per date is allowed.
+- If editing an entry would create an invalid value, missing date, or weight outside the 30–300 kg plausible range, the user cannot save until the entry is corrected.
 - If the target weight is missing, the details view clearly indicates that a target is needed for target-based graph scaling.
 - If target weight minus 5 kg is greater than or equal to highest logged weight plus 5 kg, the graph expands the displayed range enough to show both the target and all entries.
 
@@ -80,18 +90,24 @@ As a user, I want a detailed graph that plots my weight entries over time togeth
 - **FR-005**: The detailed weight-tracking view MUST list all saved weight log entries with date and weight information.
 - **FR-006**: Users MUST be able to edit saved weight log entries from the detailed weight-tracking view.
 - **FR-007**: The system MUST validate edited entries before saving and prevent invalid date or weight values from replacing valid saved data.
+- **FR-007a**: The system MUST enforce a uniqueness rule that no two saved weight log entries may share the same date, and MUST reject any add or edit that would violate this rule with clear feedback.
+- **FR-007b**: The system MUST reject weight values outside the inclusive range of 30 kg to 300 kg as implausible, with clear feedback indicating the allowed range.
 - **FR-008**: Saved edits to weight log entries MUST update the detailed list, overview values, and graph values consistently.
+- **FR-008a**: Users MUST be able to delete a saved weight log entry from the detailed weight-tracking view, and the system MUST require explicit confirmation before the entry is removed.
+- **FR-008b**: A confirmed deletion MUST update the detailed list, overview values, and graph values consistently.
+- **FR-008c**: The detailed weight-tracking view MUST provide an add-entry action that opens the existing weight logging flow and returns the user to the detailed view after a successful save.
 - **FR-009**: The detailed weight-tracking view MUST include a line or smooth curve graph of weight entries over time.
 - **FR-010**: The graph MUST show the user's target or goal weight together with the weight log entries.
 - **FR-011**: The graph's displayed weight range MUST start at target weight minus 5 kg and end at highest logged weight plus 5 kg when that produces a valid range.
 - **FR-012**: The graph MUST expand the displayed weight range when needed so both the target weight and all logged weights remain visible.
 - **FR-013**: The graph MUST remain readable on supported screen sizes, including a landscape-friendly presentation when portrait space is too constrained.
+- **FR-013a**: The graph's time axis MUST use a real calendar-date scale so that gaps between log entries are shown proportionally to elapsed time, not evenly spaced by entry index.
 - **FR-014**: Empty and partial data states MUST explain what weight information is missing without showing incorrect progress conclusions.
 - **FR-015**: Existing progress-page user-flow coverage MUST be extended instead of creating unrelated parallel coverage for the same behavior.
 
 ### Key Entities
 
-- **Weight Log Entry**: A recorded body weight for a specific date; may be edited by the user from the detailed weight-tracking view.
+- **Weight Log Entry**: A recorded body weight for a specific date; date is unique across entries (at most one entry per date); may be edited or deleted by the user from the detailed weight-tracking view (deletion requires confirmation).
 - **Target Weight**: The user's goal weight used to calculate remaining progress and graph scaling.
 - **Weight Overview**: A concise summary of current weight progress shown on the progress page.
 - **Weight Trend Graph**: A visual trend of weight log entries over time with the target weight shown for comparison.
@@ -113,5 +129,5 @@ As a user, I want a detailed graph that plots my weight entries over time togeth
 - Weight values are displayed in kilograms for this feature.
 - The normal goal direction is weight loss, where the target weight is at or below recent logged weights.
 - If the target is above logged weights or data is otherwise unusual, the graph should still show both target and entries by expanding the displayed range.
-- The detailed view focuses on reviewing and editing existing weight entries; adding a new weight entry may continue to use the existing weight logging flow unless planning identifies a required gap.
+- The detailed view exposes an add-entry action that reuses the existing weight logging flow rather than introducing a parallel form.
 - The feature applies to the existing supported app surfaces and should keep behavior consistent across those surfaces.
