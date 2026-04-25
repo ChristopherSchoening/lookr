@@ -18,14 +18,9 @@ export class DashboardPage {
     await expect(this.page.getByText('Dashboard')).toHaveCount(0);
   }
 
-  async setDailyLimit(points: number) {
-    await this.page.getByTestId('daily-limit-input').fill(String(points));
-    await this.page.getByTestId('start-tracking-button').click();
-  }
-
-  async updateDailyLimit(points: number) {
-    await this.page.getByTestId('daily-limit-input').fill(String(points));
-    await this.page.getByTestId('save-daily-limit-button').click();
+  async openProgressLimitSetup() {
+    await this.page.getByTestId('open-progress-limit-setup-button').click();
+    await expect(this.page.getByTestId('progress-screen')).toBeVisible();
   }
 
   async openMealModal() {
@@ -117,6 +112,17 @@ export class DashboardPage {
 
   async expectDailyLimit(value: number) {
     await expect(this.page.getByTestId('daily-limit-metric')).toContainText(String(value));
+  }
+
+  async expectSetupPrompt() {
+    await expect(this.page.getByTestId('profile-setup-card')).toBeVisible();
+    await expect(this.page.getByTestId('open-progress-limit-setup-button')).toBeVisible();
+  }
+
+  async expectNoDailyLimitControls() {
+    await expect(this.page.getByTestId('daily-limit-input')).toHaveCount(0);
+    await expect(this.page.getByTestId('save-daily-limit-button')).toHaveCount(0);
+    await expect(this.page.getByTestId('start-tracking-button')).toHaveCount(0);
   }
 
   async expectStatus(text: string) {

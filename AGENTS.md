@@ -74,6 +74,7 @@ Pull requests should include:
 - Confirmation that `npm run format`, `npm run lint`, and `npm run typecheck` passed.
 
 ## Active Technologies
+
 - TypeScript, React 19, Expo SDK 55 + Expo Router, React Native, NativeWind, `expo-sqlite`, existing shared UI primitives, existing date helpers, existing Playwright helpers (008-daily-limit-adherence)
 - Existing local SQLite via `expo-sqlite`; keep `user_profile` as latest-limit cache and `daily_point_limit_history` as dated effective-limit history, with saved limit values treated as positive numbers that may include decimals (008-daily-limit-adherence)
 

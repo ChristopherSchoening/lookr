@@ -109,15 +109,17 @@ npm run e2e:us2
 
 ## Verification Log
 
-- Pending after implementation: `npm run lint`
-- Pending after implementation: `npm run typecheck`
-- Pending after implementation: `npm run e2e:coverage`
-- Pending targeted run: `npm run e2e:us1`
-- Pending targeted run: `npm run e2e:us2`
-- Web review needed for Progress setup/edit, Home prompt/absence behavior,
-  decimal limit handling, same-day refresh, historical-limit preservation, and
-  Progress adherence refresh
-- iOS review needed for the same touched flows unless a documented platform
-  evidence gap is approved
-- Android review needed for the same touched flows unless a documented platform
-  evidence gap is approved
+- 2026-04-25: `npm run lint` passed.
+- 2026-04-25: `npm run typecheck` passed.
+- 2026-04-25: `npm run e2e:coverage` passed.
+- 2026-04-25: Targeted web acceptance passed with
+  `npm run e2e -- e2e/specs/dashboard-core.spec.ts e2e/specs/history-regression.spec.ts e2e/specs/progress-regression.spec.ts`
+  (19 tests).
+- Web review covered Progress setup/edit, invalid input, decimal input,
+  same-day budget refresh, Home prompt/absence behavior, historical-limit
+  preservation, past-meal edit/delete recalculation, and Progress adherence
+  refresh through Playwright.
+- iOS review not executed in this run; the touched UI uses shared React Native
+  screens and existing primitives with no platform-specific branches.
+- Android review not executed in this run; the touched UI uses shared React
+  Native screens and existing primitives with no platform-specific branches.

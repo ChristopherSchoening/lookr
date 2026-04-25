@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { DateNavigator } from '@/components/date-navigator';
@@ -20,8 +20,15 @@ export default function ProgressScreen() {
   const appData = useAppData();
   const [entryDate, setEntryDate] = useState(todayKey());
   const [weightInput, setWeightInput] = useState('');
+  const [dailyLimitInput, setDailyLimitInput] = useState('');
+  const [dailyLimitMessage, setDailyLimitMessage] = useState('');
+  const [dailyLimitError, setDailyLimitError] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    setDailyLimitInput(appData.profile ? String(appData.profile.dailyPointsLimit) : '');
+  }, [appData.profile]);
 
   if (!appData.isReady) {
     return <LoadingScreen />;
@@ -35,6 +42,26 @@ export default function ProgressScreen() {
   const trackedSummaries = appData.summaries.filter((summary) => summary.mealCount > 0);
   const trackedDays = trackedSummaries.length;
   const withinDays = trackedSummaries.filter((summary) => summary.status === 'within').length;
+  const todaySummary = appData.getSummaryByDate(todayKey());
+
+  async function submitDailyLimit() {
+    const trimmedLimit = dailyLimitInput.trim();
+    const nextLimit = Number(trimmedLimit);
+    if (!trimmedLimit || !Number.isFinite(nextLimit) || nextLimit <= 0) {
+      setDailyLimitError('Daily point limit must be a positive number.');
+      setDailyLimitMessage('');
+      return;
+    }
+
+    const hadProfile = Boolean(appData.profile);
+    setDailyLimitError('');
+    setDailyLimitMessage('');
+    await appData.saveProfile(nextLimit);
+    setDailyLimitInput(String(nextLimit));
+    setDailyLimitMessage(
+      hadProfile ? 'Daily point limit updated for today.' : 'Daily point limit saved.',
+    );
+  }
 
   async function submitWeight() {
     const parsedWeight = Number(weightInput);
@@ -97,6 +124,61 @@ export default function ProgressScreen() {
                 : 'Add two weights to compare the latest change.'}
             </Text>
           </View>
+        </Card>
+
+        <Card tone="lowest" className="gap-4" testID="progress-daily-limit-card">
+          <SectionTitle
+            eyebrow="Daily limit"
+            title={appData.profile ? 'Edit today and forward' : 'Set daily points'}
+            body="Saving here updates today and future days."
+          />
+          <View className="flex-row gap-3">
+            <Metric
+              label="Today limit"
+              value={appData.profile ? `${todaySummary.dailyLimit}` : '—'}
+              note={appData.profile ? 'Effective today' : 'No setup yet'}
+              accent
+              testID="progress-daily-limit-metric"
+            />
+            <Metric
+              label="Today status"
+              value={
+                appData.profile
+                  ? todaySummary.status === 'over'
+                    ? 'Over'
+                    : todaySummary.status === 'within'
+                      ? 'Within'
+                      : 'Empty'
+                  : 'Setup'
+              }
+              note={appData.profile ? `${todaySummary.consumedPoints} consumed` : 'Add limit'}
+              testID="progress-today-status-metric"
+            />
+          </View>
+          <Field
+            label="Daily point limit"
+            value={dailyLimitInput}
+            onChangeText={(value) => {
+              setDailyLimitInput(value);
+              if (dailyLimitError) setDailyLimitError('');
+              if (dailyLimitMessage) setDailyLimitMessage('');
+            }}
+            placeholder="24"
+            keyboardType="decimal-pad"
+            hint="Positive whole numbers and decimals are accepted."
+            testID="daily-limit-input"
+          />
+          {dailyLimitError ? <InlineMessage message={dailyLimitError} tone="danger" /> : null}
+          {dailyLimitMessage ? (
+            <View testID="daily-limit-message">
+              <InlineMessage message={dailyLimitMessage} />
+            </View>
+          ) : null}
+          <PrimaryButton
+            label={appData.profile ? 'Save daily limit' : 'Start tracking'}
+            onPress={() => void submitDailyLimit()}
+            testID="save-daily-limit-button"
+          />
         </Card>
 
         <Card tone="lowest" className="gap-4" testID="record-weight-card">

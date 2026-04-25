@@ -82,7 +82,17 @@ function resolveDailyLimitForDate(
   dailyPointLimitHistory: DailyPointLimitHistoryEntry[],
   profile: UserProfile | null,
 ) {
-  const effectiveEntry = dailyPointLimitHistory.find((entry) => entry.effectiveDate <= date);
+  const effectiveEntry = [...dailyPointLimitHistory]
+    .sort((left, right) => {
+      const dateOrder = right.effectiveDate.localeCompare(left.effectiveDate);
+      if (dateOrder !== 0) return dateOrder;
+
+      const createdOrder = right.createdAt.localeCompare(left.createdAt);
+      if (createdOrder !== 0) return createdOrder;
+
+      return right.id - left.id;
+    })
+    .find((entry) => entry.effectiveDate <= date);
   return effectiveEntry?.dailyPointsLimit ?? profile?.dailyPointsLimit ?? 0;
 }
 
@@ -185,7 +195,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         delete window.__LOOKR_E2E__;
       }
     };
-  }, [profile, meals, weights]);
+  }, [profile, dailyPointLimitHistory, meals, weights]);
 
   const summaries = buildSummaries(meals, dailyPointLimitHistory, profile);
   const trackedDates = summaries.reduce<Record<string, TrackedDateInfo>>((lookup, summary) => {

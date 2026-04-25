@@ -1,31 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { DateNavigator } from '@/components/date-navigator';
 import { MealEditor } from '@/components/meal-editor';
-import {
-  Card,
-  Field,
-  InlineMessage,
-  LoadingScreen,
-  Metric,
-  PrimaryButton,
-  Screen,
-  SectionTitle,
-} from '@/components/ui';
+import { Card, LoadingScreen, Metric, PrimaryButton, Screen, SectionTitle } from '@/components/ui';
 import { useAppData } from '@/context/app-data';
 import { formatDateLabel, todayKey } from '@/lib/date';
 
 export default function DashboardScreen() {
   const appData = useAppData();
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(todayKey());
-  const [dailyLimitInput, setDailyLimitInput] = useState('');
-  const [profileError, setProfileError] = useState('');
-  const [profileMessage, setProfileMessage] = useState('');
-
-  useEffect(() => {
-    setDailyLimitInput(appData.profile ? String(appData.profile.dailyPointsLimit) : '');
-  }, [appData.profile]);
 
   if (!appData.isReady) {
     return <LoadingScreen />;
@@ -35,22 +21,6 @@ export default function DashboardScreen() {
   const meals = appData.getMealsByDate(selectedDate);
   const overBy = Math.abs(summary.remainingPoints);
 
-  async function submitDailyLimit() {
-    const nextLimit = Number(dailyLimitInput);
-    if (!Number.isFinite(nextLimit) || nextLimit <= 0) {
-      setProfileError('Enter a positive daily point limit.');
-      setProfileMessage('');
-      return;
-    }
-
-    setProfileError('');
-    setProfileMessage('');
-    await appData.saveProfile(nextLimit);
-    setProfileMessage(
-      appData.profile ? 'Daily point limit updated for today.' : 'Daily point limit saved.',
-    );
-  }
-
   return (
     <Screen>
       <View className="gap-4" testID="dashboard-screen">
@@ -58,22 +28,13 @@ export default function DashboardScreen() {
           <Card tone="emerald" className="gap-4" testID="profile-setup-card">
             <SectionTitle
               eyebrow="Home"
-              title="Set your daily points."
-              body="This limit stays fixed until you change it."
+              title="Set points in Progress."
+              body="Home shows today's budget after setup."
             />
-            <Field
-              label="Daily point limit"
-              value={dailyLimitInput}
-              onChangeText={setDailyLimitInput}
-              placeholder="24"
-              keyboardType="numeric"
-              testID="daily-limit-input"
-            />
-            {profileError ? <InlineMessage message={profileError} tone="danger" /> : null}
             <PrimaryButton
-              label="Start tracking"
-              onPress={() => void submitDailyLimit()}
-              testID="start-tracking-button"
+              label="Open Progress"
+              onPress={() => router.push('/progress')}
+              testID="open-progress-limit-setup-button"
             />
           </Card>
         ) : (
@@ -117,42 +78,6 @@ export default function DashboardScreen() {
                   testID="daily-limit-metric"
                 />
               </View>
-            </Card>
-
-            <Card tone="low" className="gap-4" testID="edit-daily-limit-card">
-              <SectionTitle
-                eyebrow="Daily limit"
-                title="Edit today and forward"
-                body="Saving now recalculates the whole current day right away."
-              />
-              <Field
-                label="Daily point limit"
-                value={dailyLimitInput}
-                onChangeText={(value) => {
-                  setDailyLimitInput(value);
-                  if (profileError) {
-                    setProfileError('');
-                  }
-                  if (profileMessage) {
-                    setProfileMessage('');
-                  }
-                }}
-                placeholder="24"
-                keyboardType="numeric"
-                hint="Past tracked days keep the limit active on those dates."
-                testID="daily-limit-input"
-              />
-              {profileError ? <InlineMessage message={profileError} tone="danger" /> : null}
-              {profileMessage ? (
-                <View testID="daily-limit-message">
-                  <InlineMessage message={profileMessage} />
-                </View>
-              ) : null}
-              <PrimaryButton
-                label="Save daily limit"
-                onPress={() => void submitDailyLimit()}
-                testID="save-daily-limit-button"
-              />
             </Card>
 
             <Card tone="low" className="gap-4" testID="date-focus-card">
