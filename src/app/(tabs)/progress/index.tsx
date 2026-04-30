@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Modal, Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
 
 import { DateNavigator } from '@/components/date-navigator';
@@ -26,6 +26,9 @@ export default function ProgressScreen() {
   const [dailyLimitError, setDailyLimitError] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [targetWeightModalOpen, setTargetWeightModalOpen] = useState(false);
+  const [targetWeightInput, setTargetWeightInput] = useState('');
+  const [targetWeightError, setTargetWeightError] = useState('');
 
   useEffect(() => {
     setDailyLimitInput(appData.profile ? String(appData.profile.dailyPointsLimit) : '');
@@ -80,6 +83,18 @@ export default function ProgressScreen() {
     setMessage(`Weight saved for ${formatDateLabel(entryDate).toLowerCase()}.`);
   }
 
+  async function submitTargetWeight() {
+    const parsed = Number(targetWeightInput.trim());
+    if (!Number.isFinite(parsed) || parsed < 30 || parsed > 300) {
+      setTargetWeightError('Weight must be between 30 and 300.');
+      return;
+    }
+    setTargetWeightError('');
+    await appData.saveTargetWeight(parsed);
+    setTargetWeightModalOpen(false);
+    setTargetWeightInput('');
+  }
+
   function chartHeight(weight: number) {
     if (sortedWeights.length <= 1) return 80;
     const values = sortedWeights.map((entry) => entry.weight);
@@ -114,12 +129,22 @@ export default function ProgressScreen() {
             />
           </View>
           <View className="flex-row gap-3">
-            <Metric
-              label="Goal"
-              value={targetWeight !== null ? `${targetWeight}` : '—'}
-              note={targetWeight !== null ? 'Target weight' : 'Not set'}
-              testID="goal-weight-metric"
-            />
+            <Pressable
+              className="flex-1"
+              onPress={() => {
+                setTargetWeightInput(targetWeight !== null ? String(targetWeight) : '');
+                setTargetWeightError('');
+                setTargetWeightModalOpen(true);
+              }}
+              testID="goal-weight-pressable"
+            >
+              <Metric
+                label="Goal"
+                value={targetWeight !== null ? `${targetWeight}` : '—'}
+                note={targetWeight !== null ? 'Tap to edit' : 'Tap to set'}
+                testID="goal-weight-metric"
+              />
+            </Pressable>
             <Metric
               label="Remaining"
               value={
@@ -311,6 +336,41 @@ export default function ProgressScreen() {
           </>
         )}
       </View>
+
+      <Modal
+        visible={targetWeightModalOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setTargetWeightModalOpen(false)}
+        testID="target-weight-modal"
+      >
+        <Pressable
+          className="flex-1 justify-end bg-black/50"
+          onPress={() => setTargetWeightModalOpen(false)}
+        >
+          <Pressable onPress={() => {}} className="rounded-t-[30px] bg-white p-6 gap-4">
+            <Text className="text-[20px] font-extrabold text-[#10201B]">Set target weight</Text>
+            <Field
+              label="Target weight"
+              value={targetWeightInput}
+              onChangeText={(v) => {
+                setTargetWeightInput(v);
+                if (targetWeightError) setTargetWeightError('');
+              }}
+              placeholder="75.0"
+              keyboardType="decimal-pad"
+              hint="Between 30 and 300."
+              testID="target-weight-input"
+            />
+            {targetWeightError ? <InlineMessage message={targetWeightError} tone="danger" /> : null}
+            <PrimaryButton
+              label="Save target weight"
+              onPress={() => void submitTargetWeight()}
+              testID="save-target-weight-button"
+            />
+          </Pressable>
+        </Pressable>
+      </Modal>
     </Screen>
   );
 }
