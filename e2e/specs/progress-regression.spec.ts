@@ -34,7 +34,9 @@ test.describe('US1: Weight overview', () => {
     await expect(appPage.getByTestId('latest-entry-date')).toBeVisible();
   });
 
-  test('shows empty state when no weight entries exist', async ({ appPage }, testInfo) => {
+  test('shows weight overview and no trend chart when no weight entries exist', async ({
+    appPage,
+  }, testInfo) => {
     annotateScenario(testInfo, 'weight-overview-empty-state', ['US1']);
 
     await seedAppState(appPage, createNoLimitSeedState());
@@ -42,20 +44,24 @@ test.describe('US1: Weight overview', () => {
     const progress = new ProgressPage(appPage);
     await progress.goto();
 
-    await progress.assertEmptyState();
-    await expect(appPage.getByTestId('progress-overview-card')).toHaveCount(0);
+    await expect(appPage.getByTestId('progress-overview-card')).toBeVisible();
+    await expect(appPage.getByTestId('weight-trend-card')).toHaveCount(0);
   });
 
-  test('does not show adherence or daily limit sections', async ({ appPage }, testInfo) => {
-    annotateScenario(testInfo, 'weight-overview-no-non-weight-sections', ['US1']);
+  test('shows adherence, daily limit, goal, and remaining alongside weight overview', async ({
+    appPage,
+  }, testInfo) => {
+    annotateScenario(testInfo, 'weight-overview-full-sections', ['US1']);
 
     await seedAppState(appPage, createWeightOverviewSeedState());
 
     const progress = new ProgressPage(appPage);
     await progress.goto();
 
-    await expect(appPage.getByTestId('progress-daily-limit-card')).toHaveCount(0);
-    await expect(appPage.getByTestId('adherence-metric')).toHaveCount(0);
+    await expect(appPage.getByTestId('progress-daily-limit-card')).toBeVisible();
+    await expect(appPage.getByTestId('adherence-metric')).toBeVisible();
+    await expect(appPage.getByTestId('goal-weight-metric')).toBeVisible();
+    await expect(appPage.getByTestId('weight-remaining-metric')).toBeVisible();
   });
 });
 

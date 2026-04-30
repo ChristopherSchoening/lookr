@@ -158,12 +158,18 @@ export default function ProgressScreen() {
             <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
               Change since last track
             </Text>
-            <Text className="mt-2 text-[28px] font-extrabold text-[#10201B]" testID="weight-delta">
+            <Text
+              className="mt-2 text-[28px] font-extrabold text-[#10201B]"
+              testID="weight-change-metric"
+            >
               {latestWeight && previousWeight
                 ? `${weightDelta > 0 ? '+' : ''}${weightDelta.toFixed(1)}`
                 : 'Add entries'}
             </Text>
-            <Text className="mt-1 text-[14px] leading-[20px] text-[#51605A]">
+            <Text
+              className="mt-1 text-[14px] leading-[20px] text-[#51605A]"
+              testID="latest-entry-date"
+            >
               {latestWeight && previousWeight
                 ? `From ${formatDateLabel(previousWeight.entryDate).toLowerCase()} to ${formatDateLabel(latestWeight.entryDate).toLowerCase()}.`
                 : 'Add two weights to compare the latest change.'}
