@@ -6,6 +6,7 @@ import type {
   DailyPointLimitHistoryEntry,
   MealEntry,
   MealType,
+  ThemePreference,
   UserProfile,
   WeightEntry,
 } from '@/lib/types';
@@ -13,7 +14,7 @@ import type {
 let databasePromise: Promise<SQLiteDatabase> | null = null;
 let databaseInitializationPromise: Promise<SQLiteDatabase> | null = null;
 
-const DATABASE_SCHEMA_VERSION = 5;
+const DATABASE_SCHEMA_VERSION = 6;
 
 type ProfileRow = {
   daily_points_limit: number;
@@ -78,6 +79,7 @@ export type E2ESeedState = {
 };
 
 const mealTypeValues = ['breakfast', 'lunch', 'dinner', 'snack'] satisfies MealType[];
+const themePreferenceValues = ['light', 'dark', 'system'] satisfies ThemePreference[];
 
 function normalizeMealType(mealType?: string | null): MealType | null {
   if (!mealType) {
@@ -85,6 +87,12 @@ function normalizeMealType(mealType?: string | null): MealType | null {
   }
 
   return mealTypeValues.includes(mealType as MealType) ? (mealType as MealType) : null;
+}
+
+function normalizeThemePreference(preference?: string | null): ThemePreference {
+  return themePreferenceValues.includes(preference as ThemePreference)
+    ? (preference as ThemePreference)
+    : 'system';
 }
 
 async function getDb() {
@@ -126,6 +134,10 @@ async function getDb() {
           weight REAL NOT NULL,
           created_at TEXT NOT NULL,
           updated_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS app_settings (
+          key TEXT PRIMARY KEY NOT NULL,
+          value TEXT NOT NULL
         );
       `);
 
@@ -215,6 +227,7 @@ async function getDb() {
       }
 
       await db.execAsync(`PRAGMA user_version = ${DATABASE_SCHEMA_VERSION};`);
+      // app_settings table uses CREATE TABLE IF NOT EXISTS, no migration needed
 
       return db;
     })().catch((error) => {
@@ -537,6 +550,22 @@ export async function saveTargetWeight(weight: number | null) {
   );
 }
 
+export async function loadThemePreference(): Promise<ThemePreference> {
+  const db = await getDb();
+  const row = await db.getFirstAsync<{ value: string }>(
+    "SELECT value FROM app_settings WHERE key = 'theme_preference'",
+  );
+  return normalizeThemePreference(row?.value);
+}
+
+export async function saveThemePreference(preference: ThemePreference): Promise<void> {
+  const db = await getDb();
+  await db.runAsync(
+    "INSERT OR REPLACE INTO app_settings (key, value) VALUES ('theme_preference', ?)",
+    preference,
+  );
+}
+
 export type InsertResult = SQLiteRunResult;
 
 export async function resetE2EState() {
@@ -547,6 +576,7 @@ export async function resetE2EState() {
     DELETE FROM meal_entries;
     DELETE FROM weight_entries;
     DELETE FROM user_profile;
+    DELETE FROM app_settings;
     DELETE FROM sqlite_sequence
     WHERE name IN ('daily_point_limit_history', 'meal_entries', 'weight_entries');
   `);

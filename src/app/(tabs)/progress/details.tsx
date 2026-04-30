@@ -217,7 +217,7 @@ export default function WeightDetailsScreen() {
                   </View>
                 ) : isConfirmingDelete ? (
                   <View className="gap-3">
-                    <Text className="text-[14px] leading-[20px] text-[#10201B]">
+                    <Text className="text-[14px] leading-[20px] text-[#10201B] dark:text-[#E8F0EC]">
                       Delete entry for {formatDateLabel(entry.entryDate)}?
                     </Text>
                     <View className="flex-row gap-2">
@@ -240,29 +240,29 @@ export default function WeightDetailsScreen() {
                 ) : (
                   <View className="flex-row items-center justify-between gap-3">
                     <View className="gap-1">
-                      <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
+                      <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A] dark:text-[#8FA49B]">
                         {formatDateLabel(entry.entryDate)}
                       </Text>
                       <Text
-                        className="text-[22px] font-bold leading-[26px] text-[#10201B]"
+                        className="text-[22px] font-bold leading-[26px] text-[#10201B] dark:text-[#E8F0EC]"
                         testID="entry-weight-value"
                       >
                         {entry.weight.toFixed(1)}
                       </Text>
                     </View>
                     <View className="flex-row gap-2">
-                      <View className="rounded-full bg-[#F2F4F5] px-4 py-3">
+                      <View className="rounded-full bg-[#F2F4F5] px-4 py-3 dark:bg-[#233029]">
                         <Text
-                          className="text-[13px] font-bold uppercase tracking-[1px] text-[#10201B]"
+                          className="text-[13px] font-bold uppercase tracking-[1px] text-[#10201B] dark:text-[#E8F0EC]"
                           onPress={() => startEdit(entry)}
                           testID="edit-weight-button"
                         >
                           Edit
                         </Text>
                       </View>
-                      <View className="rounded-full bg-[#F5DEDE] px-4 py-3">
+                      <View className="rounded-full bg-[#F5DEDE] px-4 py-3 dark:bg-[#3A2020]">
                         <Text
-                          className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B]"
+                          className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B] dark:text-[#E07070]"
                           onPress={() => startDelete(entry.id)}
                           testID="delete-weight-button"
                         >

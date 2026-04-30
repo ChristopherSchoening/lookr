@@ -1,3 +1,5 @@
+export type ThemePreference = 'light' | 'dark' | 'system';
+
 export type UserProfile = {
   dailyPointsLimit: number;
   targetWeight: number | null;

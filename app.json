@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/appicon.png",
     "scheme": "lookr",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "androidNavigationBar": {
       "backgroundColor": "#F8FAFB",
       "barStyle": "dark-content",

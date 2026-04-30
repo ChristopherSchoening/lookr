@@ -313,8 +313,10 @@ export function MealEditor({
       <Card tone="lowest" className="gap-4">
         <View className="flex-row items-center justify-between gap-3">
           <View className="flex-1 gap-1">
-            <Text className="text-[20px] font-bold text-[#10201B]">Track meals</Text>
-            <Text className="text-[14px] leading-[20px] text-[#51605A]">
+            <Text className="text-[20px] font-bold text-[#10201B] dark:text-[#E8F0EC]">
+              Track meals
+            </Text>
+            <Text className="text-[14px] leading-[20px] text-[#51605A] dark:text-[#8FA49B]">
               Keep each day accurate with quick meal changes.
             </Text>
           </View>
@@ -334,13 +336,13 @@ export function MealEditor({
               <View className="flex-row items-start justify-between gap-3">
                 <View className="flex-1 gap-2">
                   <Text
-                    className="text-[13px] font-bold uppercase tracking-[1.3px] text-[#51605A]"
+                    className="text-[13px] font-bold uppercase tracking-[1.3px] text-[#51605A] dark:text-[#8FA49B]"
                     testID={`meal-time-${meal.id}`}
                   >
                     {meal.entryTime}
                   </Text>
                   <Text
-                    className="text-[22px] font-bold leading-[26px] text-[#10201B]"
+                    className="text-[22px] font-bold leading-[26px] text-[#10201B] dark:text-[#E8F0EC]"
                     testID={`meal-name-${meal.id}`}
                   >
                     {meal.mealName}
@@ -348,17 +350,17 @@ export function MealEditor({
                   <View className="flex-row flex-wrap gap-2">
                     {getMealCount(meal) > 1 ? (
                       <View
-                        className="self-start rounded-full bg-[#E6F1FF] px-3 py-2"
+                        className="self-start rounded-full bg-[#E6F1FF] px-3 py-2 dark:bg-[#1A2A3D]"
                         testID={`meal-count-badge-${getMealCountBadgeId(meal)}`}
                       >
-                        <Text className="text-[11px] font-bold uppercase tracking-[1.1px] text-[#1358A8]">
+                        <Text className="text-[11px] font-bold uppercase tracking-[1.1px] text-[#1358A8] dark:text-[#7AADEE]">
                           x{getMealCount(meal)}
                         </Text>
                       </View>
                     ) : null}
                     {meal.mealType ? (
                       <View
-                        className="self-start rounded-full bg-[#DDF6EA] px-3 py-2"
+                        className="self-start rounded-full bg-[#DDF6EA] px-3 py-2 dark:bg-[#1A3325]"
                         testID={`meal-type-${meal.id}`}
                       >
                         <Text className="text-[11px] font-bold uppercase tracking-[1.1px] text-[#006C48]">
@@ -368,7 +370,7 @@ export function MealEditor({
                     ) : null}
                   </View>
                 </View>
-                <View className="rounded-full bg-[#FFFFFF] px-4 py-3">
+                <View className="rounded-full bg-[#FFFFFF] px-4 py-3 dark:bg-[#1C2A22]">
                   <Text
                     className="text-[18px] font-extrabold text-[#006C48]"
                     testID={`meal-points-${meal.id}`}
@@ -386,11 +388,11 @@ export function MealEditor({
                   testID={`edit-meal-${meal.id}`}
                 />
                 <Pressable
-                  className="rounded-full bg-[#FFFFFF] px-4 py-3"
+                  className="rounded-full bg-[#FFFFFF] px-4 py-3 dark:bg-[#1C2A22]"
                   onPress={() => void remove(meal)}
                   testID={`delete-meal-${meal.id}`}
                 >
-                  <Text className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B]">
+                  <Text className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B] dark:text-[#E07070]">
                     Delete
                   </Text>
                 </Pressable>
@@ -419,13 +421,13 @@ export function MealEditor({
           />
           <Card tone="lowest" className="gap-4" testID="meal-modal">
             <View className="gap-2">
-              <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
+              <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A] dark:text-[#8FA49B]">
                 {sessionMode === 'edit' ? 'Edit meal' : 'Add meal'}
               </Text>
-              <Text className="text-[28px] font-extrabold leading-[32px] text-[#10201B]">
+              <Text className="text-[28px] font-extrabold leading-[32px] text-[#10201B] dark:text-[#E8F0EC]">
                 {sessionMode === 'edit' ? 'Update saved meal' : 'Log a meal'}
               </Text>
-              <Text className="text-[14px] leading-[20px] text-[#51605A]">
+              <Text className="text-[14px] leading-[20px] text-[#51605A] dark:text-[#8FA49B]">
                 {formatDateLabel(date)}
               </Text>
             </View>
@@ -439,25 +441,25 @@ export function MealEditor({
             />
             {visibleSuggestions.length > 0 ? (
               <View className="gap-2" testID="meal-suggestion-list">
-                <Text className="text-[13px] font-bold uppercase tracking-[1.2px] text-[#51605A]">
+                <Text className="text-[13px] font-bold uppercase tracking-[1.2px] text-[#51605A] dark:text-[#8FA49B]">
                   Prior meals
                 </Text>
                 <View className="gap-2">
                   {visibleSuggestions.map((suggestion, index) => (
                     <Pressable
                       key={suggestion.normalizedName}
-                      className="rounded-[22px] bg-[#E9EEEC] px-4 py-3"
+                      className="rounded-[22px] bg-[#E9EEEC] px-4 py-3 dark:bg-[#233029]"
                       onPress={() => applySuggestion(suggestion)}
                       testID={`meal-suggestion-row-${index}`}
                     >
                       <Text
-                        className="text-[15px] font-bold text-[#10201B]"
+                        className="text-[15px] font-bold text-[#10201B] dark:text-[#E8F0EC]"
                         testID={`meal-suggestion-name-${index}`}
                       >
                         {suggestion.displayName}
                       </Text>
                       <Text
-                        className="mt-1 text-[12px] uppercase tracking-[1px] text-[#51605A]"
+                        className="mt-1 text-[12px] uppercase tracking-[1px] text-[#51605A] dark:text-[#8FA49B]"
                         testID={`meal-suggestion-meta-${index}`}
                       >
                         {suggestion.sourceMealType
@@ -492,7 +494,7 @@ export function MealEditor({
             />
 
             <View className="gap-3">
-              <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
+              <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A] dark:text-[#8FA49B]">
                 Meal type
               </Text>
               <View className="flex-row flex-wrap gap-2">

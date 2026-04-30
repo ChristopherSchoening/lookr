@@ -82,8 +82,8 @@ export async function readAppSnapshot(page: Page): Promise<AppSnapshot> {
   });
 }
 
-export async function openTab(page: Page, label: 'Dashboard' | 'History' | 'Progress') {
-  await page.getByRole('link', { name: label }).click();
+export async function openTab(page: Page, label: 'Home' | 'History' | 'Progress' | 'Settings') {
+  await page.getByRole('tab', { name: label }).click();
 }
 
 export async function expectReadyScreen(page: Page, testId: string) {
