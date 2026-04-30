@@ -144,9 +144,6 @@ The web Playwright harness is the release gate for the active requirements in
 
 ## TODO
 
-- when clicking on the target weight display in the progress screen, a modal should open to set it
-- setting the daily limit is not possible anymore (should remain possible in progress tab)
-
 - adding only a meal value
 - reminder notification for weight tracking
 - dark mode
