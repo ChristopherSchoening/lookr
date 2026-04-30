@@ -78,21 +78,6 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="progress"
-        options={{
-          title: 'Progress',
-          tabBarButtonTestID: 'tab-button-progress',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              color={color}
-              name={tabIcons.progress}
-              size={size}
-              testID="tab-icon-progress"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
@@ -103,6 +88,21 @@ export default function TabsLayout() {
               name={tabIcons.settings}
               size={size}
               testID="tab-icon-settings"
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="progress"
+        options={{
+          title: 'Progress',
+          tabBarButtonTestID: 'tab-button-progress',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              color={color}
+              name={tabIcons.progress}
+              size={size}
+              testID="tab-icon-progress"
             />
           ),
         }}

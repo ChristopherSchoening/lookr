@@ -6,11 +6,13 @@ import type { ThemePreference } from '@/lib/types';
 
 type ThemeContextValue = {
   preference: ThemePreference;
+  resolvedPreference: Exclude<ThemePreference, 'system'>;
   setPreference: (preference: ThemePreference) => Promise<void>;
 };
 
 const ThemeContext = createContext<ThemeContextValue>({
   preference: 'system',
+  resolvedPreference: 'light',
   setPreference: async () => {},
 });
 
@@ -18,6 +20,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
   const [preference, setPreferenceState] = useState<ThemePreference>('system');
   const hasLoadedPreference = useRef(false);
+  const resolvedPreference = colorScheme.colorScheme ?? 'light';
 
   useEffect(() => {
     if (hasLoadedPreference.current) {
@@ -42,7 +45,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeContext.Provider value={{ preference, setPreference }}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={{ preference, resolvedPreference, setPreference }}>
+      {children}
+    </ThemeContext.Provider>
   );
 }
 

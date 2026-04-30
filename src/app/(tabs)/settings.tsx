@@ -7,11 +7,11 @@ import type { ThemePreference } from '@/lib/types';
 const themeOptions: { value: ThemePreference; label: string; note: string }[] = [
   { value: 'light', label: 'Light', note: 'Always use light appearance' },
   { value: 'dark', label: 'Dark', note: 'Always use dark appearance' },
-  { value: 'system', label: 'System', note: 'Follow device setting' },
+  { value: 'system', label: 'System preference', note: 'Follow device setting' },
 ];
 
 export default function SettingsScreen() {
-  const { preference, setPreference } = useTheme();
+  const { preference, resolvedPreference, setPreference } = useTheme();
 
   return (
     <Screen>
@@ -24,6 +24,10 @@ export default function SettingsScreen() {
         <View className="gap-3">
           {themeOptions.map((option) => {
             const active = preference === option.value;
+            const note =
+              option.value === 'system'
+                ? `System preference: ${resolvedPreference === 'dark' ? 'Dark' : 'Light'}`
+                : option.note;
             return (
               <Pressable
                 key={option.value}
@@ -48,8 +52,9 @@ export default function SettingsScreen() {
                       className={`text-[13px] leading-[18px] ${
                         active ? 'text-[#9BE8C9]' : 'text-[#51605A] dark:text-[#8FA49B]'
                       }`}
+                      testID={`theme-option-note-${option.value}`}
                     >
-                      {option.note}
+                      {note}
                     </Text>
                   </View>
                   {active ? (
