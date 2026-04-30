@@ -144,7 +144,6 @@ The web Playwright harness is the release gate for the active requirements in
 
 ## TODO
 
-- app logo
 - reminder notification for weight tracking
 - dark mode
 - points calculator
