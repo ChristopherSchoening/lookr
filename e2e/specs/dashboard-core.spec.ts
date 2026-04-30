@@ -13,6 +13,7 @@ import {
 } from '../fixtures/seed-states';
 import { getRelativeDateKey } from '../fixtures/seed-states';
 import { DashboardPage } from '../helpers/dashboard-page';
+import { HistoryPage } from '../helpers/history-page';
 import { expect, test } from '../fixtures/app-fixtures';
 
 test.afterEach(async ({ appPage }, testInfo) => {
@@ -72,16 +73,23 @@ test.describe('User Story 1: core dashboard coverage', () => {
 
     await seedAppState(appPage, createCleanSeedState());
 
+    const yesterday = getRelativeDateKey(-1);
     const today = getRelativeDateKey(0);
+    const history = new HistoryPage(appPage);
+    await history.goto();
+    await history.selectDate(yesterday);
+
+    await appPage.getByTestId('open-add-meal-button').click();
+    await expect(appPage.getByTestId('meal-modal')).toBeVisible();
+    await appPage.getByTestId('meal-name-input').fill('Late dinner fix');
+    await appPage.getByTestId('meal-points-input').fill('5');
+    await appPage.getByTestId('save-meal-button').click();
+    await expect(appPage.getByTestId('meal-modal')).toHaveCount(0);
+
+    await history.expectSummaryStatus('19 points remaining');
+
     const dashboard = new DashboardPage(appPage);
     await dashboard.goto();
-
-    await dashboard.goToYesterday();
-    await dashboard.addMeal('Late dinner fix', 5);
-    await dashboard.expectRemainingPoints(19);
-    await dashboard.expectStatus('19 points left today.');
-
-    await dashboard.returnToToday();
     await dashboard.expectRemainingPoints(24);
     await expect(
       appPage.getByTestId(`meal-editor-${today}`).getByText('No meals yet'),
@@ -232,13 +240,14 @@ test.describe('User Story 1: core dashboard coverage', () => {
 
     await seedAppState(appPage, createLegacyMealSeedState());
 
-    const dashboard = new DashboardPage(appPage);
-    await dashboard.goto();
-    await dashboard.goToYesterday();
+    const history = new HistoryPage(appPage);
+    await history.goto();
+    const yesterday = getRelativeDateKey(-1);
+    await history.selectDate(yesterday);
 
-    const legacyMeal = dashboard.mealCardByName('Legacy soup');
+    const legacyMeal = history.mealCardByName('Legacy soup');
     await expect(legacyMeal).toBeVisible();
-    await dashboard.expectNoMealType('Legacy soup');
+    await history.expectNoMealType('Legacy soup');
 
     await legacyMeal.locator('[data-testid^="edit-meal-"]').click();
     await expect(appPage.getByTestId('meal-modal')).toBeVisible();
@@ -249,8 +258,8 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await appPage.getByTestId('save-meal-button').click();
 
     await expect(appPage.getByTestId('meal-modal')).toHaveCount(0);
-    await expect(dashboard.mealCardByName('Legacy soup fix')).toBeVisible();
-    await dashboard.expectNoMealType('Legacy soup fix');
+    await expect(history.mealCardByName('Legacy soup fix')).toBeVisible();
+    await history.expectNoMealType('Legacy soup fix');
   });
 
   test('dashboard-migrates-legacy-schema-on-boot', async ({ appPage }, testInfo) => {
@@ -263,13 +272,14 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await seedAppState(appPage, createLegacyMealSeedState());
     await prepareLegacyMealTypeMigration(appPage);
 
-    const dashboard = new DashboardPage(appPage);
-    await dashboard.goto();
-    await dashboard.goToYesterday();
+    const history = new HistoryPage(appPage);
+    await history.goto();
+    const yesterday = getRelativeDateKey(-1);
+    await history.selectDate(yesterday);
 
-    await expect(dashboard.mealCardByName('Legacy soup')).toBeVisible();
-    await dashboard.expectNoMealType('Legacy soup');
-    await expect(dashboard.mealCardByName('Typed lunch')).toBeVisible();
-    await dashboard.expectRemainingPoints(5);
+    await expect(history.mealCardByName('Legacy soup')).toBeVisible();
+    await history.expectNoMealType('Legacy soup');
+    await expect(history.mealCardByName('Typed lunch')).toBeVisible();
+    await history.expectSummaryStatus('5 points remaining');
   });
 });
