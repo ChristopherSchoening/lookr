@@ -233,26 +233,31 @@ export default function ProgressScreen() {
           />
         ) : (
           <>
-            <Card tone="low" className="gap-4" testID="weight-trend-card">
-              <SectionTitle eyebrow="Trend" title="Recent weight trend" />
-              <View className="flex-row items-end gap-3">
-                {sortedWeights
-                  .slice(0, 6)
-                  .reverse()
-                  .map((entry) => (
-                    <View key={entry.id} className="flex-1 gap-2">
-                      <View
-                        className="rounded-t-[20px] bg-[#00D18E]"
-                        style={{ height: chartHeight(entry.weight) }}
-                        testID={`weight-bar-${entry.entryDate}`}
-                      />
-                      <Text className="text-center text-[12px] font-bold uppercase tracking-[1px] text-[#51605A]">
-                        {formatDateLabel(entry.entryDate)}
-                      </Text>
-                    </View>
-                  ))}
-              </View>
-            </Card>
+            <Pressable
+              onPress={() => router.push('/progress/details')}
+              testID="weight-trend-card-pressable"
+            >
+              <Card tone="low" className="gap-4" testID="weight-trend-card">
+                <SectionTitle eyebrow="Trend" title="Recent weight trend" />
+                <View className="flex-row items-end gap-3">
+                  {sortedWeights
+                    .slice(0, 6)
+                    .reverse()
+                    .map((entry) => (
+                      <View key={entry.id} className="flex-1 gap-2">
+                        <View
+                          className="rounded-t-[20px] bg-[#00D18E]"
+                          style={{ height: chartHeight(entry.weight) }}
+                          testID={`weight-bar-${entry.entryDate}`}
+                        />
+                        <Text className="text-center text-[12px] font-bold uppercase tracking-[1px] text-[#51605A]">
+                          {formatDateLabel(entry.entryDate)}
+                        </Text>
+                      </View>
+                    ))}
+                </View>
+              </Card>
+            </Pressable>
 
             <View className="gap-3">
               <SectionTitle
