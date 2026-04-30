@@ -156,12 +156,12 @@ export default function ProgressScreen() {
               testID="weight-remaining-metric"
             />
           </View>
-          <View className="rounded-[24px] bg-[#FFFFFF] px-4 py-4">
-            <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
+          <View className="rounded-[24px] bg-[#FFFFFF] px-4 py-4 dark:bg-[#1C2A22]">
+            <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A] dark:text-[#8FA49B]">
               Change since last track
             </Text>
             <Text
-              className="mt-2 text-[28px] font-extrabold text-[#10201B]"
+              className="mt-2 text-[28px] font-extrabold text-[#10201B] dark:text-[#E8F0EC]"
               testID="weight-change-metric"
             >
               {latestWeight && previousWeight
@@ -169,7 +169,7 @@ export default function ProgressScreen() {
                 : 'Add entries'}
             </Text>
             <Text
-              className="mt-1 text-[14px] leading-[20px] text-[#51605A]"
+              className="mt-1 text-[14px] leading-[20px] text-[#51605A] dark:text-[#8FA49B]"
               testID="latest-entry-date"
             >
               {latestWeight && previousWeight
@@ -283,7 +283,7 @@ export default function ProgressScreen() {
                           style={{ height: chartHeight(entry.weight) }}
                           testID={`weight-bar-${entry.entryDate}`}
                         />
-                        <Text className="text-center text-[12px] font-bold uppercase tracking-[1px] text-[#51605A]">
+                        <Text className="text-center text-[12px] font-bold uppercase tracking-[1px] text-[#51605A] dark:text-[#8FA49B]">
                           {formatDateLabel(entry.entryDate)}
                         </Text>
                       </View>
@@ -307,14 +307,14 @@ export default function ProgressScreen() {
                 >
                   <View className="flex-row items-start justify-between gap-3">
                     <View className="gap-1">
-                      <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
+                      <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A] dark:text-[#8FA49B]">
                         {formatDateLabel(entry.entryDate)}
                       </Text>
-                      <Text className="text-[22px] font-bold leading-[26px] text-[#10201B]">
+                      <Text className="text-[22px] font-bold leading-[26px] text-[#10201B] dark:text-[#E8F0EC]">
                         {formatLongDate(entry.entryDate)}
                       </Text>
                     </View>
-                    <View className="rounded-full bg-[#F2F4F5] px-4 py-3">
+                    <View className="rounded-full bg-[#F2F4F5] px-4 py-3 dark:bg-[#233029]">
                       <Text
                         className="text-[18px] font-extrabold text-[#006C48]"
                         testID={`weight-value-${entry.entryDate}`}
@@ -324,11 +324,11 @@ export default function ProgressScreen() {
                     </View>
                   </View>
                   <Pressable
-                    className="self-start rounded-full bg-[#F2F4F5] px-4 py-3"
+                    className="self-start rounded-full bg-[#F2F4F5] px-4 py-3 dark:bg-[#233029]"
                     onPress={() => void appData.deleteWeight(entry.id)}
                     testID={`delete-weight-${entry.entryDate}`}
                   >
-                    <Text className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B]">
+                    <Text className="text-[13px] font-bold uppercase tracking-[1px] text-[#994B4B] dark:text-[#E07070]">
                       Delete entry
                     </Text>
                   </Pressable>
@@ -358,10 +358,12 @@ export default function ProgressScreen() {
         >
           <Pressable
             onPress={() => {}}
-            className="rounded-t-[30px] bg-white px-6 pt-6 gap-4"
+            className="gap-4 rounded-t-[30px] bg-white px-6 pt-6 dark:bg-[#1C2A22]"
             style={{ paddingBottom: 24 + insets.bottom }}
           >
-            <Text className="text-[20px] font-extrabold text-[#10201B]">Set target weight</Text>
+            <Text className="text-[20px] font-extrabold text-[#10201B] dark:text-[#E8F0EC]">
+              Set target weight
+            </Text>
             <Field
               label="Target weight"
               value={targetWeightInput}

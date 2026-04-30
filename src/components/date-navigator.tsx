@@ -56,7 +56,7 @@ export function DateNavigator({
             testID="history-picker-previous-month"
           />
           <Text
-            className="text-[16px] font-bold text-[#10201B]"
+            className="text-[16px] font-bold text-[#10201B] dark:text-[#E8F0EC]"
             testID="history-picker-month-label"
           >
             {formatMonthLabel(pickerMonth)}
@@ -73,7 +73,7 @@ export function DateNavigator({
           <View className="flex-row gap-2">
             {weekDayLabels.map((label, index) => (
               <View key={`${label}-${index}`} className="flex-1 items-center">
-                <Text className="text-[11px] font-bold uppercase tracking-[1px] text-[#6D7A74]">
+                <Text className="text-[11px] font-bold uppercase tracking-[1px] text-[#6D7A74] dark:text-[#7A9089]">
                   {label}
                 </Text>
               </View>
@@ -95,12 +95,16 @@ export function DateNavigator({
                   const baseTone = isSelected
                     ? 'bg-[#102E24]'
                     : trackedDate
-                      ? 'bg-[#DDF6EA]'
-                      : 'bg-[#EEF2F1]';
+                      ? 'bg-[#DDF6EA] dark:bg-[#1A3325]'
+                      : 'bg-[#EEF2F1] dark:bg-[#233029]';
                   const borderTone =
-                    isToday && !isSelected ? 'border-[#00D18E]' : 'border-transparent';
-                  const textTone = isSelected ? 'text-white' : 'text-[#10201B]';
-                  const noteTone = isSelected ? 'text-[#D7EEE5]' : 'text-[#6D7A74]';
+                    isToday && !isSelected
+                      ? 'border-[#00D18E]'
+                      : 'border-transparent dark:border-transparent';
+                  const textTone = isSelected ? 'text-white' : 'text-[#10201B] dark:text-[#E8F0EC]';
+                  const noteTone = isSelected
+                    ? 'text-[#D7EEE5]'
+                    : 'text-[#6D7A74] dark:text-[#7A9089]';
 
                   return (
                     <Pressable
@@ -121,11 +125,11 @@ export function DateNavigator({
                       <View className="mt-2 min-h-[16px] items-center justify-center">
                         {trackedDate ? (
                           <View
-                            className={`min-w-[16px] rounded-full px-2 py-1 ${isSelected ? 'bg-white/20' : 'bg-[#B4F0CD]'}`}
+                            className={`min-w-[16px] rounded-full px-2 py-1 ${isSelected ? 'bg-white/20' : 'bg-[#B4F0CD] dark:bg-[#234D3B]'}`}
                             testID={`history-picker-tracked-${cell.date}`}
                           >
                             <Text
-                              className={`text-center text-[10px] font-bold uppercase tracking-[0.6px] ${isSelected ? 'text-white' : 'text-[#006C48]'}`}
+                              className={`text-center text-[10px] font-bold uppercase tracking-[0.6px] ${isSelected ? 'text-white' : 'text-[#006C48] dark:text-[#9BE8C9]'}`}
                             >
                               {trackedDate.mealCount}
                             </Text>
@@ -155,18 +159,18 @@ export function DateNavigator({
 
         <View className="gap-1 px-1" testID="history-selected-date">
           <Text
-            className="text-[13px] font-bold uppercase tracking-[1.6px] text-[#51605A]"
+            className="text-[13px] font-bold uppercase tracking-[1.6px] text-[#51605A] dark:text-[#8FA49B]"
             testID="history-selected-date-label"
           >
             {formatDateLabel(date)}
           </Text>
           <Text
-            className="text-[15px] leading-[20px] text-[#6D7A74]"
+            className="text-[15px] leading-[20px] text-[#6D7A74] dark:text-[#7A9089]"
             testID="history-selected-date-value"
           >
             {formatLongDate(date)}
           </Text>
-          <Text className="text-[12px] leading-[18px] text-[#6D7A74]">
+          <Text className="text-[12px] leading-[18px] text-[#6D7A74] dark:text-[#7A9089]">
             {isSameMonth(date, pickerMonth)
               ? 'Tracked days glow stronger. Empty days still work.'
               : 'Selected day stays locked while you browse months.'}
@@ -193,12 +197,15 @@ export function DateNavigator({
       </View>
       <View className="gap-1 px-1">
         <Text
-          className="text-[13px] font-bold uppercase tracking-[1.6px] text-[#51605A]"
+          className="text-[13px] font-bold uppercase tracking-[1.6px] text-[#51605A] dark:text-[#8FA49B]"
           testID="date-label"
         >
           {formatDateLabel(date)}
         </Text>
-        <Text className="text-[15px] leading-[20px] text-[#6D7A74]" testID="date-long-label">
+        <Text
+          className="text-[15px] leading-[20px] text-[#6D7A74] dark:text-[#7A9089]"
+          testID="date-long-label"
+        >
           {formatLongDate(date)}
         </Text>
       </View>

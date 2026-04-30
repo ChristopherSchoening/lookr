@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useColorScheme } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const tabBarBaseHeight = 68;
@@ -11,10 +12,13 @@ const tabIcons = {
   index: 'home-variant-outline',
   history: 'history',
   progress: 'chart-line',
+  settings: 'cog-outline',
 } as const;
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const bottomInset = Platform.OS === 'android' ? insets.bottom : 0;
   const resolvedPaddingBottom = Math.max(bottomInset, tabBarPaddingBottom);
 
@@ -22,12 +26,12 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#006C48',
-        tabBarInactiveTintColor: '#6D7A74',
+        tabBarActiveTintColor: isDark ? '#00D18E' : '#006C48',
+        tabBarInactiveTintColor: isDark ? '#7A9089' : '#6D7A74',
         tabBarStyle: {
-          backgroundColor: '#F8FAFB',
+          backgroundColor: isDark ? '#0F1A16' : '#F8FAFB',
           borderTopWidth: 1,
-          borderTopColor: '#D9E1DD',
+          borderTopColor: isDark ? '#2A3D35' : '#D9E1DD',
           height: tabBarBaseHeight + resolvedPaddingBottom,
           paddingTop: tabBarPaddingTop,
           paddingBottom: resolvedPaddingBottom,
@@ -69,6 +73,21 @@ export default function TabsLayout() {
               name={tabIcons.history}
               size={size}
               testID="tab-icon-history"
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarButtonTestID: 'tab-button-settings',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              color={color}
+              name={tabIcons.settings}
+              size={size}
+              testID="tab-icon-settings"
             />
           ),
         }}

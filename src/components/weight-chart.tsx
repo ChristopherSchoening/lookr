@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import { G, Line, Path, Svg, Text as SvgText } from 'react-native-svg';
 
 import type { WeightEntry } from '@/lib/types';
@@ -30,6 +31,9 @@ function toY(weight: number, yMin: number, yMax: number): number {
 }
 
 export function WeightChart({ entries, targetWeight, yMin, yMax, testID }: WeightChartProps) {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   if (entries.length === 0) return null;
 
   const dateMsValues = entries.map((e) => new Date(e.entryDate).getTime());
@@ -51,6 +55,9 @@ export function WeightChart({ entries, targetWeight, yMin, yMax, testID }: Weigh
   const targetY = targetWeight !== null ? toY(targetWeight, yMin, yMax) : null;
 
   const yTicks = [yMin, Math.round((yMin + yMax) / 2), yMax];
+  const gridColor = isDark ? '#2A3D35' : '#D9E1DD';
+  const labelColor = isDark ? '#8FA49B' : '#51605A';
+  const targetColor = isDark ? '#9BE8C9' : '#006C48';
 
   const xLabels = entries
     .filter((_, i) => i === 0 || i === entries.length - 1)
@@ -74,14 +81,14 @@ export function WeightChart({ entries, targetWeight, yMin, yMax, testID }: Weigh
                   y1={y}
                   x2={PADDING.left + plotWidth}
                   y2={y}
-                  stroke="#D9E1DD"
+                  stroke={gridColor}
                   strokeWidth={1}
                 />
                 <SvgText
                   x={PADDING.left - 6}
                   y={y + 4}
                   fontSize={10}
-                  fill="#51605A"
+                  fill={labelColor}
                   textAnchor="end"
                 >
                   {tick}
@@ -96,7 +103,7 @@ export function WeightChart({ entries, targetWeight, yMin, yMax, testID }: Weigh
               y1={targetY}
               x2={PADDING.left + plotWidth}
               y2={targetY}
-              stroke="#006C48"
+              stroke={targetColor}
               strokeWidth={1.5}
               strokeDasharray="4,3"
               testID="weight-chart-target-line"
@@ -112,7 +119,7 @@ export function WeightChart({ entries, targetWeight, yMin, yMax, testID }: Weigh
                 y1={PADDING.top}
                 x2={x}
                 y2={PADDING.top + plotHeight}
-                stroke="#D9E1DD"
+                stroke={gridColor}
                 strokeWidth={1}
                 strokeDasharray="2,4"
               />
@@ -125,7 +132,7 @@ export function WeightChart({ entries, targetWeight, yMin, yMax, testID }: Weigh
               x={x}
               y={CHART_HEIGHT - 6}
               fontSize={10}
-              fill="#51605A"
+              fill={labelColor}
               textAnchor="middle"
             >
               {label}
