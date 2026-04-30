@@ -33,6 +33,11 @@ function normalizeMealName(value: string) {
   return value.trim().toLowerCase();
 }
 
+function isNumericEntry(value: string) {
+  const trimmed = value.trim();
+  return trimmed !== '' && /^\d+\.?\d*$/.test(trimmed);
+}
+
 function buildMealTimestamp(meal: MealEntry) {
   const match = meal.entryTime.match(/^(\d{1,2}):(\d{2}) (AM|PM)$/);
   if (!match) {
@@ -177,6 +182,7 @@ export function MealEditor({
   const shouldEvaluateSuggestions =
     isModalOpen &&
     !dismissedSuggestions &&
+    !isNumericEntry(debouncedMealName) &&
     (sessionMode === 'add' || hasEditedMealName) &&
     normalizeMealName(debouncedMealName).length >= suggestionThreshold;
 
@@ -219,7 +225,12 @@ export function MealEditor({
 
   function handleMealNameChange(nextMealName: string) {
     setMealName(nextMealName);
-    setDismissedSuggestions(false);
+    if (isNumericEntry(nextMealName)) {
+      setPoints(nextMealName.trim());
+      setDismissedSuggestions(true);
+    } else {
+      setDismissedSuggestions(false);
+    }
     if (sessionMode === 'edit') {
       setHasEditedMealName(nextMealName !== initialMealName);
       return;
