@@ -451,6 +451,78 @@ export function createMixedHistorySeedState(): E2ESeedState {
   };
 }
 
+export function createWeightOverviewSeedState(): E2ESeedState {
+  const today = toDateKey(0);
+  const yesterday = toDateKey(-1);
+  const twoDaysAgo = toDateKey(-2);
+
+  return {
+    profile: { dailyPointsLimit: 24, targetWeight: 78.0 },
+    meals: [],
+    weights: [
+      { entryDate: twoDaysAgo, weight: 82.6 },
+      { entryDate: yesterday, weight: 82.2 },
+      { entryDate: today, weight: 81.9 },
+    ],
+  };
+}
+
+export function createWeightOverviewNoTargetSeedState(): E2ESeedState {
+  const yesterday = toDateKey(-1);
+  const twoDaysAgo = toDateKey(-2);
+
+  return {
+    profile: { dailyPointsLimit: 24, targetWeight: null },
+    meals: [],
+    weights: [
+      { entryDate: twoDaysAgo, weight: 82.6 },
+      { entryDate: yesterday, weight: 82.2 },
+    ],
+  };
+}
+
+export function createWeightDetailsEditSeedState(): E2ESeedState {
+  const today = toDateKey(0);
+  const yesterday = toDateKey(-1);
+  const twoDaysAgo = toDateKey(-2);
+
+  return {
+    profile: { dailyPointsLimit: 24, targetWeight: 78.0 },
+    meals: [],
+    weights: [
+      { entryDate: twoDaysAgo, weight: 82.6 },
+      { entryDate: yesterday, weight: 82.2 },
+      { entryDate: today, weight: 81.9 },
+    ],
+  };
+}
+
+export function createWeightChartSeedState(): E2ESeedState {
+  const today = toDateKey(0);
+  const fiveDaysAgo = toDateKey(-5);
+  const tenDaysAgo = toDateKey(-10);
+
+  return {
+    profile: { dailyPointsLimit: 24, targetWeight: 78.0 },
+    meals: [],
+    weights: [
+      { entryDate: tenDaysAgo, weight: 83.0 },
+      { entryDate: fiveDaysAgo, weight: 81.5 },
+      { entryDate: today, weight: 80.2 },
+    ],
+  };
+}
+
+export function createWeightSingleEntrySeedState(): E2ESeedState {
+  const today = toDateKey(0);
+
+  return {
+    profile: { dailyPointsLimit: 24, targetWeight: 78.0 },
+    meals: [],
+    weights: [{ entryDate: today, weight: 82.0 }],
+  };
+}
+
 export function getRelativeDateKey(offsetDays = 0) {
   return toDateKey(offsetDays);
 }

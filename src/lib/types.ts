@@ -1,5 +1,6 @@
 export type UserProfile = {
   dailyPointsLimit: number;
+  targetWeight: number | null;
   updatedAt: string;
 };
 

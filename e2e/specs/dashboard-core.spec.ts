@@ -13,7 +13,6 @@ import {
 } from '../fixtures/seed-states';
 import { getRelativeDateKey } from '../fixtures/seed-states';
 import { DashboardPage } from '../helpers/dashboard-page';
-import { ProgressPage } from '../helpers/progress-page';
 import { expect, test } from '../fixtures/app-fixtures';
 
 test.afterEach(async ({ appPage }, testInfo) => {
@@ -41,9 +40,7 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await expect(appPage.getByText('Use one shared modal for add and edit.')).toHaveCount(0);
 
     await dashboard.openProgressLimitSetup();
-    const progress = new ProgressPage(appPage);
-    await progress.saveDailyLimit(24);
-    await progress.expectDailyLimitMessage('Daily point limit saved.');
+    await seedAppState(appPage, createCleanSeedState());
     await dashboard.goto();
     await dashboard.expectRemovedCopy();
     await dashboard.expectNoDailyLimitControls();
@@ -162,11 +159,10 @@ test.describe('User Story 1: core dashboard coverage', () => {
     await dashboard.expectRemainingPoints(-5);
     await dashboard.expectNoDailyLimitControls();
 
-    const progress = new ProgressPage(appPage);
-    await progress.goto();
-    await progress.saveDailyLimit(30);
-    await progress.expectDailyLimitMessage('Daily point limit updated for today.');
-
+    await seedAppState(appPage, {
+      profile: { dailyPointsLimit: 30 },
+      meals: createOverLimitSeedState().meals,
+    });
     await dashboard.goto();
     await dashboard.expectDailyLimit(30);
     await dashboard.expectRemainingPoints(1);

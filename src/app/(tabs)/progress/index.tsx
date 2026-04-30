@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Modal, Pressable, Text, View } from 'react-native';
+import { router } from 'expo-router';
 
 import { DateNavigator } from '@/components/date-navigator';
 import {
@@ -25,6 +26,9 @@ export default function ProgressScreen() {
   const [dailyLimitError, setDailyLimitError] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [targetWeightModalOpen, setTargetWeightModalOpen] = useState(false);
+  const [targetWeightInput, setTargetWeightInput] = useState('');
+  const [targetWeightError, setTargetWeightError] = useState('');
 
   useEffect(() => {
     setDailyLimitInput(appData.profile ? String(appData.profile.dailyPointsLimit) : '');
@@ -39,6 +43,9 @@ export default function ProgressScreen() {
   const previousWeight = sortedWeights[1];
   const weightDelta =
     latestWeight && previousWeight ? latestWeight.weight - previousWeight.weight : 0;
+  const targetWeight = appData.profile?.targetWeight ?? null;
+  const remaining =
+    latestWeight && targetWeight !== null ? latestWeight.weight - targetWeight : null;
   const trackedSummaries = appData.summaries.filter((summary) => summary.mealCount > 0);
   const trackedDays = trackedSummaries.length;
   const withinDays = trackedSummaries.filter((summary) => summary.status === 'within').length;
@@ -76,6 +83,18 @@ export default function ProgressScreen() {
     setMessage(`Weight saved for ${formatDateLabel(entryDate).toLowerCase()}.`);
   }
 
+  async function submitTargetWeight() {
+    const parsed = Number(targetWeightInput.trim());
+    if (!Number.isFinite(parsed) || parsed < 30 || parsed > 300) {
+      setTargetWeightError('Weight must be between 30 and 300.');
+      return;
+    }
+    setTargetWeightError('');
+    await appData.saveTargetWeight(parsed);
+    setTargetWeightModalOpen(false);
+    setTargetWeightInput('');
+  }
+
   function chartHeight(weight: number) {
     if (sortedWeights.length <= 1) return 80;
     const values = sortedWeights.map((entry) => entry.weight);
@@ -109,16 +128,48 @@ export default function ProgressScreen() {
               testID="adherence-metric"
             />
           </View>
+          <View className="flex-row gap-3">
+            <Pressable
+              className="flex-1"
+              onPress={() => {
+                setTargetWeightInput(targetWeight !== null ? String(targetWeight) : '');
+                setTargetWeightError('');
+                setTargetWeightModalOpen(true);
+              }}
+              testID="goal-weight-pressable"
+            >
+              <Metric
+                label="Goal"
+                value={targetWeight !== null ? `${targetWeight}` : '—'}
+                note={targetWeight !== null ? 'Tap to edit' : 'Tap to set'}
+                testID="goal-weight-metric"
+              />
+            </Pressable>
+            <Metric
+              label="Remaining"
+              value={
+                remaining !== null ? `${remaining > 0 ? '+' : ''}${remaining.toFixed(1)}` : '—'
+              }
+              note={remaining !== null ? 'To goal' : 'Set a goal'}
+              testID="weight-remaining-metric"
+            />
+          </View>
           <View className="rounded-[24px] bg-[#FFFFFF] px-4 py-4">
             <Text className="text-[13px] font-bold uppercase tracking-[1.4px] text-[#51605A]">
               Change since last track
             </Text>
-            <Text className="mt-2 text-[28px] font-extrabold text-[#10201B]" testID="weight-delta">
+            <Text
+              className="mt-2 text-[28px] font-extrabold text-[#10201B]"
+              testID="weight-change-metric"
+            >
               {latestWeight && previousWeight
                 ? `${weightDelta > 0 ? '+' : ''}${weightDelta.toFixed(1)}`
                 : 'Add entries'}
             </Text>
-            <Text className="mt-1 text-[14px] leading-[20px] text-[#51605A]">
+            <Text
+              className="mt-1 text-[14px] leading-[20px] text-[#51605A]"
+              testID="latest-entry-date"
+            >
               {latestWeight && previousWeight
                 ? `From ${formatDateLabel(previousWeight.entryDate).toLowerCase()} to ${formatDateLabel(latestWeight.entryDate).toLowerCase()}.`
                 : 'Add two weights to compare the latest change.'}
@@ -213,26 +264,31 @@ export default function ProgressScreen() {
           />
         ) : (
           <>
-            <Card tone="low" className="gap-4" testID="weight-trend-card">
-              <SectionTitle eyebrow="Trend" title="Recent weight trend" />
-              <View className="flex-row items-end gap-3">
-                {sortedWeights
-                  .slice(0, 6)
-                  .reverse()
-                  .map((entry) => (
-                    <View key={entry.id} className="flex-1 gap-2">
-                      <View
-                        className="rounded-t-[20px] bg-[#00D18E]"
-                        style={{ height: chartHeight(entry.weight) }}
-                        testID={`weight-bar-${entry.entryDate}`}
-                      />
-                      <Text className="text-center text-[12px] font-bold uppercase tracking-[1px] text-[#51605A]">
-                        {formatDateLabel(entry.entryDate)}
-                      </Text>
-                    </View>
-                  ))}
-              </View>
-            </Card>
+            <Pressable
+              onPress={() => router.push('/progress/details')}
+              testID="weight-trend-card-pressable"
+            >
+              <Card tone="low" className="gap-4" testID="weight-trend-card">
+                <SectionTitle eyebrow="Trend" title="Recent weight trend" />
+                <View className="flex-row items-end gap-3">
+                  {sortedWeights
+                    .slice(0, 6)
+                    .reverse()
+                    .map((entry) => (
+                      <View key={entry.id} className="flex-1 gap-2">
+                        <View
+                          className="rounded-t-[20px] bg-[#00D18E]"
+                          style={{ height: chartHeight(entry.weight) }}
+                          testID={`weight-bar-${entry.entryDate}`}
+                        />
+                        <Text className="text-center text-[12px] font-bold uppercase tracking-[1px] text-[#51605A]">
+                          {formatDateLabel(entry.entryDate)}
+                        </Text>
+                      </View>
+                    ))}
+                </View>
+              </Card>
+            </Pressable>
 
             <View className="gap-3">
               <SectionTitle
@@ -277,9 +333,50 @@ export default function ProgressScreen() {
                 </Card>
               ))}
             </View>
+
+            <PrimaryButton
+              label="View weight details"
+              onPress={() => router.push('/progress/details')}
+              testID="view-details-button"
+            />
           </>
         )}
       </View>
+
+      <Modal
+        visible={targetWeightModalOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setTargetWeightModalOpen(false)}
+        testID="target-weight-modal"
+      >
+        <Pressable
+          className="flex-1 justify-end bg-black/50"
+          onPress={() => setTargetWeightModalOpen(false)}
+        >
+          <Pressable onPress={() => {}} className="rounded-t-[30px] bg-white p-6 gap-4">
+            <Text className="text-[20px] font-extrabold text-[#10201B]">Set target weight</Text>
+            <Field
+              label="Target weight"
+              value={targetWeightInput}
+              onChangeText={(v) => {
+                setTargetWeightInput(v);
+                if (targetWeightError) setTargetWeightError('');
+              }}
+              placeholder="75.0"
+              keyboardType="decimal-pad"
+              hint="Between 30 and 300."
+              testID="target-weight-input"
+            />
+            {targetWeightError ? <InlineMessage message={targetWeightError} tone="danger" /> : null}
+            <PrimaryButton
+              label="Save target weight"
+              onPress={() => void submitTargetWeight()}
+              testID="save-target-weight-button"
+            />
+          </Pressable>
+        </Pressable>
+      </Modal>
     </Screen>
   );
 }

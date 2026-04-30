@@ -10,7 +10,6 @@ import {
   getRelativeDateKey,
 } from '../fixtures/seed-states';
 import { HistoryPage } from '../helpers/history-page';
-import { ProgressPage } from '../helpers/progress-page';
 import { expect, test } from '../fixtures/app-fixtures';
 
 test.afterEach(async ({ appPage }, testInfo) => {
@@ -175,12 +174,19 @@ test.describe('History picker and editing coverage', () => {
       'US2-AS3',
     ]);
 
-    await seedAppState(appPage, createHistoricalLimitSeedState());
-
-    const progress = new ProgressPage(appPage);
-    await progress.goto();
-    await progress.saveDailyLimit(30);
-    await progress.expectDailyLimitMessage('Daily point limit updated for today.');
+    const fiveDaysAgo = getRelativeDateKey(-5);
+    await seedAppState(appPage, {
+      profile: { dailyPointsLimit: 30 },
+      dailyPointLimitHistory: [
+        {
+          effectiveDate: fiveDaysAgo,
+          dailyPointsLimit: 20,
+          createdAt: `${fiveDaysAgo}T08:00:00.000Z`,
+        },
+        { effectiveDate: getRelativeDateKey(0), dailyPointsLimit: 30 },
+      ],
+      meals: createHistoricalLimitSeedState().meals,
+    });
 
     const yesterday = getRelativeDateKey(-1);
     const history = new HistoryPage(appPage);
