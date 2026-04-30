@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { Platform, useColorScheme as useSystemColorScheme } from 'react-native';
 import { useColorScheme } from 'nativewind';
 
 import { loadThemePreference, saveThemePreference } from '@/lib/db';
@@ -16,11 +17,21 @@ const ThemeContext = createContext<ThemeContextValue>({
   setPreference: async () => {},
 });
 
+function syncWebThemeClass(resolvedPreference: Exclude<ThemePreference, 'system'>) {
+  if (Platform.OS !== 'web') {
+    return;
+  }
+
+  document.documentElement.classList.toggle('dark', resolvedPreference === 'dark');
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
+  const systemColorScheme = useSystemColorScheme();
   const [preference, setPreferenceState] = useState<ThemePreference>('system');
   const hasLoadedPreference = useRef(false);
-  const resolvedPreference = colorScheme.colorScheme ?? 'light';
+  const resolvedSystemPreference = systemColorScheme === 'dark' ? 'dark' : 'light';
+  const resolvedPreference = preference === 'system' ? resolvedSystemPreference : preference;
 
   useEffect(() => {
     if (hasLoadedPreference.current) {
@@ -31,16 +42,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     void loadThemePreference()
       .then((savedPreference) => {
         setPreferenceState(savedPreference);
-        colorScheme.setColorScheme(savedPreference);
       })
       .catch(() => {
-        colorScheme.setColorScheme('system');
+        setPreferenceState('system');
       });
-  }, [colorScheme]);
+  }, []);
+
+  useEffect(() => {
+    syncWebThemeClass(resolvedPreference);
+    colorScheme.setColorScheme(
+      Platform.OS === 'web' && preference === 'system' ? resolvedPreference : preference,
+    );
+  }, [colorScheme, preference, resolvedPreference]);
 
   async function setPreference(nextPreference: ThemePreference) {
     setPreferenceState(nextPreference);
-    colorScheme.setColorScheme(nextPreference);
     await saveThemePreference(nextPreference);
   }
 
