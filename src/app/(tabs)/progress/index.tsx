@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DateNavigator } from '@/components/date-navigator';
 import {
@@ -18,6 +19,7 @@ import { useAppData } from '@/context/app-data';
 import { formatDateLabel, formatLongDate, todayKey } from '@/lib/date';
 
 export default function ProgressScreen() {
+  const insets = useSafeAreaInsets();
   const appData = useAppData();
   const [entryDate, setEntryDate] = useState(todayKey());
   const [weightInput, setWeightInput] = useState('');
@@ -354,7 +356,11 @@ export default function ProgressScreen() {
           className="flex-1 justify-end bg-black/50"
           onPress={() => setTargetWeightModalOpen(false)}
         >
-          <Pressable onPress={() => {}} className="rounded-t-[30px] bg-white p-6 gap-4">
+          <Pressable
+            onPress={() => {}}
+            className="rounded-t-[30px] bg-white px-6 pt-6 gap-4"
+            style={{ paddingBottom: 24 + insets.bottom }}
+          >
             <Text className="text-[20px] font-extrabold text-[#10201B]">Set target weight</Text>
             <Field
               label="Target weight"

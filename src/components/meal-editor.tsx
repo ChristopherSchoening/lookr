@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   Card,
@@ -92,6 +93,7 @@ export function MealEditor({
   emptyTitle?: string;
   emptyBody?: string;
 }) {
+  const insets = useSafeAreaInsets();
   const [mealName, setMealName] = useState('');
   const [points, setPoints] = useState('');
   const [count, setCount] = useState('1');
@@ -395,7 +397,8 @@ export function MealEditor({
         visible={isModalOpen}
       >
         <View
-          className="flex-1 justify-end bg-[#10201B]/50 px-4 pb-6 pt-10"
+          className="flex-1 justify-end bg-[#10201B]/50 px-4 pt-10"
+          style={{ paddingBottom: 24 + insets.bottom }}
           testID="meal-modal-overlay"
         >
           <Pressable
