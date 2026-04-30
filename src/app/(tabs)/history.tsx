@@ -6,46 +6,7 @@ import { MealEditor } from '@/components/meal-editor';
 import { Card, EmptyState, LoadingScreen, Screen, SectionTitle } from '@/components/ui';
 import { useAppData } from '@/context/app-data';
 import { formatDateLabel, formatLongDate, startOfMonth, todayKey } from '@/lib/date';
-import type { CombinedHistoryRow, MealEntry } from '@/lib/types';
-
-function buildHistoryGroupKey(meal: MealEntry) {
-  return JSON.stringify([
-    meal.entryDate,
-    meal.entryTime,
-    meal.mealType ?? null,
-    meal.points,
-    meal.mealName,
-  ]);
-}
-
-function buildHistoryGroupTestId(mealIds: number[]) {
-  return `meal-group-${mealIds.join('-')}`;
-}
-
-function combineHistoryMeals(meals: MealEntry[]): CombinedHistoryRow[] {
-  const grouped = new Map<string, MealEntry[]>();
-
-  for (const meal of meals) {
-    const key = buildHistoryGroupKey(meal);
-    const groupMeals = grouped.get(key) ?? [];
-    groupMeals.push(meal);
-    grouped.set(key, groupMeals);
-  }
-
-  return [...grouped.values()].map((groupMeals) => {
-    const representative = groupMeals[0];
-    const mealIds = groupMeals.map((meal) => meal.id);
-    const count = mealIds.length;
-
-    return {
-      ...representative,
-      groupKey: buildHistoryGroupTestId(mealIds),
-      mealIds,
-      count,
-      totalPoints: representative.points * count,
-    };
-  });
-}
+import { combineMeals } from '@/lib/meals';
 
 export default function HistoryScreen() {
   const appData = useAppData();
@@ -61,8 +22,7 @@ export default function HistoryScreen() {
     return <LoadingScreen />;
   }
 
-  const meals = appData.getMealsByDate(selectedDate);
-  const groupedMeals = combineHistoryMeals(meals);
+  const groupedMeals = combineMeals(appData.getMealsByDate(selectedDate));
   const summary = appData.getSummaryByDate(selectedDate);
   const hasTrackedMeals = appData.hasTrackedMeals(selectedDate);
 

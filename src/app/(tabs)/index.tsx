@@ -6,6 +6,7 @@ import { MealEditor } from '@/components/meal-editor';
 import { Card, LoadingScreen, Metric, PrimaryButton, Screen, SectionTitle } from '@/components/ui';
 import { useAppData } from '@/context/app-data';
 import { formatDateLabel, todayKey } from '@/lib/date';
+import { combineMeals } from '@/lib/meals';
 
 export default function DashboardScreen() {
   const appData = useAppData();
@@ -17,7 +18,7 @@ export default function DashboardScreen() {
   }
 
   const summary = appData.getSummaryByDate(selectedDate);
-  const meals = appData.getMealsByDate(selectedDate);
+  const meals = combineMeals(appData.getMealsByDate(selectedDate));
   const overBy = Math.abs(summary.remainingPoints);
 
   return (
