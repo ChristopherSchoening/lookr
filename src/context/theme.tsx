@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Platform, useColorScheme as useSystemColorScheme } from 'react-native';
 import { useColorScheme } from 'nativewind';
 
@@ -28,10 +28,15 @@ function syncWebThemeClass(resolvedPreference: Exclude<ThemePreference, 'system'
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
   const systemColorScheme = useSystemColorScheme();
+  const colorSchemeRef = useRef(colorScheme);
   const [preference, setPreferenceState] = useState<ThemePreference>('system');
   const hasLoadedPreference = useRef(false);
   const resolvedSystemPreference = systemColorScheme === 'dark' ? 'dark' : 'light';
   const resolvedPreference = preference === 'system' ? resolvedSystemPreference : preference;
+
+  useEffect(() => {
+    colorSchemeRef.current = colorScheme;
+  }, [colorScheme]);
 
   useEffect(() => {
     if (hasLoadedPreference.current) {
@@ -48,12 +53,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     syncWebThemeClass(resolvedPreference);
-    colorScheme.setColorScheme(
+    if (Platform.OS !== 'web') {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => syncWebThemeClass(resolvedPreference));
+    const timeout = window.setTimeout(() => syncWebThemeClass(resolvedPreference), 0);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timeout);
+    };
+  }, [resolvedPreference]);
+
+  useEffect(() => {
+    colorSchemeRef.current.setColorScheme(
       Platform.OS === 'web' && preference === 'system' ? resolvedPreference : preference,
     );
-  }, [colorScheme, preference, resolvedPreference]);
+  }, [preference, resolvedPreference]);
 
   async function setPreference(nextPreference: ThemePreference) {
     setPreferenceState(nextPreference);

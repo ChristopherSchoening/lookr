@@ -2,6 +2,10 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 import { gotoApp } from './app-helpers';
 
+function monthKey(dateKey: string) {
+  return dateKey.slice(0, 7);
+}
+
 export class HistoryPage {
   constructor(private readonly page: Page) {}
 
@@ -21,6 +25,7 @@ export class HistoryPage {
   }
 
   async selectDate(dateKey: string) {
+    await this.showMonthForDate(dateKey);
     await this.page.getByTestId(`history-picker-day-${dateKey}`).click();
   }
 
@@ -30,11 +35,41 @@ export class HistoryPage {
   }
 
   async expectTrackedDate(dateKey: string) {
+    await this.showMonthForDate(dateKey);
     await expect(this.page.getByTestId(`history-picker-tracked-${dateKey}`)).toBeVisible();
   }
 
   async expectEmptyDate(dateKey: string) {
+    await this.showMonthForDate(dateKey);
     await expect(this.page.getByTestId(`history-picker-tracked-${dateKey}`)).toHaveCount(0);
+  }
+
+  private async showMonthForDate(dateKey: string) {
+    const targetMonth = monthKey(dateKey);
+
+    for (let index = 0; index < 24; index += 1) {
+      const visibleDate = await this.page
+        .locator('[data-testid^="history-picker-day-"]')
+        .first()
+        .getAttribute('data-testid');
+      const visibleMonth = visibleDate?.replace('history-picker-day-', '').slice(0, 7);
+
+      if (visibleMonth === targetMonth) {
+        return;
+      }
+
+      if (!visibleMonth) {
+        break;
+      }
+
+      if (visibleMonth < targetMonth) {
+        await this.page.getByTestId('history-picker-next-month').click();
+      } else {
+        await this.page.getByTestId('history-picker-previous-month').click();
+      }
+    }
+
+    throw new Error(`Unable to show history month for ${dateKey}`);
   }
 
   mealCardByName(name: string): Locator {
