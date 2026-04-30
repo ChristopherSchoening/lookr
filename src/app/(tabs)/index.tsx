@@ -1,24 +1,24 @@
-import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { DateNavigator } from '@/components/date-navigator';
 import { MealEditor } from '@/components/meal-editor';
 import { Card, LoadingScreen, Metric, PrimaryButton, Screen, SectionTitle } from '@/components/ui';
 import { useAppData } from '@/context/app-data';
 import { formatDateLabel, todayKey } from '@/lib/date';
+import { combineMeals } from '@/lib/meals';
 
 export default function DashboardScreen() {
   const appData = useAppData();
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState(todayKey());
+  const [selectedDate] = useState(todayKey());
 
   if (!appData.isReady) {
     return <LoadingScreen />;
   }
 
   const summary = appData.getSummaryByDate(selectedDate);
-  const meals = appData.getMealsByDate(selectedDate);
+  const meals = combineMeals(appData.getMealsByDate(selectedDate));
   const overBy = Math.abs(summary.remainingPoints);
 
   return (
@@ -78,15 +78,6 @@ export default function DashboardScreen() {
                   testID="daily-limit-metric"
                 />
               </View>
-            </Card>
-
-            <Card tone="low" className="gap-4" testID="date-focus-card">
-              <SectionTitle
-                eyebrow="Day"
-                title="Pick a day"
-                body="Use past days for backfill or corrections."
-              />
-              <DateNavigator date={selectedDate} onChange={setSelectedDate} />
             </Card>
 
             <MealEditor
