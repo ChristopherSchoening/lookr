@@ -10,7 +10,7 @@ import { formatDateLabel, todayKey } from '@/lib/date';
 export default function DashboardScreen() {
   const appData = useAppData();
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState(todayKey());
+  const [selectedDate] = useState(todayKey());
 
   if (!appData.isReady) {
     return <LoadingScreen />;
