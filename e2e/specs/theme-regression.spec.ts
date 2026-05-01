@@ -1,4 +1,11 @@
-import { attachSnapshotOnFailure, gotoApp, openTab, resetAppState } from '../helpers/app-helpers';
+import {
+  attachSnapshotOnFailure,
+  gotoApp,
+  openTab,
+  resetAppState,
+  seedAppState,
+} from '../helpers/app-helpers';
+import { createCleanSeedState } from '../fixtures/seed-states';
 import { expect, test } from '../fixtures/app-fixtures';
 
 test.afterEach(async ({ appPage }, testInfo) => {
@@ -7,6 +14,8 @@ test.afterEach(async ({ appPage }, testInfo) => {
 
 test.describe('Theme settings coverage', () => {
   test('settings dark mode applies app surface colors', async ({ appPage }) => {
+    await seedAppState(appPage, createCleanSeedState());
+
     await openTab(appPage, 'Settings');
     await expect(appPage.getByTestId('settings-screen')).toBeVisible();
     await expect(appPage.getByRole('tab').nth(0)).toContainText('Home');
@@ -39,6 +48,7 @@ test.describe('Theme settings coverage', () => {
     await page.emulateMedia({ colorScheme: 'dark' });
     await gotoApp(page, '/');
     await resetAppState(page);
+    await seedAppState(page, createCleanSeedState());
 
     await openTab(page, 'Settings');
     await expect(page.getByTestId('settings-screen')).toBeVisible();

@@ -1,6 +1,6 @@
 import { attachSnapshotOnFailure, annotateScenario, seedAppState } from '../helpers/app-helpers';
 import {
-  createNoLimitSeedState,
+  createCleanSeedState,
   createWeightChartSeedState,
   createWeightDetailsEditSeedState,
   createWeightOverviewNoTargetSeedState,
@@ -39,7 +39,7 @@ test.describe('US1: Weight overview', () => {
   }, testInfo) => {
     annotateScenario(testInfo, 'weight-overview-empty-state', ['US1']);
 
-    await seedAppState(appPage, createNoLimitSeedState());
+    await seedAppState(appPage, createCleanSeedState());
 
     const progress = new ProgressPage(appPage);
     await progress.goto();
@@ -138,7 +138,7 @@ test.describe('US3: Weight trend chart', () => {
   test('no chart shown when no entries exist', async ({ appPage }, testInfo) => {
     annotateScenario(testInfo, 'weight-chart-no-entries', ['US3']);
 
-    await seedAppState(appPage, createNoLimitSeedState());
+    await seedAppState(appPage, createCleanSeedState());
 
     const details = new WeightDetailsPage(appPage);
     await expect(appPage.getByTestId('weight-details-screen')).toHaveCount(0);

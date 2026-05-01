@@ -13,6 +13,7 @@ import {
   prepareLegacyMealTypeMigrationE2E,
   resetE2EState,
   saveProfile as saveProfileRecord,
+  saveOnboardingProfile,
   saveTargetWeight as saveTargetWeightRecord,
   saveWeight as saveWeightRecord,
   seedE2EState,
@@ -60,6 +61,11 @@ type AppDataContextValue = {
   summaries: DailySummary[];
   refresh: () => Promise<void>;
   saveProfile: (dailyPointsLimit: number) => Promise<void>;
+  saveOnboarding: (input: {
+    dailyPointsLimit: number;
+    currentWeight: number;
+    targetWeight: number;
+  }) => Promise<void>;
   addMeal: (input: {
     mealName: string;
     points: number;
@@ -141,7 +147,10 @@ function isE2EEnabled() {
     return false;
   }
 
-  return new URLSearchParams(window.location.search).get('e2e') === '1';
+  return (
+    new URLSearchParams(window.location.search).get('e2e') === '1' ||
+    window.__LOOKR_E2E__?.enabled === true
+  );
 }
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
@@ -225,6 +234,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     refresh,
     async saveProfile(dailyPointsLimit) {
       await saveProfileRecord(dailyPointsLimit);
+      await refresh();
+    },
+    async saveOnboarding(input) {
+      await saveOnboardingProfile(input);
       await refresh();
     },
     async addMeal(input) {

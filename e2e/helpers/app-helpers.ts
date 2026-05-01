@@ -3,7 +3,7 @@ import { expect, type Page, type TestInfo } from '@playwright/test';
 import type { E2ESeedState } from '../../src/lib/db';
 
 type AppSnapshot = {
-  profile: { dailyPointsLimit: number } | null;
+  profile: { dailyPointsLimit: number; targetWeight: number | null } | null;
   dailyPointLimitHistory: Array<{
     id: number;
     effectiveDate: string;
@@ -57,7 +57,12 @@ export async function readAppSnapshot(page: Page): Promise<AppSnapshot> {
     const snapshot = await window.__LOOKR_E2E__?.snapshot();
 
     return {
-      profile: snapshot?.profile ? { dailyPointsLimit: snapshot.profile.dailyPointsLimit } : null,
+      profile: snapshot?.profile
+        ? {
+            dailyPointsLimit: snapshot.profile.dailyPointsLimit,
+            targetWeight: snapshot.profile.targetWeight,
+          }
+        : null,
       dailyPointLimitHistory:
         snapshot?.dailyPointLimitHistory.map((entry) => ({
           id: entry.id,
