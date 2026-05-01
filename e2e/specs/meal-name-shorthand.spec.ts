@@ -133,6 +133,47 @@ test.describe('Meal name shorthand sync', () => {
     await dashboard.expectLoggedMealCount(2);
   });
 
+  test('hash-prefix syncs points and keeps token in name', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'meal-name-shorthand-hash-points', ['shorthand-AS10']);
+
+    await seedAppState(appPage, createCleanSeedState());
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+    await dashboard.openMealModal();
+
+    await appPage.getByTestId('meal-name-input').fill('Pizza #7');
+    await expect(appPage.getByTestId('meal-points-input')).toHaveValue('7');
+    await expect(appPage.getByTestId('meal-name-input')).toHaveValue('Pizza #7');
+  });
+
+  test('editing points field updates hash token in meal name', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'meal-name-shorthand-hash-reverse-sync', ['shorthand-AS11']);
+
+    await seedAppState(appPage, createCleanSeedState());
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+    await dashboard.openMealModal();
+
+    await appPage.getByTestId('meal-name-input').fill('Wrap #5');
+    await expect(appPage.getByTestId('meal-points-input')).toHaveValue('5');
+
+    await appPage.getByTestId('meal-points-input').fill('9');
+    await expect(appPage.getByTestId('meal-name-input')).toHaveValue('Wrap #9');
+  });
+
+  test('hash decimal points shorthand syncs correctly', async ({ appPage }, testInfo) => {
+    annotateScenario(testInfo, 'meal-name-shorthand-hash-decimal-points', ['shorthand-AS12']);
+
+    await seedAppState(appPage, createCleanSeedState());
+    const dashboard = new DashboardPage(appPage);
+    await dashboard.goto();
+    await dashboard.openMealModal();
+
+    await appPage.getByTestId('meal-name-input').fill('Yogurt #4.5');
+    await expect(appPage.getByTestId('meal-points-input')).toHaveValue('4.5');
+    await expect(appPage.getByTestId('meal-name-input')).toHaveValue('Yogurt #4.5');
+  });
+
   test('decimal points shorthand syncs correctly', async ({ appPage }, testInfo) => {
     annotateScenario(testInfo, 'meal-name-shorthand-decimal-points', ['shorthand-AS9']);
 
