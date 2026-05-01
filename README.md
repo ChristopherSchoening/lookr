@@ -144,7 +144,6 @@ The web Playwright harness is the release gate for the active requirements in
 
 ## TODO
 
-- reminder notification for weight tracking
 - a way to save the data to maybe a file or something (to prevent data loss)
 - theme setting should show theme of the system (maybe fixed already)
 - points calculator
