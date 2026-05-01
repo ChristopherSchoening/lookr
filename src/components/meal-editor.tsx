@@ -224,7 +224,7 @@ export function MealEditor({
   }, [debouncedMealName, shouldEvaluateSuggestions, suggestionMeals]);
 
   function handleMealNameChange(nextMealName: string) {
-    const pointsMatch = nextMealName.match(/!(\d+\.?\d*)/);
+    const pointsMatch = nextMealName.match(/[!#](\d+\.?\d*)/);
     if (pointsMatch) {
       setPoints(pointsMatch[1]);
     }
@@ -250,8 +250,8 @@ export function MealEditor({
 
   function handlePointsChange(nextPoints: string) {
     setPoints(nextPoints);
-    if (/!(\d+\.?\d*)/.test(mealName)) {
-      setMealName(mealName.replace(/!(\d+\.?\d*)/, `!${nextPoints || '0'}`));
+    if (/[!#](\d+\.?\d*)/.test(mealName)) {
+      setMealName(mealName.replace(/([!#])(\d+\.?\d*)/, `$1${nextPoints || '0'}`));
     }
   }
 
