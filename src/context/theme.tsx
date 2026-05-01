@@ -82,7 +82,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeContext.Provider value={{ preference, resolvedPreference, systemPreference: resolvedSystemPreference, setPreference }}>
+    <ThemeContext.Provider
+      value={{
+        preference,
+        resolvedPreference,
+        systemPreference: resolvedSystemPreference,
+        setPreference,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
