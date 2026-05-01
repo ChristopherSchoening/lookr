@@ -566,6 +566,46 @@ export async function saveThemePreference(preference: ThemePreference): Promise<
   );
 }
 
+export type WeightReminderSettings = {
+  enabled: boolean;
+  weekday: number;
+  time: string;
+};
+
+const REMINDER_DEFAULTS: WeightReminderSettings = { enabled: false, weekday: 0, time: '08:00' };
+
+export async function loadWeightReminderSettings(): Promise<WeightReminderSettings> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<{ key: string; value: string }>(
+    "SELECT key, value FROM app_settings WHERE key IN ('weight_reminder_enabled','weight_reminder_weekday','weight_reminder_time')",
+  );
+  const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  return {
+    enabled: map['weight_reminder_enabled'] === '1',
+    weekday:
+      map['weight_reminder_weekday'] !== undefined
+        ? parseInt(map['weight_reminder_weekday'], 10)
+        : REMINDER_DEFAULTS.weekday,
+    time: map['weight_reminder_time'] ?? REMINDER_DEFAULTS.time,
+  };
+}
+
+export async function saveWeightReminderSettings(settings: WeightReminderSettings): Promise<void> {
+  const db = await getDb();
+  await db.runAsync(
+    "INSERT OR REPLACE INTO app_settings (key, value) VALUES ('weight_reminder_enabled', ?)",
+    settings.enabled ? '1' : '0',
+  );
+  await db.runAsync(
+    "INSERT OR REPLACE INTO app_settings (key, value) VALUES ('weight_reminder_weekday', ?)",
+    String(settings.weekday),
+  );
+  await db.runAsync(
+    "INSERT OR REPLACE INTO app_settings (key, value) VALUES ('weight_reminder_time', ?)",
+    settings.time,
+  );
+}
+
 export type InsertResult = SQLiteRunResult;
 
 export async function resetE2EState() {
