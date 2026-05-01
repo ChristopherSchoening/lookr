@@ -149,4 +149,3 @@ The web Playwright harness is the release gate for the active requirements in
 - theme setting should show theme of the system (maybe fixed already)
 - points calculator
 - points (daily limit) calculator
-- the first number with ! in front should be put into points
