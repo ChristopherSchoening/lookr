@@ -224,15 +224,29 @@ export function MealEditor({
   }, [debouncedMealName, shouldEvaluateSuggestions, suggestionMeals]);
 
   function handleMealNameChange(nextMealName: string) {
-    setMealName(nextMealName);
-    if (isNumericEntry(nextMealName)) {
-      setPoints(nextMealName.trim());
+    let resolvedName = nextMealName;
+
+    const pointsMatch = resolvedName.match(/!(\d+\.?\d*)/);
+    if (pointsMatch) {
+      setPoints(pointsMatch[1]);
+      resolvedName = resolvedName.replace(pointsMatch[0], '').trimStart();
+    }
+
+    const countMatch = resolvedName.match(/x(\d+)/);
+    if (countMatch) {
+      setCount(countMatch[1]);
+      resolvedName = resolvedName.replace(countMatch[0], '').trimStart();
+    }
+
+    setMealName(resolvedName);
+    if (isNumericEntry(resolvedName)) {
+      setPoints(resolvedName.trim());
       setDismissedSuggestions(true);
     } else {
       setDismissedSuggestions(false);
     }
     if (sessionMode === 'edit') {
-      setHasEditedMealName(nextMealName !== initialMealName);
+      setHasEditedMealName(resolvedName !== initialMealName);
       return;
     }
     setHasEditedMealName(true);
