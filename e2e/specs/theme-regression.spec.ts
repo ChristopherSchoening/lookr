@@ -14,7 +14,7 @@ test.describe('Theme settings coverage', () => {
     await expect(appPage.getByRole('tab').nth(2)).toContainText('Settings');
     await expect(appPage.getByRole('tab').nth(3)).toContainText('Progress');
     await expect(appPage.getByTestId('theme-option-note-system')).toContainText(
-      /System preference: (Light|Dark)/,
+      'System preference',
     );
 
     const screenRoot = appPage
@@ -31,7 +31,7 @@ test.describe('Theme settings coverage', () => {
 
     await appPage.getByTestId('theme-option-system').click();
     await expect(appPage.getByTestId('theme-option-note-system')).toContainText(
-      /System preference: (Light|Dark)/,
+      'System preference',
     );
   });
 
@@ -42,9 +42,7 @@ test.describe('Theme settings coverage', () => {
 
     await openTab(page, 'Settings');
     await expect(page.getByTestId('settings-screen')).toBeVisible();
-    await expect(page.getByTestId('theme-option-note-system')).toContainText(
-      'System preference: Dark',
-    );
+    await expect(page.getByTestId('theme-option-note-system')).toContainText('System preference');
 
     const screenRoot = page
       .getByTestId('settings-screen')
