@@ -24,9 +24,11 @@ cfg.expo.version = '$VERSION';
 fs.writeFileSync('app.json', JSON.stringify(cfg, null, 2) + '\n');
 "
 
-git add package.json app.json
+git add package.json package-lock.json app.json
 git commit -m "Release $TAG"
 git tag "$TAG"
+git push
+git push origin "$TAG"
 
 APK="android/app/build/outputs/apk/release/app-release.apk"
 
