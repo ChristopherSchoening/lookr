@@ -11,7 +11,7 @@ const themeOptions: { value: ThemePreference; label: string; note: string }[] = 
 ];
 
 export default function SettingsScreen() {
-  const { preference, resolvedPreference, setPreference } = useTheme();
+  const { preference, systemPreference, setPreference } = useTheme();
 
   return (
     <Screen>
@@ -26,7 +26,7 @@ export default function SettingsScreen() {
             const active = preference === option.value;
             const note =
               option.value === 'system'
-                ? `System preference: ${resolvedPreference === 'dark' ? 'Dark' : 'Light'}`
+                ? `System preference: ${systemPreference === 'dark' ? 'Dark' : 'Light'}`
                 : option.note;
             return (
               <Pressable

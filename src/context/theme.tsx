@@ -8,12 +8,14 @@ import type { ThemePreference } from '@/lib/types';
 type ThemeContextValue = {
   preference: ThemePreference;
   resolvedPreference: Exclude<ThemePreference, 'system'>;
+  systemPreference: Exclude<ThemePreference, 'system'>;
   setPreference: (preference: ThemePreference) => Promise<void>;
 };
 
 const ThemeContext = createContext<ThemeContextValue>({
   preference: 'system',
   resolvedPreference: 'light',
+  systemPreference: 'light',
   setPreference: async () => {},
 });
 
@@ -80,7 +82,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeContext.Provider value={{ preference, resolvedPreference, setPreference }}>
+    <ThemeContext.Provider
+      value={{
+        preference,
+        resolvedPreference,
+        systemPreference: resolvedSystemPreference,
+        setPreference,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
