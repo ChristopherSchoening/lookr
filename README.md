@@ -148,3 +148,4 @@ The web Playwright harness is the release gate for the active requirements in
 - theme setting should show theme of the system (maybe fixed already)
 - points calculator
 - points (daily limit) calculator
+- nicer onboarding (set daily limit, set target weight, maybe a tour / concept explanation)
