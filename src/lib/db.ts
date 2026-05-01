@@ -78,6 +78,12 @@ export type E2ESeedState = {
   weights?: E2ESeedWeight[];
 };
 
+export type OnboardingInput = {
+  dailyPointsLimit: number;
+  currentWeight: number;
+  targetWeight: number;
+};
+
 const mealTypeValues = ['breakfast', 'lunch', 'dinner', 'snack'] satisfies MealType[];
 const themePreferenceValues = ['light', 'dark', 'system'] satisfies ThemePreference[];
 
@@ -377,6 +383,36 @@ export async function saveProfile(dailyPointsLimit: number) {
     dailyPointsLimit,
     updatedAt,
   );
+}
+
+export async function saveOnboardingProfile(input: OnboardingInput) {
+  const db = await getDb();
+  const updatedAt = nowIso();
+  const entryDate = todayKey();
+
+  await db.runAsync(
+    `
+      INSERT INTO user_profile (id, daily_points_limit, target_weight, updated_at)
+      VALUES (1, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        daily_points_limit = excluded.daily_points_limit,
+        target_weight = excluded.target_weight,
+        updated_at = excluded.updated_at
+    `,
+    input.dailyPointsLimit,
+    input.targetWeight,
+    updatedAt,
+  );
+  await db.runAsync(
+    `
+      INSERT INTO daily_point_limit_history (effective_date, daily_points_limit, created_at)
+      VALUES (?, ?, ?)
+    `,
+    entryDate,
+    input.dailyPointsLimit,
+    updatedAt,
+  );
+  await saveWeight({ entryDate, weight: input.currentWeight });
 }
 
 export async function listMeals(): Promise<MealEntry[]> {

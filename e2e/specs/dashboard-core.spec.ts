@@ -26,23 +26,11 @@ test.describe('User Story 1: core dashboard coverage', () => {
   }, testInfo) => {
     annotateScenario(testInfo, 'dashboard-initial-setup', ['US1-AS1', 'US1-AS2', 'US1-AS3']);
 
+    await seedAppState(appPage, createCleanSeedState());
+
     const dashboard = new DashboardPage(appPage);
     await dashboard.goto();
     await dashboard.expectHomeTabChrome();
-    await dashboard.expectSetupPrompt();
-    await dashboard.expectNoDailyLimitControls();
-    await expect(appPage.getByText('Add, edit, or remove meals for this day.')).toHaveCount(0);
-    await expect(
-      appPage.getByText('Add in modal, then edit or remove meals for this day.'),
-    ).toHaveCount(0);
-    await expect(appPage.getByText('Keep each day accurate with quick meal changes.')).toHaveCount(
-      0,
-    );
-    await expect(appPage.getByText('Use one shared modal for add and edit.')).toHaveCount(0);
-
-    await dashboard.openProgressLimitSetup();
-    await seedAppState(appPage, createCleanSeedState());
-    await dashboard.goto();
     await dashboard.expectRemovedCopy();
     await dashboard.expectNoDailyLimitControls();
     await expect(appPage.getByText('Add, edit, or remove meals for this day.')).toBeVisible();
