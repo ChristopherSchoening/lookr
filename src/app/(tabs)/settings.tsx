@@ -1,5 +1,6 @@
+import DateTimePicker, { type DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useEffect, useState } from 'react';
-import { Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 
 import { Screen, SectionTitle } from '@/components/ui';
 import { useTheme } from '@/context/theme';
@@ -23,12 +24,24 @@ const themeOptions: { value: ThemePreference; label: string; note: string }[] = 
 
 const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-function isValidTime(value: string): boolean {
-  const parts = value.split(':');
-  if (parts.length !== 2) return false;
-  const h = parseInt(parts[0], 10);
-  const m = parseInt(parts[1], 10);
-  return /^\d{1,2}:\d{2}$/.test(value) && h >= 0 && h <= 23 && m >= 0 && m <= 59;
+function timeStringToDate(time: string): Date {
+  const [h, m] = time.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function dateToTimeString(date: Date): string {
+  const h = date.getHours().toString().padStart(2, '0');
+  const m = date.getMinutes().toString().padStart(2, '0');
+  return `${h}:${m}`;
+}
+
+function formatTime12h(time: string): string {
+  const [h, m] = time.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${m.toString().padStart(2, '0')} ${ampm}`;
 }
 
 export default function SettingsScreen() {
@@ -37,15 +50,13 @@ export default function SettingsScreen() {
   const [reminderEnabled, setReminderEnabled] = useState(false);
   const [reminderWeekday, setReminderWeekday] = useState(0);
   const [reminderTime, setReminderTime] = useState('08:00');
-  const [timeInput, setTimeInput] = useState('08:00');
-  const [timeError, setTimeError] = useState('');
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   useEffect(() => {
     void loadWeightReminderSettings().then((s) => {
       setReminderEnabled(s.enabled);
       setReminderWeekday(s.weekday);
       setReminderTime(s.time);
-      setTimeInput(s.time);
     });
   }, []);
 
@@ -76,18 +87,17 @@ export default function SettingsScreen() {
     void applyReminderSettings({ enabled: reminderEnabled, weekday: day, time: reminderTime });
   }
 
-  function handleTimeBlur() {
-    if (!isValidTime(timeInput)) {
-      setTimeError('Enter time as HH:MM (e.g. 08:30)');
-      return;
+  function handleTimeChange(event: DateTimePickerEvent, date?: Date) {
+    setShowTimePicker(false);
+    if (event.type === 'set' && date) {
+      const timeStr = dateToTimeString(date);
+      setReminderTime(timeStr);
+      void applyReminderSettings({
+        enabled: reminderEnabled,
+        weekday: reminderWeekday,
+        time: timeStr,
+      });
     }
-    setTimeError('');
-    setReminderTime(timeInput);
-    void applyReminderSettings({
-      enabled: reminderEnabled,
-      weekday: reminderWeekday,
-      time: timeInput,
-    });
   }
 
   return (
@@ -179,7 +189,7 @@ export default function SettingsScreen() {
                     }`}
                   >
                     {reminderEnabled
-                      ? `Every ${weekdays[reminderWeekday]} at ${reminderTime}`
+                      ? `Every ${weekdays[reminderWeekday]} at ${formatTime12h(reminderTime)}`
                       : 'Tap to enable'}
                   </Text>
                 </View>
@@ -219,22 +229,28 @@ export default function SettingsScreen() {
                   })}
                 </View>
 
-                <View className="gap-1">
-                  <TextInput
-                    className="rounded-[26px] bg-[#F2F4F5] px-5 py-4 text-[17px] text-[#10201B] dark:bg-[#162119] dark:text-[#E8F0EC]"
-                    value={timeInput}
-                    onChangeText={setTimeInput}
-                    onBlur={handleTimeBlur}
-                    onSubmitEditing={handleTimeBlur}
-                    placeholder="08:00"
-                    placeholderTextColor="#51605A"
-                    keyboardType="numbers-and-punctuation"
-                    testID="reminder-time-input"
+                <Pressable
+                  className="rounded-[26px] bg-[#F2F4F5] px-5 py-4 dark:bg-[#162119]"
+                  onPress={() => setShowTimePicker(true)}
+                  testID="reminder-time-button"
+                >
+                  <View className="flex-row items-center justify-between">
+                    <Text className="text-[15px] text-[#51605A] dark:text-[#8FA49B]">Time</Text>
+                    <Text className="text-[17px] font-semibold text-[#10201B] dark:text-[#E8F0EC]">
+                      {formatTime12h(reminderTime)}
+                    </Text>
+                  </View>
+                </Pressable>
+
+                {showTimePicker && (
+                  <DateTimePicker
+                    value={timeStringToDate(reminderTime)}
+                    mode="time"
+                    is24Hour={false}
+                    onChange={handleTimeChange}
+                    testID="reminder-time-picker"
                   />
-                  {timeError !== '' && (
-                    <Text className="px-2 text-[13px] text-red-500">{timeError}</Text>
-                  )}
-                </View>
+                )}
               </View>
             )}
           </View>

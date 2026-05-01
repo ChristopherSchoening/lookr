@@ -25,6 +25,7 @@
     "release:android:patch": "sh scripts/release-android.sh patch"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "8.6.0",
     "@react-navigation/bottom-tabs": "^7.15.5",
     "@react-navigation/elements": "^2.9.10",
     "@react-navigation/native": "^7.1.33",
