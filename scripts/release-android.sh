@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+export RELEASE_ANDROID=1
 
 for cmd in gh node npm git npx; do
   command -v "$cmd" >/dev/null 2>&1 || { echo "Error: '$cmd' not found in PATH" >&2; exit 1; }
