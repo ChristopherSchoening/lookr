@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+for cmd in gh node npm git npx; do
+  command -v "$cmd" >/dev/null 2>&1 || { echo "Error: '$cmd' not found in PATH" >&2; exit 1; }
+done
+
 BUMP="${1:?Usage: release-android.sh <major|minor|patch>}"
 
 case "$BUMP" in
