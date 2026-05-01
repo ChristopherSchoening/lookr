@@ -146,6 +146,6 @@ The web Playwright harness is the release gate for the active requirements in
 
 - reminder notification for weight tracking
 - a way to save the data to maybe a file or something (to prevent data loss)
-- build in ci (releases)
+- theme setting should show theme of the system
 - points calculator
 - points (daily limit) calculator
