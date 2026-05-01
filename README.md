@@ -144,7 +144,6 @@ The web Playwright harness is the release gate for the active requirements in
 
 ## TODO
 
-- add indicator that tap;n weight trend in progress opens details
 - a way to save the data to maybe a file or something (to prevent data loss)
 - theme system preferrence setting should show theme of the system
 - points calculator

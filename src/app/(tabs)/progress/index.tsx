@@ -289,6 +289,9 @@ export default function ProgressScreen() {
                       </View>
                     ))}
                 </View>
+                <Text className="text-right text-[11px] font-bold uppercase tracking-[1px] text-[#51605A] dark:text-[#8FA49B]">
+                  Tap for details →
+                </Text>
               </Card>
             </Pressable>
 
