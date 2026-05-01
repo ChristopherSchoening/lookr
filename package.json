@@ -2,7 +2,6 @@
   "name": "lookr",
   "version": "1.0.0",
   "private": true,
-  "license": "MIT",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
@@ -20,7 +19,8 @@
     "format": "oxfmt .",
     "format:check": "oxfmt . --check",
     "typecheck": "tsc --noEmit",
-    "build:android": "expo prebuild --platform android --no-install && ./android/gradlew -p android assembleRelease"
+    "build:android": "expo prebuild --platform android --no-install && ./android/gradlew -p android assembleRelease",
+    "release:android": "sh scripts/release-android.sh"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.15.5",
