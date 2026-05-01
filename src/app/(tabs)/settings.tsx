@@ -45,7 +45,7 @@ function formatTime12h(time: string): string {
 }
 
 export default function SettingsScreen() {
-  const { preference, systemPreference, setPreference } = useTheme();
+  const { preference, setPreference } = useTheme();
 
   const [reminderEnabled, setReminderEnabled] = useState(false);
   const [reminderWeekday, setReminderWeekday] = useState(0);
@@ -111,10 +111,7 @@ export default function SettingsScreen() {
         <View className="gap-3">
           {themeOptions.map((option) => {
             const active = preference === option.value;
-            const note =
-              option.value === 'system'
-                ? `System preference: ${systemPreference === 'dark' ? 'Dark' : 'Light'}`
-                : option.note;
+            const note = option.value === 'system' ? `System preference` : option.note;
             return (
               <Pressable
                 key={option.value}
