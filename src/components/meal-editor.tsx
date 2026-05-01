@@ -224,32 +224,42 @@ export function MealEditor({
   }, [debouncedMealName, shouldEvaluateSuggestions, suggestionMeals]);
 
   function handleMealNameChange(nextMealName: string) {
-    let resolvedName = nextMealName;
-
-    const pointsMatch = resolvedName.match(/!(\d+\.?\d*)/);
+    const pointsMatch = nextMealName.match(/!(\d+\.?\d*)/);
     if (pointsMatch) {
       setPoints(pointsMatch[1]);
-      resolvedName = resolvedName.replace(pointsMatch[0], '').trimStart();
     }
 
-    const countMatch = resolvedName.match(/x(\d+)/);
+    const countMatch = nextMealName.match(/x(\d+)/);
     if (countMatch) {
       setCount(countMatch[1]);
-      resolvedName = resolvedName.replace(countMatch[0], '').trimStart();
     }
 
-    setMealName(resolvedName);
-    if (isNumericEntry(resolvedName)) {
-      setPoints(resolvedName.trim());
+    setMealName(nextMealName);
+    if (isNumericEntry(nextMealName)) {
+      setPoints(nextMealName.trim());
       setDismissedSuggestions(true);
     } else {
       setDismissedSuggestions(false);
     }
     if (sessionMode === 'edit') {
-      setHasEditedMealName(resolvedName !== initialMealName);
+      setHasEditedMealName(nextMealName !== initialMealName);
       return;
     }
     setHasEditedMealName(true);
+  }
+
+  function handlePointsChange(nextPoints: string) {
+    setPoints(nextPoints);
+    if (/!(\d+\.?\d*)/.test(mealName)) {
+      setMealName(mealName.replace(/!(\d+\.?\d*)/, `!${nextPoints || '0'}`));
+    }
+  }
+
+  function handleCountChange(nextCount: string) {
+    setCount(nextCount);
+    if (/x(\d+)/.test(mealName)) {
+      setMealName(mealName.replace(/x(\d+)/, `x${nextCount || '0'}`));
+    }
   }
 
   function applySuggestion(suggestion: MealSuggestion) {
@@ -493,7 +503,7 @@ export function MealEditor({
             <Field
               label="Points"
               value={points}
-              onChangeText={setPoints}
+              onChangeText={handlePointsChange}
               placeholder="7"
               keyboardType="numeric"
               testID="meal-points-input"
@@ -501,7 +511,7 @@ export function MealEditor({
             <Field
               label="Count"
               value={count}
-              onChangeText={setCount}
+              onChangeText={handleCountChange}
               placeholder="1"
               keyboardType="numeric"
               testID="meal-count-input"
